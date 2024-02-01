@@ -1,11 +1,9 @@
-from typing import Iterable, Union, Any, Optional
+from typing import Optional
 
-from pandas import DataFrame
 from yfinance import Ticker
 
-from tdv.common_utils import timestamp
 from tdv.constants import TESLA_TICKER_NAME
-from tdv.types import Expirations, OptionChains, OptionChainsYF
+from tdv.types import Expirations, OptionChainsYF
 from tdv.storage.json.option_chains_repo import OptionChainsRepo
 
 
@@ -16,6 +14,8 @@ class YFserviceProxy:
 
         self.__tesla_option_chains: Optional[OptionChainsYF] = None
 
+        self.__was_saved: bool = False
+
     def call_updates(self) -> None:
         """ Call all updates here """
         self.__update_tesla_option_chains()
@@ -25,14 +25,15 @@ class YFserviceProxy:
         self.__save_tesla_option_chains()
 
     def __update_tesla_option_chains(self) -> None:
+        self.__was_saved = False
         tesla_ticker = Ticker(TESLA_TICKER_NAME)
         expirations: Expirations = self.__request_expirations(TESLA_TICKER_NAME)
         self.__tesla_option_chains = self.__request_option_chains(tesla_ticker, expirations)
 
     def __save_tesla_option_chains(self) -> None:
-        if self.__tesla_option_chains:
+        if not self.__was_saved:
+            self.__was_saved = True
             self.__option_chains_repo.save(self.__tesla_option_chains)
-        self.__tesla_expirations = None
 
     @staticmethod
     def __request_option_chains(ticker: Ticker, expirations: Expirations) -> OptionChainsYF:
@@ -43,5 +44,5 @@ class YFserviceProxy:
         return Ticker(ticker_name).options
 
     @property
-    def tesla_expirations(self) -> Optional[Expirations]:
-        return self.__tesla_expirations
+    def tesla_option_chains(self) -> Optional[Expirations]:
+        return self.__tesla_option_chains

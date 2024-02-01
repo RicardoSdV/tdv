@@ -1,4 +1,3 @@
-from datetime import datetime
 from time import sleep
 
 import schedule
@@ -10,7 +9,6 @@ from tdv.domain.external.yahoo_finance_service_proxy import YFserviceProxy
 class MainLoop:
     # Settings (all times in seconds)
     __update_tesla_exp_time = 10
-    __save_tesla_exp_delay = __update_tesla_exp_time // 2
     __main_loop_sleep_time = 1
 
     def __init__(self) -> None:

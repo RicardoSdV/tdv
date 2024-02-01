@@ -1,10 +1,9 @@
 from pathlib import Path
-from typing import Union, Any
 
 from pandas import DataFrame
 
 from tdv.constants import TESLA_EXPIRATIONS_DIR_PATH
-from tdv.types import Expirations, OptionChains, OptionChainsYF, OptionChainYF
+from tdv.types import OptionChains, OptionChainsYF
 from tdv.storage.json.base_repo import BaseRepo, BaseSerializer, BasePathBuilder
 
 
@@ -24,7 +23,7 @@ class OptionChainsPathBuilder(BasePathBuilder):
         return cls._get_timestamp_path(TESLA_EXPIRATIONS_DIR_PATH)
 
 
-class OptionChainsRepo(BaseRepo, OptionChainsPathBuilder, OptionChainsSerializer):
+class OptionChainsRepo(OptionChainsPathBuilder, OptionChainsSerializer, BaseRepo):
     @classmethod
     def save(cls, option_chains: OptionChainsYF) -> None:
         path = cls.get_timestamp_tesla_expirations_path()
