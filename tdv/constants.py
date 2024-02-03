@@ -1,7 +1,5 @@
 from pathlib import Path
 
-# Ticker names
-TESLA_TICKER_NAME = 'TSLA'
 
 # Paths (all absolute)
 TDV_PATH = Path.cwd()

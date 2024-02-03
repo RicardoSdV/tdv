@@ -2,7 +2,7 @@ from json import dump
 from pathlib import Path
 from typing import Any, Optional, Callable
 
-from tdv.common_utils import timestamp
+from tdv.common_utils import timestamp_str
 
 
 class BaseSerializer:
@@ -14,7 +14,7 @@ class BaseSerializer:
 class BasePathBuilder:
     @staticmethod
     def _get_timestamp_path(dir_path: Path) -> Path:
-        return (dir_path / timestamp()).with_suffix('.json')
+        return (dir_path / timestamp_str()).with_suffix('.json')
 
 
 class BaseRepo:
@@ -23,6 +23,7 @@ class BaseRepo:
             path: Path,
             data: Any,
             default_serializer: Optional[Callable] = None,
+            indent: int = 0,
     ) -> None:
         with open(path, 'w') as json_file:
-            dump(data, json_file, default=default_serializer, skipkeys=True, indent=2)
+            dump(data, json_file, default=default_serializer, skipkeys=True, indent=indent)

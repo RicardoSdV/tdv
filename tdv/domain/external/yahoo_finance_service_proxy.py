@@ -1,39 +1,51 @@
+from datetime import datetime, time
 from typing import Optional
 
+from pytz import timezone
+from schedule import Scheduler, Job
 from yfinance import Ticker
 
-from tdv.constants import TESLA_TICKER_NAME
-from tdv.types import Expirations, OptionChainsYF
+from tdv.types import Expirations, OptionChainsYF, Second
 from tdv.storage.json.option_chains_repo import OptionChainsRepo
 
 
-class YFserviceProxy:
+class BaseServiceProxy:
+    def run_pending(self) -> None:
+        raise NotImplementedError
+
+
+class YFserviceProxy(BaseServiceProxy):
+    __work_only_when_market_open = False
+    __time_zone = timezone('America/New_York')
+    __market_open = time(hour=9, minute=30)
+    __market_close = time(hour=16)
+
+    __update_tesla_option_chains_interval: Second = 10
+    __tesla_ticker_name = 'TSLA'
+    __pretty_print = False  # Set to True to pretty print to .json
 
     def __init__(self) -> None:
         self.__option_chains_repo = OptionChainsRepo()
 
-        self.__tesla_option_chains: Optional[OptionChainsYF] = None
+        self.__scheduler = Scheduler()
 
-        self.__was_saved: bool = False
+        self.__tesla_options_job: Optional[Job] = self.__schedule_tesla_options_job()
 
-    def call_updates(self) -> None:
-        """ Call all updates here """
-        self.__update_tesla_option_chains()
+    def run_pending(self) -> None:
+        self.__scheduler.run_pending()
 
-    def call_saves(self) -> None:
-        """ Call all saves here """
-        self.__save_tesla_option_chains()
+    def __schedule_tesla_options_job(self) -> Job:
+        return self.__scheduler.every(
+            self.__update_tesla_option_chains_interval
+        ).seconds.do(self.__request_and_save_tesla_option_chains)
 
-    def __update_tesla_option_chains(self) -> None:
-        self.__was_saved = False
-        tesla_ticker = Ticker(TESLA_TICKER_NAME)
-        expirations: Expirations = self.__request_expirations(TESLA_TICKER_NAME)
-        self.__tesla_option_chains = self.__request_option_chains(tesla_ticker, expirations)
+    def __request_and_save_tesla_option_chains(self) -> None:
+        expirations: Expirations = self.__request_expirations(self.__tesla_ticker_name)
 
-    def __save_tesla_option_chains(self) -> None:
-        if not self.__was_saved:
-            self.__was_saved = True
-            self.__option_chains_repo.save(self.__tesla_option_chains)
+        tesla_ticker = Ticker(self.__tesla_ticker_name)
+        tesla_option_chains: OptionChainsYF = self.__request_option_chains(tesla_ticker, expirations)
+
+        self.__option_chains_repo.save(tesla_option_chains, 2 if self.__pretty_print else 0)
 
     @staticmethod
     def __request_option_chains(ticker: Ticker, expirations: Expirations) -> OptionChainsYF:
@@ -42,7 +54,3 @@ class YFserviceProxy:
     @staticmethod
     def __request_expirations(ticker_name: str) -> Expirations:
         return Ticker(ticker_name).options
-
-    @property
-    def tesla_option_chains(self) -> Optional[Expirations]:
-        return self.__tesla_option_chains

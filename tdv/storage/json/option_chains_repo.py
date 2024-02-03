@@ -25,7 +25,7 @@ class OptionChainsPathBuilder(BasePathBuilder):
 
 class OptionChainsRepo(OptionChainsPathBuilder, OptionChainsSerializer, BaseRepo):
     @classmethod
-    def save(cls, option_chains: OptionChainsYF) -> None:
+    def save(cls, option_chains: OptionChainsYF, indent: int = 0) -> None:
         path = cls.get_timestamp_tesla_expirations_path()
         serialized_data = cls.serialize_yf_option_chains(option_chains)
-        cls._save_to_json(path, serialized_data, cls._turn_to_str)
+        cls._save_to_json(path, serialized_data, cls._turn_to_str, indent)
