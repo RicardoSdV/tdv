@@ -2,11 +2,12 @@ from datetime import datetime
 from time import sleep
 from typing import Optional, List, Tuple
 
+from pandas import DataFrame
+from pandas_market_calendars import MarketCalendar, get_calendar
 from pytz import timezone
 from schedule import Scheduler, Job
 import pandas_market_calendars as mcal
 
-from tdv.common_utils import timestamp_str
 from tdv.domain.external.yahoo_finance_service_proxy import YFserviceProxy, BaseServiceProxy
 from tdv.types import Time, Second, TimeZone, ExchangeName, TimeStamp, Date
 
@@ -37,7 +38,7 @@ class MainLoop:
     __active_loop_sleep_time: Second = 1
     __passive_loop_sleep_time: Second = 10
 
-    __check_market_status_time: Time = '00:01'
+    __check_market_status_time: Time = '00:01'  # Must be before market open
     __time_zone_NY: TimeZone = 'America/New_York'
     __exchange_name_NY: ExchangeName = 'NYSE'
 
@@ -46,12 +47,13 @@ class MainLoop:
 
         self.__market_open_job: Optional[Job] = None
         self.__market_close_job: Optional[Job] = None
-
         self.__is_market_open_job: Job = self.__schedule_market_open_and_close_schedules(self.__time_zone_NY)
 
         self.__market_dependant_service_proxies: List[BaseServiceProxy] = []
 
-        self.__calendar = None
+        self.__nyse_calendar: MarketCalendar = get_calendar(self.__exchange_name_NY)
+
+        self.__today_ymd_ny: Optional[TimeStamp] = None
 
     def run(self) -> None:
         while True:
@@ -81,18 +83,11 @@ class MainLoop:
             self.__delete_all_market_dependant_services()
         )
 
-    def __schedule_market_open_and_close_jobs(self) -> None:
-        self.__calendar = mcal.get_calendar(self.__exchange_name_NY)
-
+    def __schedule_market_open_and_close_jobs(self, calendar: MarketCalendar, time_zone: TimeZone) -> Tuple[Job, Job]:
+        self.__today_timestamp = self.__today_timestamp()
         if self.__is_market_open_today():
-
-            market_open, market_close = self.__get_market_open_and_clone()
-
-            self.__market_open_job: Job = self.__scheduler.every().day.at(
-                market_open, self.__time_zone_NY).do(self.__instantiate_market_dependant_services)
-
-            self.__market_close_job: Job = self.__scheduler.every().day.at(
-                market_close, self.__time_zone_NY).do(self.__delete_all_market_dependant_services)
+            market_open, market_close = self.__get_market_schedule_today(calendar)
+            return self.__schedule_market_open_job(market_open, time_zone), self.__schedule_market_close_job(market_close, time_zone)
 
     def __instantiate_market_dependant_services(self) -> None:
         """ Instantiate all market dependant services here """
@@ -104,12 +99,11 @@ class MainLoop:
         self.__market_dependant_service_proxies: List[BaseServiceProxy] = []
 
     def __is_market_open_today(self) -> bool:
-        return self.time_str() in self.__calendar.valid_days
+        return self.today_timestamp() in self.__nyse_calendar.valid_days
 
-    def __get_market_open_and_clone(self) -> Tuple[Date, Date]:
-        schedule = self.__calendar.schedule.loc[self.__calendar.valid_days]
+    def __market_open_and_close_today(self, calendar: MarketCalendar, time_zone: TimeZone) -> Tuple[Date, Date]:
+        schedule: DataFrame = calendar.schedule(self.__today_ymd_ny, self.__today_ymd_ny, tz=time_zone)
         return schedule.market_open, schedule.market_close
 
-    @classmethod
-    def time_str(cls) -> TimeStamp:
-        return datetime.now(timezone(cls.__time_zone_NY)).strftime('%Y-%m-%d')
+    def __update_today_timestamp(self, time_zone: TimeZone) -> None:
+        self.__today_ymd_ny = datetime.now(timezone(time_zone)).strftime('%Y-%m-%d')
