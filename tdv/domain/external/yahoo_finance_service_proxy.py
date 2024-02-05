@@ -35,17 +35,20 @@ class YFserviceProxy(BaseServiceProxy):
         self.__scheduler.run_pending()
 
     def __schedule_tesla_options_job(self) -> Job:
+        print('YFserviceProxy.__schedule_tesla_options_job')
         return self.__scheduler.every(
             self.__update_tesla_option_chains_interval
         ).seconds.do(self.__request_and_save_tesla_option_chains)
 
     def __request_and_save_tesla_option_chains(self) -> None:
+        print('YFserviceProxy.__request_and_save_tesla_option_chains (before)')
         expirations: Expirations = self.__request_expirations(self.__tesla_ticker_name)
 
         tesla_ticker = Ticker(self.__tesla_ticker_name)
         tesla_option_chains: OptionChainsYF = self.__request_option_chains(tesla_ticker, expirations)
 
-        self.__option_chains_repo.save(tesla_option_chains, 2 if self.__pretty_print else 0)
+        self.__option_chains_repo.save(tesla_option_chains, None)
+        print('YFserviceProxy.__request_and_save_tesla_option_chains (after)')
 
     @staticmethod
     def __request_option_chains(ticker: Ticker, expirations: Expirations) -> OptionChainsYF:

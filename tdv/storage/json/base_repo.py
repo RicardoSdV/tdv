@@ -23,7 +23,7 @@ class BaseRepo:
             path: Path,
             data: Any,
             default_serializer: Optional[Callable] = None,
-            indent: int = 0,
+            indent: Optional[int] = None,
     ) -> None:
         with open(path, 'w') as json_file:
             dump(data, json_file, default=default_serializer, skipkeys=True, indent=indent)
