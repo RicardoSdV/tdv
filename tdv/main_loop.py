@@ -8,7 +8,7 @@ from pytz import timezone, tzinfo
 from schedule import Scheduler, Job
 
 from tdv.domain.external.yahoo_finance_service_proxy import YFserviceProxy, BaseServiceProxy
-from tdv.types import Second, ExchangeName
+from tdv.data_types import Second, ExchangeName
 
 
 class MainLoop:

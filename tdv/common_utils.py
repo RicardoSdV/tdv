@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from tdv.types import TimeStamp
+from tdv.data_types import TimeStamp
 
 
 def now_timestamp(cls) -> datetime:

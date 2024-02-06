@@ -4,7 +4,7 @@ from typing import Optional
 from pandas import DataFrame
 
 from tdv.constants import TESLA_EXPIRATIONS_DIR_PATH
-from tdv.types import OptionChains, OptionChainsYF
+from tdv.data_types import OptionChains, OptionChainsYF
 from tdv.storage.json.base_repo import BaseRepo, BaseSerializer, BasePathBuilder
 
 

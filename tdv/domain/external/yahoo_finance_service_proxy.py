@@ -5,7 +5,7 @@ from pytz import timezone
 from schedule import Scheduler, Job
 from yfinance import Ticker
 
-from tdv.types import Expirations, OptionChainsYF, Second
+from tdv.data_types import Expirations, OptionChainsYF, Second
 from tdv.storage.json.option_chains_repo import OptionChainsRepo
 
 
