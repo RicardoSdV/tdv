@@ -3,9 +3,9 @@ from typing import Tuple, Dict, List, Union, Hashable, Any
 from pandas import DataFrame
 
 # Built in types
+TimeStr = str
 TimeStamp = str
 Date = str
-Time = str
 TimeZone = str
 ExchangeName = str
 Second = int
