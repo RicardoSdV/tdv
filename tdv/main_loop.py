@@ -8,7 +8,7 @@ from pytz import timezone, tzinfo
 from schedule import Scheduler, Job
 
 from tdv.domain.external.yahoo_finance_service_proxy import YFserviceProxy, BaseServiceProxy
-from tdv.types import Second, TimeZone, ExchangeName
+from tdv.types import Second, ExchangeName
 
 
 class MainLoop:
@@ -19,8 +19,7 @@ class MainLoop:
 
     __daily_rescheduling_time: Datetime = Datetime.strptime('01:00', '%H:%M')  # Before market open
 
-    __timezone_name_NY: TimeZone = 'America/New_York'
-    __timezone_NY: tzinfo = timezone(__timezone_name_NY)
+    __timezone_NY: tzinfo = timezone('America/New_York')
     __exchange_NY: ExchangeName = 'NYSE'
 
     def __init__(self) -> None:
@@ -34,7 +33,7 @@ class MainLoop:
         self.__update_today_timestamp(self.__timezone_NY)
 
         is_market_open_today: bool = self.__is_market_open_today()
-        market_open, market_close = self.__market_times_today(self.__calendar_nyse, self.__timezone_name_NY)
+        market_open, market_close = self.__market_times_today(self.__calendar_nyse, self.__timezone_NY)
         self.__base_condition_init(is_market_open_today, market_open, market_close)
 
         self.__market_open_job: Optional[Job] = None
@@ -75,19 +74,19 @@ class MainLoop:
         return self.__scheduler.every().day.at(time.strftime('%H:%M'), time_zone).do(method)
 
     def __schedule_market_open_and_close_jobs(self) -> Tuple[Job, Job]:
-        time_zone = self.__timezone_name_NY
+        time_zone = self.__timezone_NY
         self.__update_today_timestamp(time_zone)
         if self.__is_market_open_today():
-            market_open, market_close = self.__market_times_today(self.__calendar_nyse, self.__timezone_name_NY)
+            market_open, market_close = self.__market_times_today(self.__calendar_nyse, time_zone)
             return (self.__schedule_daily(self.__instantiate_ny_services, market_open, time_zone),
                     self.__schedule_daily(self.__delete_all_market_dependant_services, market_close, time_zone))
 
     def __is_market_open_today(self) -> bool:
         today = self.__today_ny
-        valid_days: DatetimeIndex = self.__calendar_nyse.valid_days(today, today, self.__timezone_name_NY)
+        valid_days: DatetimeIndex = self.__calendar_nyse.valid_days(today, today, self.__timezone_NY)
         return today.month == valid_days[0].month and today.day == valid_days[0].day
 
-    def __market_times_today(self, calendar: MarketCalendar, time_zone: TimeZone) -> Tuple[Datetime, Datetime]:
+    def __market_times_today(self, calendar: MarketCalendar, time_zone: tzinfo) -> Tuple[Datetime, Datetime]:
         schedule: DataFrame = calendar.schedule(self.__today_ny, self.__today_ny, tz=time_zone)
         return schedule['market_open'][0].to_pydatetime(), schedule['market_close'][0].to_pydatetime()
 
