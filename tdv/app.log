@@ -1,10 +1,10 @@
 Main Loop instantiated
-Market is open today
-Scheduled Tesla option gathering jobs
-YFserciceProxy instantiated
-About to start 
-Tesla option data requested
-Tesla option data saved
-Tesla option data requested
-Tesla option data saved
-Tesla option data requested
+Job scheduler instantiated
+Market dependant job list created
+Market calendar fetched
+Time in NY checked
+Market status checked
+Market open and close times checked for last time market was open
+Market is open, checking exact time now
+The market closed for today
+Entering infinite loop now.
