@@ -9,6 +9,7 @@ from schedule import Scheduler, Job
 
 from tdv.domain.external.yahoo_finance_service_proxy import YFserviceProxy, BaseServiceProxy
 from tdv.data_types import Second, ExchangeName
+from tdv.logger_settup import tdv_logger
 
 
 class MainLoop:
@@ -21,6 +22,7 @@ class MainLoop:
 
     __timezone_NY: tzinfo = timezone('America/New_York')
     __exchange_NY: ExchangeName = 'NYSE'
+    tdv_logger.info("Main Loop instantiated")
 
     def __init__(self) -> None:
         self.__scheduler = Scheduler()
@@ -34,14 +36,17 @@ class MainLoop:
 
         is_market_open_today: bool = self.__is_market_open_today()
         market_open, market_close = self.__market_times_today(self.__calendar_nyse, self.__timezone_NY)
+
         self.__base_condition_init(is_market_open_today, market_open, market_close)
 
-        self.__market_open_job: Optional[Job] = None
-        self.__market_close_job: Optional[Job] = None
+        self.__market_open_job: Optional[Job] = None  # Que es esto?
+        self.__market_close_job: Optional[Job] = None  # Y este?
         self.__is_market_open_ny_job: Job = self.__schedule_daily(
             self.__schedule_market_open_and_close_jobs, self.__daily_rescheduling_time, self.__timezone_NY)
+        tdv_logger.info("1AM daily ")
 
     def run(self) -> None:
+        tdv_logger.info("Entering infinite loop now.")
         while True:
             try:
                 self.__scheduler.run_pending()  # Run main loop Jobs
@@ -66,6 +71,7 @@ class MainLoop:
         self.__market_dependant_service_proxies.append(
             YFserviceProxy()
         )
+        tdv_logger.info("YFserciceProxy instantiated")
 
     def __delete_all_market_dependant_services(self) -> None:
         self.__market_dependant_service_proxies: List[BaseServiceProxy] = []
@@ -84,7 +90,11 @@ class MainLoop:
     def __is_market_open_today(self) -> bool:
         today = self.__today_ny
         valid_days: DatetimeIndex = self.__calendar_nyse.valid_days(today, today, self.__timezone_NY)
-        return today.month == valid_days[0].month and today.day == valid_days[0].day
+        if today.month == valid_days[0].month and today.day == valid_days[0].day:
+            tdv_logger.info("Market is open today")
+            return True
+        tdv_logger.info(f"Market is closed today")
+        return False
 
     def __market_times_today(self, calendar: MarketCalendar, time_zone: tzinfo) -> Tuple[Datetime, Datetime]:
         schedule: DataFrame = calendar.schedule(self.__today_ny, self.__today_ny, tz=time_zone)
