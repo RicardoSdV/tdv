@@ -15,7 +15,7 @@ class BaseServiceProxy:
         raise NotImplementedError
 
 
-class YFserviceProxy(BaseServiceProxy):
+class YFserviceProxy(BaseServiceProxy): # Gotta change market open and close here to the main loop version
     __work_only_when_market_open = False
     __time_zone = timezone('America/New_York')
     __market_open = time(hour=9, minute=30)
@@ -36,7 +36,7 @@ class YFserviceProxy(BaseServiceProxy):
         self.__scheduler.run_pending()
 
     def __schedule_tesla_options_job(self) -> Job:
-        logger.info("Tesla option job scheduled")
+        logger.info("Tesla option chain jobs scheduled")
         return self.__scheduler.every(
             self.__update_tesla_option_chains_interval
         ).seconds.do(self.__request_and_save_tesla_option_chains)
