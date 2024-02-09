@@ -1,6 +1,6 @@
-from pathlib import Path
-
+from tdv.common_utils import get_project_root
 
 # Paths (all absolute)
-TDV_PATH = Path.cwd()
-TESLA_EXPIRATIONS_DIR_PATH = TDV_PATH / 'storage' / 'json' / 'tesla_option_chains'
+ROOT_PATH = get_project_root()
+SOURCE_PATH = ROOT_PATH / 'tdv'
+TESLA_EXPIRATIONS_DIR_PATH = SOURCE_PATH / 'storage' / 'json' / 'tesla_option_chains'

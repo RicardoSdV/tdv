@@ -1,0 +1,12 @@
+/build/
+/.venv/
+/venv/
+.idea/
+.vscode/
+
+*.egg-info
+*.json
+*.log
+*.pyc
+*.pyo
+*.pyd

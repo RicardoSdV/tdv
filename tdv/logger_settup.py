@@ -1,12 +1,12 @@
 import logging
 from datetime import datetime
 
-"""Change to include values in outputs"""
+'''Change to include values in outputs'''
 
 timestamp_format = '%Y-%m-%d_%H-%M-%S'
 current_timestamp = datetime.now().strftime(timestamp_format)
 log_filename = f'app_{current_timestamp}.log'
-LOG_FORMAT = "%(asctime)s - %(levelname)s: %(message)s"
+LOG_FORMAT = '%(asctime)s - %(levelname)s: %(message)s'
 
 file_handler = logging.FileHandler(log_filename, 'w')
 file_handler.setLevel(logging.INFO)
@@ -27,13 +27,13 @@ logger.addHandler(console_handler)
 # import logging
 # from datetime import datetime
 #
-# """Change to include values in outputs"""
+# '''Change to include values in outputs'''
 #
 # timestamp_format = '%Y-%m-%d_%H-%M-%S'
 # current_timestamp = datetime.now().strftime(timestamp_format)
 # log_filename = f'app_{current_timestamp}.log'
 #
-# LOG_FORMAT = "%(asctime)s - %(levelname)s: %(message)s"
+# LOG_FORMAT = '%(asctime)s - %(levelname)s: %(message)s'
 # logging.basicConfig(filename=log_filename, filemode='w', format=LOG_FORMAT, level=logging.INFO,
 #                     datefmt='%Y-%m-%d %H:%M:%S')
 # logger = logging.getLogger(__name__)

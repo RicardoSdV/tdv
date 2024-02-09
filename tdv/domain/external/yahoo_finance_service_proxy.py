@@ -36,7 +36,7 @@ class YFserviceProxy(BaseServiceProxy): # Gotta change market open and close her
         self.__scheduler.run_pending()
 
     def __schedule_tesla_options_job(self) -> Job:
-        logger.info("Tesla option chain jobs scheduled")
+        logger.info('Tesla option chain jobs scheduled')
         return self.__scheduler.every(
             self.__update_tesla_option_chains_interval
         ).seconds.do(self.__request_and_save_tesla_option_chains)
@@ -51,10 +51,10 @@ class YFserviceProxy(BaseServiceProxy): # Gotta change market open and close her
 
     @staticmethod
     def __request_option_chains(ticker: Ticker, expirations: Expirations) -> OptionChainsYF:
-        logger.info("Requested option chains for each expiration")
+        logger.info('Requested option chains for each expiration')
         return [ticker.option_chain(exp) for exp in expirations]
 
     @staticmethod
     def __request_expirations(ticker_name: str) -> Expirations:
-        logger.info("Requested expirations")
+        logger.info('Requested expirations')
         return Ticker(ticker_name).options

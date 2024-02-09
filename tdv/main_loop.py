@@ -34,9 +34,9 @@ class MainLoop:
         self.__update_today_timestamp(self.__timezone_NY)
 
         is_market_open_today: bool = self.__is_market_open_today()
-        logger.info(f"It is {is_market_open_today} that the market will/has/is open today")
+        logger.info(f'It is {is_market_open_today} that the market will/has/is open today')
         market_open, market_close = self.__market_times_today(self.__calendar_nyse, self.__timezone_NY)
-        logger.info(f"If the market will/has/is open today, it opens at {market_open} and closes at {market_close}")
+        logger.info(f'If the market will/has/is open today, it opens at {market_open} and closes at {market_close}')
         # ya se que estas son un poco mierda, lo hize por enrichment
 
         self.__base_condition_init(is_market_open_today, market_open, market_close)
@@ -54,27 +54,27 @@ class MainLoop:
                     service.run_pending()
                 sleep(self.__active_loop_sleep_time)
             except Exception as e:
-                logger.debug("An exception occurred", exc_info=True)
+                logger.debug('An exception occurred', exc_info=True)
 
     def __base_condition_init(self, is_market_open_today: bool, market_open: Datetime, market_close: Datetime) -> None:
         if is_market_open_today:
             now = Datetime.now(tz=self.__timezone_NY)
             if market_open <= now <= market_close:
-                logger.info("Market is open now")
+                logger.info('Market is open now')
                 self.__instantiate_ny_services()
                 self.__schedule_daily(self.__instantiate_ny_services, market_close, self.__timezone_NY)
             elif now < market_open:
-                logger.info("The market is not yet open today")
+                logger.info('The market is not yet open today')
                 self.__schedule_daily(self.__instantiate_ny_services, market_open, self.__timezone_NY)
                 self.__schedule_daily(self.__delete_all_market_dependant_services, market_close, self.__timezone_NY)
 
     def __instantiate_ny_services(self) -> None:
-        """ Instantiate all NY market dependant services here """
+        ''' Instantiate all NY market dependant services here '''
         self.__ny_services.append(YFserviceProxy())
 
     def __delete_all_market_dependant_services(self) -> None:
         self.__ny_services: List[BaseServiceProxy] = []
-        logger.info("Market dependant services stopped")
+        logger.info('Market dependant services stopped')
 
     def __schedule_daily(self, method: Callable, time: Datetime, time_zone: tzinfo) -> Job:
         return self.__scheduler.every().day.at(time.strftime('%H:%M'), time_zone).do(method)
@@ -98,7 +98,7 @@ class MainLoop:
 
     def __update_today_timestamp(self, time_zone: timezone) -> None:
         self.__today_ny = Timestamp(Datetime.now().astimezone(time_zone))
-        logger.info(f"It is currently: {self.__today_ny} in {time_zone}")
+        logger.info(f'It is currently: {self.__today_ny} in {time_zone}')
 
     @staticmethod
     def __now(time_zone: timezone) -> Datetime:
