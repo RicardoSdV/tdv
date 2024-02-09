@@ -1,0 +1,2 @@
+[console_scripts]
+tdv = tdv.cli:cli_root
