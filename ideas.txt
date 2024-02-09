@@ -1,1 +1,8 @@
-make sure __is_market_open_today correctly returns true/false by only checking month and day. 
+change the logic to run week at a time?
+
+yahoo YFserviceProxy has:
+   __market_open = time(hour=9, minute=30)
+    __market_close = time(hour=16)
+it should also checked for the day, no? (note in c 18 in class YFserviceProxy(BaseServiceProxy):
+
+make sure __is_market_open_today correctly returns true/false by only checking month and day.
