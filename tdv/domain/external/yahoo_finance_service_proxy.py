@@ -1,13 +1,13 @@
-from datetime import datetime, time
 from typing import Optional
 
-from pytz import timezone
 from schedule import Scheduler, Job
 from yfinance import Ticker
 
 from tdv.data_types import Expirations, OptionChainsYF, Second
-from tdv.logger_settup import logger
+from tdv.logger_setup import logger_setup
 from tdv.storage.json.option_chains_repo import OptionChainsRepo
+
+logger = logger_setup.get_logger(__name__)
 
 
 class BaseServiceProxy:
@@ -15,15 +15,10 @@ class BaseServiceProxy:
         raise NotImplementedError
 
 
-class YFserviceProxy(BaseServiceProxy): # Gotta change market open and close here to the main loop version
-    __work_only_when_market_open = False
-    __time_zone = timezone('America/New_York')
-    __market_open = time(hour=9, minute=30)
-    __market_close = time(hour=16)
-
-    __update_tesla_option_chains_interval: Second = 10
+class YFserviceProxy(BaseServiceProxy):
+    __update_options_interval: Second = 10
     __tesla_ticker_name = 'TSLA'
-    __pretty_print = False  # Set to True to pretty print to .json
+    __pretty_print_json = False
 
     def __init__(self) -> None:
         self.__option_chains_repo = OptionChainsRepo()
@@ -36,25 +31,25 @@ class YFserviceProxy(BaseServiceProxy): # Gotta change market open and close her
         self.__scheduler.run_pending()
 
     def __schedule_tesla_options_job(self) -> Job:
-        logger.info('Tesla option chain jobs scheduled')
-        return self.__scheduler.every(
-            self.__update_tesla_option_chains_interval
-        ).seconds.do(self.__request_and_save_tesla_option_chains)
+        logger.debug('Scheduling tesla options update', every=self.__update_options_interval)
+        return self.__scheduler.every(self.__update_options_interval).seconds.do(self.update_tesla_options)
 
-    def __request_and_save_tesla_option_chains(self) -> None:
+    def update_tesla_options(self) -> None:
         expirations: Expirations = self.__request_expirations(self.__tesla_ticker_name)
 
-        tesla_ticker = Ticker(self.__tesla_ticker_name)
-        tesla_option_chains: OptionChainsYF = self.__request_option_chains(tesla_ticker, expirations)
+        tesla_ticker = Ticker(self.__tesla_ticker_name)  # TODO: Check if ticker needs reinitialization so often
+        tesla_option_chains: OptionChainsYF = self.__request_options(tesla_ticker, expirations)
 
-        self.__option_chains_repo.save(tesla_option_chains, None)
+        self.__option_chains_repo.save(tesla_option_chains, 2 if self.__pretty_print_json else None)
 
     @staticmethod
-    def __request_option_chains(ticker: Ticker, expirations: Expirations) -> OptionChainsYF:
-        logger.info('Requested option chains for each expiration')
-        return [ticker.option_chain(exp) for exp in expirations]
+    def __request_options(ticker: Ticker, expirations: Expirations) -> OptionChainsYF:
+        options = [ticker.option_chain(exp) for exp in expirations]  # TODO: Rethink all, use inheritance, override
+        logger.debug('Options requested', _ticker=ticker, options=options)
+        return options
 
     @staticmethod
     def __request_expirations(ticker_name: str) -> Expirations:
-        logger.info('Requested expirations')
-        return Ticker(ticker_name).options
+        expirations = Ticker(ticker_name).options
+        logger.debug('Request expirations', _ticker_name=ticker_name)
+        return expirations

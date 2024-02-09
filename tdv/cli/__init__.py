@@ -1,6 +1,5 @@
-'''
-CLI Entry point, documentation: http://click.pocoo.org/
-'''
+"""CLI Entry point, documentation: http://click.pocoo.org/"""
+
 from os import execv
 from subprocess import check_output
 
@@ -17,9 +16,7 @@ def cli_root() -> None:
 
 @cli_root.command()
 def shell() -> None:
-    '''
-    ipython shell
-    '''
+    """ ipython shell """
     cmd = check_output(['which', 'ipython']).decode().replace('\n', '')
     execv(cmd, [cmd])
 

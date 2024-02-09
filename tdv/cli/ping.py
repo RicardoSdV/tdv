@@ -1,16 +1,19 @@
 import subprocess
 
 import click
+import structlog
+
+logger = structlog.get_logger(__name__)
 
 
 @click.group('ping')
 def ping_group() -> None:
-    '''Proof of concept'''
+    """Proof of concept"""
 
 
 @ping_group.command(help='Just checks if the CLI is working')
 def ping() -> None:
-    click.echo('Pong')
+    logger.info('Pong')
 
 
 @ping_group.command('lin_run', help='Runs the ping API in a gunicorn worker')
