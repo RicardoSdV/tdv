@@ -1,0 +1,1 @@
+make sure __is_market_open_today correctly returns true/false by only checking month and day. 
