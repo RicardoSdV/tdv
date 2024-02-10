@@ -88,8 +88,7 @@ class MainLoop:
         valid_days: DatetimeIndex = self.__calendar_nyse.valid_days(today, today, self.__timezone_NY)
         if len(valid_days) > 0:
             return today.month == valid_days[0].month and today.day == valid_days[0].day
-        else:
-            return False
+        return False
 
     def __market_times_today(self, calendar: MarketCalendar, time_zone: tzinfo) -> tuple[
             datetime | None, datetime | None]:
