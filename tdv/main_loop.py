@@ -7,7 +7,7 @@ from pandas_market_calendars import MarketCalendar, get_calendar
 from pytz import timezone, tzinfo
 from schedule import Scheduler, Job
 
-from tdv.common_utils import turn_list_of_objects_into_list_of_names_of_their_classes
+from tdv.common_utils import objs_to_names
 from tdv.domain.external.yahoo_finance_service_proxy import YFserviceProxy, BaseServiceProxy
 from tdv.data_types import Second, ExchangeName
 from tdv.logger_setup import logger_setup
@@ -67,10 +67,10 @@ class MainLoop:
     def __instantiate_ny_services(self) -> None:
         """ Instantiate all NY market dependant services here """
         self.__ny_services.append(YFserviceProxy())
-        logger.debug('Instantiated NY services', services=turn_list_of_objects_into_list_of_names_of_their_classes(self.__ny_services))
+        logger.debug('Instantiated NY services', services=objs_to_names(self.__ny_services))
 
     def __delete_ny_services(self) -> None:
-        logger.debug('Deleting NY services', services=turn_list_of_objects_into_list_of_names_of_their_classes(self.__ny_services))
+        logger.debug('Deleting NY services', services=objs_to_names(self.__ny_services))
         self.__ny_services: List[BaseServiceProxy] = []
 
     def __schedule_daily(self, method: Callable, time: Datetime, time_zone: tzinfo) -> Job:
