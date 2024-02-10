@@ -92,7 +92,7 @@ class MainLoop:
         return False
 
     def __market_times_today(self, calendar: MarketCalendar, time_zone: tzinfo) -> tuple[
-            Tuple[Optional[Datetime], Optional[Datetime]]
+            Tuple[Optional[Datetime], Optional[Datetime]]]:
         if self.__is_market_open_today():
             schedule: DataFrame = calendar.schedule(self.__today_ny, self.__today_ny, tz=time_zone)
             market_open = schedule['market_open'][0].to_pydatetime()
