@@ -86,14 +86,20 @@ class MainLoop:
     def __is_market_open_today(self) -> bool:
         today = self.__today_ny
         valid_days: DatetimeIndex = self.__calendar_nyse.valid_days(today, today, self.__timezone_NY)
-        return today.month == valid_days[0].month and today.day == valid_days[0].day
+        if valid_days.empty:
+            return False
+        return ((valid_days.month == today.month) & (valid_days.day == today.day)).any()
 
     def __market_times_today_maybe(self, calendar: MarketCalendar, time_zone: tzinfo) -> Tuple[Datetime, Datetime]:
         schedule: DataFrame = calendar.schedule(self.__today_ny, self.__today_ny, tz=time_zone)
-        market_open = schedule['market_open'][0].to_pydatetime()
-        market_close = schedule['market_close'][0].to_pydatetime()
-        logger.debug('Times of closest open market day', market_open=market_open, market_close=market_close)
-        return market_open, market_close
+        if schedule.empty:
+            logger.debug('No market open or close times for today', today_ny=self.__today_ny, time_zone=time_zone)
+            return None, None
+        else:
+            market_open = schedule['market_open'][0].to_pydatetime()
+            market_close = schedule['market_close'][0].to_pydatetime()
+            logger.debug('Times of closest open market day', market_open=market_open, market_close=market_close)
+            return market_open, market_close
 
     def __update_today_timestamp(self, time_zone: timezone) -> None:
         self.__today_ny = Timestamp(Datetime.now().astimezone(time_zone))
