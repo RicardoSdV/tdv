@@ -1,4 +1,4 @@
-from datetime import datetime as Datetime
+from datetime import datetime as Datetime, datetime  # why capital Datetime?
 from time import sleep
 from typing import Optional, List, Tuple, Callable
 
@@ -33,7 +33,7 @@ class MainLoop:
         self.__update_today_timestamp(self.__timezone_NY)
 
         is_market_open_today: bool = self.__is_market_open_today()
-        market_open, market_close = self.__market_times_today_maybe(self.__calendar_nyse, self.__timezone_NY)
+        market_open, market_close = self.__market_times_today(self.__calendar_nyse, self.__timezone_NY)
 
         self.__base_condition_init(is_market_open_today, market_open, market_close)
 
@@ -79,7 +79,7 @@ class MainLoop:
         time_zone = self.__timezone_NY
         self.__update_today_timestamp(time_zone)
         if self.__is_market_open_today():
-            market_open, market_close = self.__market_times_today_maybe(self.__calendar_nyse, time_zone)
+            market_open, market_close = self.__market_times_today(self.__calendar_nyse, time_zone)
             return (self.__schedule_daily(self.__instantiate_ny_services, market_open, time_zone),
                     self.__schedule_daily(self.__delete_ny_services, market_close, time_zone))
 
@@ -91,12 +91,15 @@ class MainLoop:
         else:
             return False
 
-    def __market_times_today_maybe(self, calendar: MarketCalendar, time_zone: tzinfo) -> Tuple[Datetime, Datetime]:
-        schedule: DataFrame = calendar.schedule(self.__today_ny, self.__today_ny, tz=time_zone)
-        market_open = schedule['market_open'][0].to_pydatetime()
-        market_close = schedule['market_close'][0].to_pydatetime()
-        logger.debug('Times of closest open market day', market_open=market_open, market_close=market_close)
-        return market_open, market_close
+    def __market_times_today(self, calendar: MarketCalendar, time_zone: tzinfo) -> tuple[
+            datetime | None, datetime | None]:
+        if self.__is_market_open_today():
+            schedule: DataFrame = calendar.schedule(self.__today_ny, self.__today_ny, tz=time_zone)
+            market_open = schedule['market_open'][0].to_pydatetime()
+            market_close = schedule['market_close'][0].to_pydatetime()
+            logger.debug('Times of closest open market day', market_open=market_open, market_close=market_close)
+            return market_open, market_close
+        return None, None
 
     def __update_today_timestamp(self, time_zone: timezone) -> None:
         self.__today_ny = Timestamp(Datetime.now().astimezone(time_zone))
