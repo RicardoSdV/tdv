@@ -86,7 +86,8 @@ class MainLoop:
     def __is_market_open_today(self) -> bool:
         today = self.__today_ny
         valid_days: DatetimeIndex = self.__calendar_nyse.valid_days(today, today, self.__timezone_NY)
-        if len(valid_days) > 0:
+        if valid_days.empty:
+            return False
             return today.month == valid_days[0].month and today.day == valid_days[0].day
         return False
 
