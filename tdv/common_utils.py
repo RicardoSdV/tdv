@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import List, Any
 
 from tdv.data_types import TimeStamp
 
@@ -15,3 +16,5 @@ def timestamp_str() -> TimeStamp:
     return datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 
 
+def turn_list_of_objects_into_list_of_names_of_their_classes(obj_list: List[Any]) -> List[str]:
+    return [type(obj).__name__ for obj in obj_list]
