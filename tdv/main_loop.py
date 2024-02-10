@@ -86,7 +86,10 @@ class MainLoop:
     def __is_market_open_today(self) -> bool:
         today = self.__today_ny
         valid_days: DatetimeIndex = self.__calendar_nyse.valid_days(today, today, self.__timezone_NY)
-        return today.month == valid_days[0].month and today.day == valid_days[0].day
+        if len(valid_days) > 0:
+            return today.month == valid_days[0].month and today.day == valid_days[0].day
+        else:
+            return False
 
     def __market_times_today_maybe(self, calendar: MarketCalendar, time_zone: tzinfo) -> Tuple[Datetime, Datetime]:
         schedule: DataFrame = calendar.schedule(self.__today_ny, self.__today_ny, tz=time_zone)
