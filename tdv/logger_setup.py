@@ -17,4 +17,4 @@ class LoggerSetup:
         return structlog.getLogger(name)
 
 
-logger_setup = LoggerSetup()
+logger_obj = LoggerSetup()

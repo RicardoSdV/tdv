@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 
 from tdv.data_types import TimeStamp
@@ -13,5 +13,3 @@ def get_project_root() -> Path:
 
 def timestamp_str() -> TimeStamp:
     return datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-
-
