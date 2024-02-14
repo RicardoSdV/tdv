@@ -1,6 +1,8 @@
 from typing import Tuple, Dict, List, Union, Hashable, Any
 
 from pandas import DataFrame
+from pandas_market_calendars import MarketCalendar
+from schedule import Scheduler
 
 # Built in types
 TimeStr = str
@@ -8,6 +10,7 @@ TimeStamp = str
 Date = str
 TimeZone = str
 ExchangeName = str
+TickerName = str
 Second = int
 
 # Custom types
