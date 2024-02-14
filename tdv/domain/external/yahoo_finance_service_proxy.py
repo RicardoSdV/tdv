@@ -44,12 +44,11 @@ class YFserviceProxy(BaseServiceProxy):
 
     @staticmethod
     def __request_options(ticker: Ticker, expirations: Expirations) -> OptionChainsYF:
-        options = [ticker.option_chain(exp) for exp in expirations]  # TODO: Rethink all, use inheritance, override
-        logger.debug('Options requested', _ticker=ticker, options=options)
-        return options
+        logger.debug('Requesting options')
+        return [ticker.option_chain(exp) for exp in expirations]  # TODO: Rethink all, use inheritance, override
 
     @staticmethod
     def __request_expirations(ticker_name: str) -> Expirations:
         expirations = Ticker(ticker_name).options
-        logger.debug('Request expirations', _ticker_name=ticker_name)
+        logger.debug('Expirations requested', ticker_name=ticker_name)
         return expirations
