@@ -1,5 +1,5 @@
 from datetime import datetime as Datetime, timedelta
-from typing import Optional, Tuple, Dict, Callable
+from typing import Tuple, Dict, Callable
 
 from pandas_market_calendars import MarketCalendar, get_calendar
 from schedule import Scheduler
