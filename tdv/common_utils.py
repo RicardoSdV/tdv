@@ -1,5 +1,6 @@
 from datetime import datetime
 from pathlib import Path
+from typing import List, Any, Iterable
 
 from tdv.data_types import TimeStamp
 
@@ -13,3 +14,7 @@ def get_project_root() -> Path:
 
 def timestamp_str() -> TimeStamp:
     return datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+
+
+def objs_to_names(obj_list: Iterable[Any]) -> List[str]:
+    return [type(obj).__name__ for obj in obj_list]

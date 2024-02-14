@@ -13,6 +13,4 @@ def create_app(*args, **kwargs):
     ping_resource = PingResource()
     api.add_route('/ping', ping_resource)
 
-    # Use Waitress to serve the Falcon API
     serve(api, host='127.0.0.1', port=8000)
-
