@@ -9,6 +9,14 @@ TESLA_EXPIRATIONS_DIR_PATH = SOURCE_PATH / 'storage' / 'json' / 'tesla_option_ch
 LOGS_DIR_PATH = ROOT_PATH / 'bin'
 
 
-class MarketEvent(Enum):
+class MarketEvents(Enum):
     OPEN = 'market_open'
     CLOSE = 'market_close'
+
+
+class Exchanges(Enum):
+    NYSE = 'NYSE'
+
+
+class Tickers(Enum):
+    TSLA = 'TSLA'
