@@ -5,7 +5,7 @@ from pandas_market_calendars import MarketCalendar, get_calendar
 from schedule import Scheduler
 from yfinance import Ticker
 
-from tdv.constants import MarketEvent
+from tdv.constants import MarketEvents
 from tdv.data_types import Expirations, OptionChainsYF, Second, TickerName, ExchangeName
 from tdv.logger_setup import logger_obj
 from tdv.storage.json.option_chains_repo import OptionChainsRepo
@@ -38,8 +38,8 @@ class YFserviceProxy(BaseServiceProxy):
     def __init_scheduling(self) -> None:
         """ Schedules jobs on startup to initialize scheduling chain """
         for exchange_name, scheduler in self.__schedulers.items():
-            next_open = self.__get_next_market_time(exchange_name, MarketEvent.OPEN)
-            next_close = self.__get_next_market_time(exchange_name, MarketEvent.CLOSE)
+            next_open = self.__get_next_market_time(exchange_name, MarketEvents.OPEN)
+            next_close = self.__get_next_market_time(exchange_name, MarketEvents.CLOSE)
             print(next_open, next_close)
             if next_open > next_close:  # If next open is after next close market is open right now
                 self.__schedule_periodic_requests(scheduler, self.__update_options, exchange_name)
@@ -68,7 +68,7 @@ class YFserviceProxy(BaseServiceProxy):
         self.__schedulers[exchange_name] = new_scheduler
         self.__schedule_market_events(new_scheduler, next_open, self.__on_market_open, exchange_name)
 
-    def __get_next_market_time(self, exchange_name: ExchangeName, market_event: MarketEvent) -> Datetime:
+    def __get_next_market_time(self, exchange_name: ExchangeName, market_event: MarketEvents) -> Datetime:
         now = Datetime.utcnow()
         calendar = self.__calendars[exchange_name]
         schedule = calendar.schedule(start_date=now, end_date=now + timedelta(days=10))

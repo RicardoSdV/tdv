@@ -16,7 +16,7 @@ def ping() -> None:
     logger.info('Pong')
 
 
-@ping_group.command('lin_run', help='Runs the ping API in a gunicorn worker')
+@ping_group.command('run', help='Runs the ping API in a gunicorn worker')
 def run_for_linux() -> None:
     command = [
         'gunicorn',
@@ -26,14 +26,3 @@ def run_for_linux() -> None:
         'tdv.api.ping:create_app()'
     ]
     subprocess.run(command)
-
-
-@ping_group.command('win_run', help='Runs the ping API in a waitress worker')
-def run_for_windows():
-    command = [
-        'waitress-serve',
-        '--listen=0.0.0.0:8000',
-        'tdv.api.ping:create_app'
-    ]
-    subprocess.run(command)
-
