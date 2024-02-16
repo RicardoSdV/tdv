@@ -1,57 +1,66 @@
-.ONESHELL:
-SHELL := /bin/bash
 
-DB_USER := $(USER)
-DB_NAME := 'tdvdb'
-DB_PASSWORD := 'password'
-DB_HOST := 'localhost'
-ALEMBIC_INI_PATH := $(CURDIR)/tdv/storage/alembic/alembic.ini
+export PYTHONPATH := $(CURDIR)
 
+DB_USER = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.USER.value)')
+DB_NAME = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.NAME.value)')
+DB_PASSWORD = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.PASSWORD.value)')
+DB_HOST = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.HOST.value)')
+ALEMBIC_PATH = $(shell python3 -c 'from tdv.constants import ALEMBIC_DIR_PATH; print(ALEMBIC_DIR_PATH)')
+ALEMBIC = cd $(ALEMBIC_PATH) && alembic
+VENV_ACTIVATE = venv/bin/activate
 
 
 .PHONY: help
 help:
-	@grep -E '^[a-zA-Z0-9 -]+:.*#'  Makefile | while read -r l; do printf "\033[1;32m$$(echo $$l | cut -f 1 -d':')\033[00m:$$(echo $$l | cut -f 2- -d'#')\n"; done
+	@grep -E '^[a-zA-Z0-9_ -]+:.*#' Makefile | \
+        awk 'BEGIN {FS = ":.*#"}; {printf "\033[1;32m%-30s\033[00m\t%s\n", $$1, $$2}'
 
-.PHONY: req
+init: venv req build psql_install db_user create_db db_up  # Run all the commands necessary to set up the environment
+
+venv: del_venv  # Delete old venv & make a new one
+	- python3 -m venv venv
+
+del_venv: # Delete venv
+	- rm -rf venv
+
 req:  # Install all packages listed in requirements.txt
-	pip install -r requirements.txt
+	 - . venv/bin/activate && pip install -r requirements.txt
 
-.PHONY: setup
-setup:  # Build the project to be able to run the CLI
-	pip install -e .
+build: wreck # Build the project to be able to run the cli. Also deletes previous build if any.
+	- . venv/bin/activate && pip install -e .
 
-.PHONY: sys_vars
-sys_vars:  # Set system variables
-	export PYTHONPATH=$(CURDIR)
-	export TDV_DB_USER=$(DB_USER)
-	export TDV_DB_NAME=$(DB_NAME)
-	export TDV_DB_PASSWORD=$(DB_PASSWORD)
-	export TDV_DB_HOST=$(DB_HOST)
-	export ALEMBIC_CONFIG=$(ALEMBIC_INI_PATH)
+wreck:  # Deletes the build created with setup.py
+	- rm -rf *.egg-info
+	- . venv/bin/activate && pip uninstall -y $(shell python3 -c 'from tdv.constants import BUILD_NAME; print(BUILD_NAME)')
 
-.PHONY: postgresql
-postgresql:  # Download PostgreSQL (Only valid for Ubuntu)
-	sudo apt update
-	sudo apt install postgresql postgresql-contrib
+psql_install:  # Download & install PostgreSQL (Only valid for Ubuntu)
+	- sudo apt update && sudo apt install postgresql postgresql-contrib
 
-.PHONY: create_db_user
-create_db_user:
-	sudo -u postgres psql -c "CREATE USER $(DB_USER) WITH PASSWORD $(DB_PASSWORD);"
+db_user:  # Create a psql user
+	- sudo -u postgres psql -c "CREATE USER $(DB_USER) WITH PASSWORD '$(DB_PASSWORD)';"
 
-.PHONY: create_db
-create_db:
-	sudo -u postgres psql -c "CREATE DATABASE $(DB_NAME) OWNER $(DB_USER);"
+create_db:  # Create a psql DB for this project
+	- sudo -u postgres psql -c "CREATE DATABASE $(DB_NAME) OWNER $(DB_USER);"
 
-.PHONY: drop_db
-drop_db:
-	sudo -u postgres psql -c "DROP DATABASE $(DB_NAME);"
+db_up:  # Run all alembic migration scripts to create all tables in DB
+	- cd $(ALEMBIC_PATH) && alembic upgrade head
 
-.PHONY: upgrade
-upgrade:
-	alembic upgrade head
+db:  # Log into db shell
+	- psql $(DB_NAME)
 
-.PHONY: downgrade_all
-downgrade_all:
-	alembic downgrade base
+db_down:  # DANGER! Run downgrade script to revert most recent table, will DELETE ALL DATA in that table
+	- cd $(ALEMBIC_PATH) && alembic downgrade
 
+db_all_down:  # EXTREME DANGER!! Deletes all tables in DB, will DELETE ALL DATA
+	- cd $(ALEMBIC_PATH) && alembic downgrade base
+
+drop_db:  # EXTREME DANGER!! Destroys project DB, will DELETE ALL DATA
+	- sudo -u postgres psql -c "DROP DATABASE $(DB_NAME);"
+
+clean:  # Remove compiled Python files, cached directories, and build artifacts
+	- find . -name \*.pyc -delete
+	- find . -depth -name __pycache__ -exec rm -rf {} \;
+	- rm -rf *.egg-info
+	- rm -rf dist/
+	- rm -rf build/
+	- rm -rf .eggs
