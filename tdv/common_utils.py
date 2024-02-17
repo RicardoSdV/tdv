@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import List, Any, Iterable
@@ -18,3 +19,7 @@ def timestamp_str() -> TimeStamp:
 
 def objs_to_names(obj_list: Iterable[Any]) -> List[str]:
     return [type(obj).__name__ for obj in obj_list]
+
+
+def declare_path(path: Path) -> None:
+    sys.path.append(str(path))

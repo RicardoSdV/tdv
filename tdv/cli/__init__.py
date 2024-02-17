@@ -7,6 +7,7 @@ import click
 
 from tdv.cli.format import format_group
 from tdv.cli.ping import ping_group
+from tdv.cli.run import run_group
 
 
 @click.group()
@@ -23,3 +24,4 @@ def shell() -> None:
 
 cli_root.add_command(ping_group)
 cli_root.add_command(format_group)
+cli_root.add_command(run_group)
