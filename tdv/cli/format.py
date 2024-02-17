@@ -10,8 +10,10 @@ def format_group() -> None:
     """For code formatting commands"""
 
 
-@format_group.command('quotes', help='Turns all double quotes into single')
+@format_group.command('quotes')
 def quotes() -> None:
+    """Turns double quotes into single in SOURCE_PATH except this file and docstrings"""
+
     python_files = []
     for root, dirs, files in os.walk(SOURCE_PATH):
         for file in files:

@@ -6,7 +6,6 @@ from subprocess import check_output
 import click
 
 from tdv.cli.format import format_group
-from tdv.cli.ping import ping_group
 from tdv.cli.run import run_group
 
 
@@ -22,6 +21,5 @@ def shell() -> None:
     execv(cmd, [cmd])
 
 
-cli_root.add_command(ping_group)
 cli_root.add_command(format_group)
 cli_root.add_command(run_group)

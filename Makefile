@@ -48,16 +48,22 @@ db_up:  # Run all alembic migration scripts to create all tables in DB
 db:  # Log into db shell
 	- psql $(DB_NAME)
 
-db_down:  # DANGER! Run downgrade script to revert most recent table, will DELETE ALL DATA in that table
-	- cd $(ALEMBIC_PATH) && alembic downgrade
+db_rev:  # Create a new alembic revision script with arg REV, i.e make db_rev REV=add_table...
+	- cd $(ALEMBIC_PATH) && alembic revision -m "$(REV)"
 
-db_all_down:  # EXTREME DANGER!! Deletes all tables in DB, will DELETE ALL DATA
+db_hist:  # Print alembic revision history
+	- cd $(ALEMBIC_PATH) && alembic history
+
+db_down:  # DANGER! Run downgrade script to revert most recent revision, will DELETE ALL DATA in that table
+	- cd $(ALEMBIC_PATH) && alembic downgrade -1
+
+db_down_all:  # EXTREME DANGER! Deletes all tables in DB, will DELETE ALL DATA
 	- cd $(ALEMBIC_PATH) && alembic downgrade base
 
 drop_db:  # EXTREME DANGER!! Destroys project DB, will DELETE ALL DATA
 	- sudo -u postgres psql -c "DROP DATABASE $(DB_NAME);"
 
-clean:  # Remove compiled Python files, cached directories, and build artifacts
+clean:  # Remove compiled Python files, cached directories & build artifacts
 	- find . -name \*.pyc -delete
 	- find . -depth -name __pycache__ -exec rm -rf {} \;
 	- rm -rf *.egg-info

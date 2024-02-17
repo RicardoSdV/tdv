@@ -18,7 +18,7 @@ class Event:
             handler(*args, **kwargs)
 
     def __repr__(self) -> str:
-        return f"Event({self.__class__.__name__})({len(self.__handlers)}):{repr(self.__handlers)}"
+        return f'Event({self.__class__.__name__})({len(self.__handlers)}):{repr(self.__handlers)}'
 
     def clear(self) -> None:
         self.__handlers: List[Callable] = []

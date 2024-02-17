@@ -2,7 +2,7 @@ from time import sleep
 from typing import List
 
 from tdv.domain.external.yahoo_finance_service_proxy import YFserviceProxy, BaseServiceProxy
-from tdv.data_types import Second
+from tdv.domain.data_types import Second
 from tdv.logger_setup import logger_obj
 
 logger = logger_obj.get_logger(__name__)

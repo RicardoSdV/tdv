@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Any, Iterable
 
-from tdv.data_types import TimeStamp
+from tdv.domain.data_types import TimeStamp
 
 
 def get_project_root() -> Path:

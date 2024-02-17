@@ -25,6 +25,9 @@ class DbInfo(Enum):
     NAME = 'tdvdb'
     PASSWORD = 'password'
     HOST = 'localhost'
+    PORT = '5432'
+    RDBMS = 'postgresql'
+    DBAPI = 'psycopg2'
 
 
 class MarketEvents(Enum):

@@ -1,8 +1,8 @@
-"""init
+"""add_exchanges_table
 
-Revision ID: 69a5d59efbc4
-Revises: 
-Create Date: 2024-02-14 20:46:30.610953
+Revision ID: 4f3e85b7cacc
+Revises: 61d582bb53d3
+Create Date: 2024-02-17 13:50:26.688517
 
 """
 from typing import Sequence, Union
@@ -13,8 +13,8 @@ import sqlalchemy as sa
 from tdv.constants import Exchanges
 
 # revision identifiers, used by Alembic.
-revision: str = '69a5d59efbc4'
-down_revision: Union[str, None] = None
+revision: str = '4f3e85b7cacc'
+down_revision: Union[str, None] = '61d582bb53d3'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

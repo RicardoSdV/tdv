@@ -1,11 +1,20 @@
+import subprocess
+
 import click
-
-
 
 
 @click.group('run')
 def run_group() -> None:
-    """Here you can run the different services such as Yahoo Finance or the APIs"""
+    """Run different services such as Yahoo Finance or the APIs"""
+
+
+@run_group.command('test')
+def test() -> None:
+    """ For testing logger """
+
+    from tdv.logger_setup import logger_obj
+    logger = logger_obj.get_logger(__name__)
+    logger.info('Test message', test_arg='example')
 
 
 @run_group.command('yf')
@@ -17,3 +26,16 @@ def yf() -> None:
 
     declare_path(ROOT_PATH)
     run()
+
+
+@run_group.command()
+def ping() -> None:
+    """Runs the ping API on a gunicorn worker"""
+    command = [
+        'gunicorn',
+        '--bind', '0.0.0.0:8000',
+        '--workers', '1',
+        '--worker-class', 'sync',
+        'tdv.api.ping:create_app()'
+    ]
+    subprocess.run(command)

@@ -6,7 +6,7 @@ from schedule import Scheduler
 from yfinance import Ticker
 
 from tdv.constants import MarketEvents
-from tdv.data_types import Expirations, OptionChainsYF, Second, TickerName, ExchangeName
+from tdv.domain.data_types import Expirations, OptionChainsYF, Second, TickerName, ExchangeName
 from tdv.logger_setup import logger_obj
 from tdv.storage.json.option_chains_repo import OptionChainsRepo
 
