@@ -16,10 +16,11 @@ def create(exchange_name: str) -> None:
     services.exchange_service.create_exchange(exchange_name)
 
 
+@exchange_group.command('create_all')
+def create_all() -> None:
+    from tdv.domain.internal import services
 
-@exchange_group.command('create_range')
-def create_range() -> None:
-    pass
+    services.exchange_service.create_all_exchanges()
 
 
 @exchange_group.command('get_by_name')

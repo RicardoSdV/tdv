@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from sqlalchemy import Row, Table, Connection, CursorResult
 
@@ -30,3 +30,6 @@ class ExchangeQueryBuilder(BaseQueryBuilder):
 class ExchangeRepo(ExchangeSerializer, ExchangeQueryBuilder, BaseRepo):
     def insert(self, conn: Connection, exchange: Exchange) -> CursorResult:
         return self._insert(conn, exchange)
+
+    def insert_many(self, conn: Connection, exchanges: List[Exchange]) -> CursorResult:
+        return self._insert_many(conn, exchanges)

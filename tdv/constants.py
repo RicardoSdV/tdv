@@ -55,7 +55,11 @@ class MarketEvents(Enum):
 
 
 class ExchangeNames(ConvertableEnum):
-    NYSE = 'NYSE'
+    NEW_YORK = 'NYSE'
+    LONDON = 'LSE'
+    TOKIO = 'TSE'
+    FRANKFURT = 'FWB'
+    SHENZHEN = 'SZSE'
 
 
 class TickerNames(Enum):

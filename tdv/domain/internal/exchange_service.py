@@ -27,3 +27,14 @@ class ExchangeService:
             conn.commit()
 
         return result
+
+    def create_all_exchanges(self) -> CursorResult:
+        exchange_names = ExchangeNames.to_dict()
+        logger.info('Creating all exchanges', **exchange_names)
+
+        exchanges = [Exchange(ExchangeNames.str_to_enum(name)) for name in exchange_names.values()]
+        with self.__db.engine.connect() as conn:
+            result = self.__exchange_repo.insert_many(conn, exchanges)
+            conn.commit()
+
+        return result
