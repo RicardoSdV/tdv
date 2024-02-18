@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, Any
 
-from tdv.constants import Exchanges
+from tdv.constants import ExchangeNames
 from tdv.domain.data_types import ExchangeId
 
 
@@ -10,7 +10,7 @@ class Exchange:
 
     def __init__(
         self,
-        name: Exchanges,
+        name: ExchangeNames,
         exchange_id: Optional[ExchangeId] = None,
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None,

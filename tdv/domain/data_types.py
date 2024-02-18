@@ -8,7 +8,6 @@ TimeStr = str
 TimeStamp = str
 Date = str
 TimeZone = str
-ExchangeName = str
 TickerName = str
 Second = int
 ExchangeId = int

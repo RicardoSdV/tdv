@@ -1,0 +1,2 @@
+class TickerService:
+    pass

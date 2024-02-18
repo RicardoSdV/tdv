@@ -10,7 +10,7 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from tdv.constants import Exchanges
+from tdv.constants import ExchangeNames
 
 # revision identifiers, used by Alembic.
 revision: str = '4f3e85b7cacc'
@@ -23,7 +23,7 @@ def upgrade() -> None:
     op.create_table(
         'exchanges',
         sa.Column('id', sa.Integer(), primary_key=True, autoincrement=True, nullable=False),
-        sa.Column('name', sa.Enum(*[item.value for item in Exchanges], name='exchange_names'), nullable=False),
+        sa.Column('name', sa.Enum(*[item.value for item in ExchangeNames], name='exchange_names'), nullable=False),
         sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     )

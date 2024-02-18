@@ -14,6 +14,8 @@ def format_group() -> None:
 def quotes() -> None:
     """Turns double quotes into single in SOURCE_PATH except this file and docstrings"""
 
+    excluded_patterns = ('# noformat', '"""')  # If found in line, exclude line from formatting
+
     python_files = []
     for root, dirs, files in os.walk(SOURCE_PATH):
         for file in files:
@@ -26,7 +28,7 @@ def quotes() -> None:
 
         modified_lines = []
         for line in lines:
-            if '"""' in line:
+            if any(pattern in line for pattern in excluded_patterns):
                 modified_lines.append(line)
             else:
                 modified_lines.append(line.replace('"', "'"))

@@ -1,5 +1,6 @@
 import os
 from enum import Enum
+from typing import List, Any, Dict
 
 from tdv.common_utils import get_project_root
 
@@ -20,7 +21,25 @@ ALEMBIC_DIR_PATH = STORAGE_PATH / 'alembic'
 TESLA_EXPIRATIONS_DIR_PATH = STORAGE_PATH / 'json' / 'tesla_option_chains'
 
 
-class DbInfo(Enum):
+class ConvertableEnum(Enum):
+    """Simplify enum handling by inheriting from this class"""
+    @classmethod
+    def str_to_enum(cls, item_str: str) -> 'ConvertableEnum':
+        for item in cls:
+            if item.value == item_str:
+                return item
+        raise ValueError('Invalid string representation of enum')
+
+    @classmethod
+    def to_list(cls) -> List[Any]:
+        return [member.value for member in cls]
+
+    @classmethod
+    def to_dict(cls) -> Dict[str, Any]:
+        return {member.name: member.value for member in cls}
+
+
+class DbInfo(ConvertableEnum):
     USER = os.environ.get('USER')
     NAME = 'tdvdb'
     PASSWORD = 'password'
@@ -35,9 +54,9 @@ class MarketEvents(Enum):
     CLOSE = 'market_close'
 
 
-class Exchanges(Enum):
+class ExchangeNames(ConvertableEnum):
     NYSE = 'NYSE'
 
 
-class Tickers(Enum):
+class TickerNames(Enum):
     TSLA = 'TSLA'
