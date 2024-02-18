@@ -38,3 +38,21 @@ class ExchangeService:
             conn.commit()
 
         return result
+
+    def get_exchange_by_id(self, exchange_id: int) -> Exchange:
+        logger.info('Getting exchange by id', exchange_id=exchange_id)
+
+        with self.__db.engine.connect() as conn:
+            exchange: Exchange = self.__exchange_repo.get_or_raise_by_id(exchange_id)
+            conn.commit()
+
+        return exchange
+
+    def get_exchange_by_name(self, exchange_name: str) -> Exchange:
+        logger.info('Getting exchange by name', exchange_name=exchange_name)
+
+        with self.__db.engine.connect() as conn:
+            exchange: Exchange = self.__exchange_repo.get_or_raise_by_name(exchange_name)
+            conn.commit()
+
+        return exchange

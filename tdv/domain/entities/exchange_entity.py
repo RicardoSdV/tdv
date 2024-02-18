@@ -10,13 +10,13 @@ class Exchange:
 
     def __init__(
         self,
-        name: ExchangeNames,
         exchange_id: Optional[ExchangeId] = None,
+        name: Optional[ExchangeNames] = None,
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
         self.id = exchange_id
-        self.name = name
+        self.name = name.value
         self.created_at = created_at
         self.updated_at = updated_at
 

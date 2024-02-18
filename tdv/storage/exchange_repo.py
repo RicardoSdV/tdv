@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from sqlalchemy import Row, Table, Connection, CursorResult
+from sqlalchemy import Row, Table, Connection, CursorResult, BinaryExpression
 
 from tdv.constants import ExchangeNames
 from tdv.domain.entities.exchange_entity import Exchange
@@ -26,10 +26,13 @@ class ExchangeQueryBuilder(BaseQueryBuilder):
     def _table(self) -> Table:
         return exchanges_table
 
+    def _id_query(self) -> BinaryExpression:
+        return self._table.c.id
+
 
 class ExchangeRepo(ExchangeSerializer, ExchangeQueryBuilder, BaseRepo):
-    def insert(self, conn: Connection, exchange: Exchange) -> CursorResult:
-        return self._insert(conn, exchange)
+    def insert(self, conn: Connection, exchanges: List[Exchange]) -> CursorResult:
+        return self._insert(conn, exchanges)
 
-    def insert_many(self, conn: Connection, exchanges: List[Exchange]) -> CursorResult:
-        return self._insert_many(conn, exchanges)
+    def select(self, conn: Connection, exchanges: List[Exchange]) -> CursorResult:
+        pass

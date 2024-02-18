@@ -23,7 +23,7 @@ def upgrade() -> None:
     op.create_table(
         'exchanges',
         sa.Column('id', sa.Integer(), primary_key=True, autoincrement=True, nullable=False),
-        sa.Column('name', sa.Enum(*[item.value for item in ExchangeNames], name='exchange_names'), nullable=False),
+        sa.Column('name', sa.String(20), nullable=False),  # No enum to support new exchanges without recreating
         sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     )
