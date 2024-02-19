@@ -11,14 +11,14 @@ from tdv.storage.tables import exchanges_table
 class ExchangeSerializer(BaseSerializer):
     def _to_instance(self, record: Row) -> Exchange:
         return Exchange(
-            name=ExchangeNames(record[exchanges_table.c.name]),
             exchange_id=record[exchanges_table.c.exchange_id],
+            name=record[exchanges_table.c.name],
             created_at=record[exchanges_table.c.created_at],
             updated_at=record[exchanges_table.c.updated_at],
         )
 
     def _to_dict(self, exchange: Exchange) -> Dict:
-        return {'name': exchange.name.value}
+        return {'name': exchange.name}
 
 
 class ExchangeQueryBuilder(BaseQueryBuilder):

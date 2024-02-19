@@ -12,12 +12,12 @@ class Exchange(Entity):
     def __init__(
         self,
         exchange_id: Optional[ExchangeId] = None,
-        name: Optional[ExchangeNames] = None,
+        name: Optional[str] = None,
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None,
     ) -> None:
         self.id = exchange_id
-        self.name = name.value
+        self.name = name
         self.created_at = created_at
         self.updated_at = updated_at
 

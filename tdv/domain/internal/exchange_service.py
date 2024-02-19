@@ -21,9 +21,9 @@ class ExchangeService:
     def create_exchange(self, exchange_name: str) -> CursorResult:
         logger.info('Creating exchange', exchange_name=exchange_name)
 
-        exchange = Exchange(ExchangeNames.str_to_enum(exchange_name))
+        exchange = Exchange(name=exchange_name)
         with self.__db.engine.connect() as conn:
-            result = self.__exchange_repo.insert(conn, exchange)
+            result = self.__exchange_repo.insert(conn, [exchange])
             conn.commit()
 
         return result
@@ -32,9 +32,9 @@ class ExchangeService:
         exchange_names = ExchangeNames.to_dict()
         logger.info('Creating all exchanges', **exchange_names)
 
-        exchanges = [Exchange(ExchangeNames.str_to_enum(name)) for name in exchange_names.values()]
+        exchanges = [Exchange(name=name) for name in exchange_names.values()]
         with self.__db.engine.connect() as conn:
-            result = self.__exchange_repo.insert_many(conn, exchanges)
+            result = self.__exchange_repo.insert(conn, exchanges)
             conn.commit()
 
         return result
