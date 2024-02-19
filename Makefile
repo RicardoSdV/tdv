@@ -9,6 +9,8 @@ ALEMBIC_PATH = $(shell python3 -c 'from tdv.constants import ALEMBIC_DIR_PATH; p
 ALEMBIC = cd $(ALEMBIC_PATH) && alembic
 VENV_ACTIVATE = venv/bin/activate
 
+$(shell python3 -c 'from tdv.common_utils import config_parser; config_parser()')
+
 
 .PHONY: help
 help:
