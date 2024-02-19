@@ -4,7 +4,7 @@ from typing import Dict, Iterable, Tuple, List, Type
 
 from sqlalchemy import CursorResult, Insert, Table, Connection, Row, Select, ColumnElement, Column, and_, bindparam
 
-from tdv.domain.data_types import Entity
+from tdv.domain.entities.entity import Entity
 
 
 class BaseSerializer:

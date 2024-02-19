@@ -3,9 +3,10 @@ from typing import Optional, Any
 
 from tdv.constants import ExchangeNames
 from tdv.domain.data_types import ExchangeId
+from tdv.domain.entities.entity import Entity
 
 
-class Exchange:
+class Exchange(Entity):
     __slots__ = ('id', 'name', 'created_at', 'updated_at')
 
     def __init__(

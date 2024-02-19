@@ -9,5 +9,4 @@ pandas>=1.1,<2.0
 pandas_market_calendars==4.3.3
 psycopg2==2.9.9
 pytz
-waitress==3.0.0
 yfinance==0.2.36
