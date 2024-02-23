@@ -26,8 +26,8 @@ class ExchangeService:
         return result
 
     def create_all_exchanges(self) -> List[Exchange]:
-        exchanges = [Exchange(name=name) for name in Exchanges]
-        logger.info('Creating all exchanges', exchanges)
+        exchanges = [Exchange(name=name.value) for name in Exchanges]
+        logger.info('Creating all exchanges', exchanges=exchanges)
 
         with self.__db.connect as conn:
             result = self.__exchange_repo.insert(conn, exchanges)

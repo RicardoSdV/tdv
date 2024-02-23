@@ -4,7 +4,7 @@ from tdv.constants import DbInfo
 
 
 class DB:
-    print_db_logs = True
+    print_db_logs = False
 
     def __init__(self) -> None:
         self.__engine = self.__create_engine()

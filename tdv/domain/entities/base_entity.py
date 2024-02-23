@@ -7,8 +7,9 @@ from tdv.domain.types import EntityId
 class EntityEnum(Enum):
     """Simplify enum handling by inheriting from this class"""
     @classmethod
-    def assert_has_value(cls, value: Any) -> None:
+    def validate_value(cls, value: Any) -> Any:
         assert value in cls._value2member_map_
+        return value
 
     @classmethod
     def to_list(cls) -> List[Any]:

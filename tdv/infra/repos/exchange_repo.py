@@ -1,7 +1,7 @@
 from functools import cached_property
-from typing import List, Type
+from typing import Type
 
-from sqlalchemy import Table, Connection, BinaryExpression
+from sqlalchemy import Table, BinaryExpression
 
 from tdv.domain.entities.exchange_entity import Exchange
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
@@ -24,11 +24,4 @@ class ExchangeQueryBuilder(BaseQueryBuilder):
 
 
 class ExchangeRepo(ExchangeSerializer, ExchangeQueryBuilder, BaseRepo):
-    def insert(self, conn: Connection, exchanges: List[Exchange]) -> List[Exchange]:
-        return self._insert(conn, exchanges)
-
-    def select(self, conn: Connection, exchanges: List[Exchange]) -> List[Exchange]:
-        pass
-
-    def delete(self):
-        pass
+    pass

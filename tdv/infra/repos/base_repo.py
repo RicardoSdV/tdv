@@ -1,8 +1,9 @@
 from collections import defaultdict
 from functools import cached_property
-from typing import Dict, Iterable, Tuple, List, Type
+from typing import Dict, Iterable, Tuple, List, Type, Union, Any
 
-from sqlalchemy import CursorResult, Insert, Table, Connection, Select, ColumnElement, Column, and_, bindparam, Row
+from sqlalchemy import CursorResult, Insert, Table, Connection, Select, ColumnElement, Column, and_, bindparam, Row, \
+    Update, Delete
 
 from tdv.domain.entities.base_entity import Entity
 
@@ -14,22 +15,27 @@ class BaseSerializer:
         raise NotImplementedError()
 
     def _to_entities(self, result: CursorResult) -> List[Entity]:
-        """Turn Row objects into domain/entities with Nones for missing columns"""
-        return [self._Entity(**self._row_to_dict(row)) for row in result]
+        """Turn Row objects into domain/entities, must pass all params positionally"""
+        return [self._Entity(*row) for row in result.fetchall()]
 
-    def _entity_to_dict(self, entities: Iterable[Entity]) -> Dict:
+    def _entities_to_dict(self, entities: Iterable[Entity]) -> List[Dict[str, Any]]:
         """Turns domain/entities into param dicts of not None params"""
-        params = defaultdict(list)
+        params = []
         for entity in entities:
-            for attr_name in self._Entity.__slots__:
-                attr = getattr(entity, attr_name)
-                if attr is not None:
-                    params[f'b_{attr_name}'].append(attr)
+            params.append(self._entity_to_dict(entity))
         return params
 
+    def _row_to_dict(self, row: Row) -> Dict:
+        return {name: element for name, element in zip(self._Entity.__slots__, row)}
+
     @staticmethod
-    def _row_to_dict(row: Row) -> Dict:
-        return {n: getattr(row, n) for n in row.keys()}
+    def _entity_to_dict(entity: Entity) -> Dict[str, Any]:
+        params = {}
+        for attr_name in entity.__slots__:
+            attr = getattr(entity, attr_name)
+            if attr is not None:
+                params[attr_name] = attr
+        return params
 
 
 class BaseQueryBuilder:
@@ -55,15 +61,23 @@ class BaseQueryBuilder:
     def _get_by_id_query(self) -> Select:
         return self._select_query().where(self._primary_keys_query)
 
+    def _returning_all(self, query: Union[Insert, Select, Update, Delete]) -> Union[Insert, Select, Update, Delete]:
+        return query.returning(self._table)
+
     @staticmethod
     def _make_for_update(query: Select, key_share: bool = True) -> Select:
         return query.with_for_update(key_share=key_share)
 
 
 class BaseRepo(BaseQueryBuilder, BaseSerializer):
-    def _insert(self, conn: Connection, instances: Iterable[Entity]) -> List[Entity]:
+    def insert(self, conn: Connection, instances: Iterable[Entity]) -> List[Entity]:
         """Insert one or more entities"""
-        return self._to_entities(conn.execute(self._insert_query(), self._entity_to_dict(instances)))
+        query = self._returning_all(self._insert_query())
+        params = self._entities_to_dict(instances)
+        result = conn.execute(query, params)
+        result_entities = self._to_entities(result)
 
-    def _select(self, conn: Connection, instances: Iterable[Entity]) -> List[Entity]:
+        return result_entities
+
+    def select(self, conn: Connection, instances: Iterable[Entity]) -> List[Entity]:
         pass
