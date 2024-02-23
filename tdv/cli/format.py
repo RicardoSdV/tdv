@@ -2,7 +2,7 @@ import os
 
 import click
 
-from tdv.constants import SOURCE_PATH
+from tdv.constants import SOURCE_DIR_PATH
 
 
 @click.group('format')
@@ -17,7 +17,7 @@ def quotes() -> None:
     excluded_patterns = ('# noformat', '"""')  # If found in line, exclude line from formatting
 
     python_files = []
-    for root, dirs, files in os.walk(SOURCE_PATH):
+    for root, dirs, files in os.walk(SOURCE_DIR_PATH):
         for file in files:
             if file.endswith('.py') and not file.endswith('format.py'):
                 python_files.append(os.path.join(root, file))

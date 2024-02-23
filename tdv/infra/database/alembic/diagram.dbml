@@ -1,0 +1,50 @@
+Table exchanges {
+  id int [pk]
+  name Enum
+  live bool
+  hist bool
+  created_at datetime
+  updated_at datetime
+  Indexes {exchange_name}
+}
+
+Table tickers {
+  id int [pk]
+  exchange_id int [fk]
+  ticker_name Enum
+  company_name Enum
+  live bool
+  hist bool
+  created_at datetime
+  updated_at datetime
+}
+
+Table option_chains {
+  id int [pk]
+  ticker_id int [ref: > tickers.id]
+  expiry datetime
+  is_call bool
+  contract_size int
+  currency varchar
+  created_at datetime
+  Indexes {(ticker, expiry_date)}
+}
+
+Table options {
+  id int [pk] //[ref: > tickers.ticker]
+  option_chain_id: int
+  last_trade_date datetime
+  strike decimal
+  last_price decimal
+  bid decimal
+  ask decimal
+  change decimal
+  volume int
+  open_interest int
+  implied_volatility decimal
+  in_the_money boolean
+  created_at datetime
+  Indexes {
+  (ticker, expiry_date, strike, side)
+  }
+}

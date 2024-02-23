@@ -5,7 +5,7 @@ from subprocess import check_output
 
 import click
 
-from tdv.cli.exchange_cli import exchange_group
+from tdv.cli.exchange_cli import exchanges_group
 from tdv.cli.format import format_group
 from tdv.cli.run import run_group
 
@@ -24,4 +24,4 @@ def shell() -> None:
 
 cli_root.add_command(format_group)
 cli_root.add_command(run_group)
-cli_root.add_command(exchange_group)
+cli_root.add_command(exchanges_group)

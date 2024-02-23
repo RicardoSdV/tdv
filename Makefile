@@ -6,10 +6,7 @@ DB_NAME = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.NAM
 DB_PASSWORD = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.PASSWORD.value)')
 DB_HOST = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.HOST.value)')
 ALEMBIC_PATH = $(shell python3 -c 'from tdv.constants import ALEMBIC_DIR_PATH; print(ALEMBIC_DIR_PATH)')
-ALEMBIC = cd $(ALEMBIC_PATH) && alembic
 VENV_ACTIVATE = venv/bin/activate
-
-$(shell python3 -c 'from tdv.common_utils import config_parser; config_parser()')
 
 
 .PHONY: help
@@ -64,6 +61,9 @@ db_down_all:  # EXTREME DANGER! Deletes all tables in DB, will DELETE ALL DATA
 
 drop_db:  # EXTREME DANGER!! Destroys project DB, will DELETE ALL DATA
 	- sudo -u postgres psql -c "DROP DATABASE $(DB_NAME);"
+
+configs:  # Runs the parser found in tdv.common_utils to set the alembic.ini DB path
+	- $(shell python3 -c 'from tdv.common_utils import config_parser; config_parser()')
 
 clean:  # Remove compiled Python files, cached directories & build artifacts
 	- find . -name \*.pyc -delete

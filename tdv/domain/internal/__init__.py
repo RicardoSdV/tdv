@@ -1,6 +1,7 @@
 from typing import Optional, TYPE_CHECKING
 
-from tdv.storage import storage
+from tdv.infra.database import db
+from tdv.infra.repos import repos
 
 if TYPE_CHECKING:
     from tdv.domain.internal.exchange_service import ExchangeService
@@ -20,7 +21,7 @@ class Services:
     def exchange_service(self) -> 'ExchangeService':
         if self.__exchange_service is None:
             from tdv.domain.internal.exchange_service import ExchangeService
-            self.__exchange_service = ExchangeService(storage.db, storage.exchange_repo)
+            self.__exchange_service = ExchangeService(db, repos.exchange_repo)
         return self.__exchange_service
 
     @property

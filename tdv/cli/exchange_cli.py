@@ -2,30 +2,31 @@ from typing import Optional
 
 from click import Choice, group, option
 
-from tdv.constants import ExchangeNames
-from tdv.domain.data_types import ExchangeId
+from tdv.domain.entities.exchange import Exchanges
+from tdv.domain.types import ExchangeId
 
 
-@group('exchange')
-def exchange_group() -> None:
-    """Exchange related operations"""
+@group('exchanges')
+def exchanges_group() -> None:
+    """Exchanges table related operations."""
 
 
 # TODO: Add Logging
-@exchange_group.command('create')
-@option('-n', '--exchange_name', 'exchange_name', required=True, type=Choice(ExchangeNames.to_list()))
+# TODO: Add help
+@exchanges_group.command('create')
+@option('-n', '--exchange_name', 'exchange_name', required=True, type=Choice(Exchanges.to_list()))
 def create(exchange_name: str) -> None:
     from tdv.domain.internal import services
     services.exchange_service.create_exchange(exchange_name)
 
 
-@exchange_group.command('create_all')
+@exchanges_group.command('create_all')
 def create_all() -> None:
     from tdv.domain.internal import services
     services.exchange_service.create_all_exchanges()
 
 
-@exchange_group.command('get')
+@exchanges_group.command('get')
 @option('-n', '--exchange_name', 'exchange_name', required=True, default=None)
 @option('-i', '--exchange_id', 'exchange_id', required=True, type=ExchangeId, default=None)
 def get(exchange_name: Optional[str], exchange_id: Optional[ExchangeId]) -> None:
@@ -40,7 +41,7 @@ def get(exchange_name: Optional[str], exchange_id: Optional[ExchangeId]) -> None
         pass
 
 
-@exchange_group.command('delete')
+@exchanges_group.command('delete')
 def delete() -> None:
     from tdv.domain.internal import services
 
