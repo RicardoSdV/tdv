@@ -1,8 +1,7 @@
 from datetime import datetime
-from enum import Enum
 from typing import Optional
 
-from tdv.domain.entities.base import Entity
+from tdv.domain.entities.base_entity import Entity
 from tdv.domain.types import OptionChainId, TickerId
 
 

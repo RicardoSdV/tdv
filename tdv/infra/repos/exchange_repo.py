@@ -3,7 +3,7 @@ from typing import List, Type
 
 from sqlalchemy import Table, Connection, BinaryExpression
 
-from tdv.domain.entities.exchange import Exchange
+from tdv.domain.entities.exchange_entity import Exchange
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 from tdv.infra.database.tables import exchanges_table
 

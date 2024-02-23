@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List
 
-from tdv.domain.entities.exchange import Exchanges, Exchange
+from tdv.domain.entities.exchange_entity import Exchanges, Exchange
 from tdv.logger_setup import logger_obj
 
 if TYPE_CHECKING:

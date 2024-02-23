@@ -2,7 +2,7 @@ from typing import Optional
 
 from click import Choice, group, option
 
-from tdv.domain.entities.exchange import Exchanges
+from tdv.domain.entities.exchange_entity import Exchanges
 from tdv.domain.types import ExchangeId
 
 

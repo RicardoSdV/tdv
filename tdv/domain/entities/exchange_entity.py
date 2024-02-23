@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from tdv.domain.types import ExchangeId
-from tdv.domain.entities.base import Entity, EntityEnum
+from tdv.domain.entities.base_entity import Entity, EntityEnum
 
 
 class Exchanges(EntityEnum):

@@ -1,7 +1,7 @@
 from sqlalchemy import MetaData, Table, Column, DateTime, func, Index, SmallInteger, BigInteger, String, ForeignKey, \
     Boolean, Numeric, Integer
 
-from tdv.domain.entities.exchange import Currencies
+from tdv.domain.entities.exchange_entity import Currencies
 
 """
 All SQL Alchemy Tables are defined here.
@@ -17,10 +17,6 @@ metadata = MetaData()
 # Integer -> +- 2 000 000 000  (4 bytes)
 # BigInteger ->  +- 9 000 000 000 000 000 000  (8 bytes)
 # Numeric(precision=10, scale=2) -> 10 000 000.01
-
-# Chequea si hay algun dato que se tiene que mover de tabla
-# Chequea si los nombres de las columnas son suficientemente descriptivos, es una putada tener nombres demasiado largos pero no saber que representan es mucho peor
-# Chequea si hay algun dato que se puede recrear a partir de otros
 
 exchanges_table = Table(
     'exchanges', metadata,
@@ -72,5 +68,5 @@ options_table = Table(
     Column('open_interest', Integer, nullable=False),
     Column('implied_volatility', Integer, nullable=False),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
-    Column('updated_at', DateTime, server_default=func.now(), nullable=False),  # Va a necesitar esto updating alguna vez?
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
