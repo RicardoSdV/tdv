@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING, List
 
 from tdv.domain.entities.exchange_entity import Exchanges, Exchange
-from tdv.logger_setup import logger_obj
+from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
     from tdv.infra.repos.exchange_repo import ExchangeRepo
 
-logger = logger_obj.get_logger(__name__)
+logger = LoggerFactory.make_logger(__name__)
 
 
 class ExchangeService:
@@ -38,8 +38,19 @@ class ExchangeService:
     def get_exchange_by_id(self, exchange_id: int) -> Exchange:
         logger.info('Getting exchange by id', exchange_id=exchange_id)
 
+        exchange = [Exchange(currency='USD')]
         with self.__db.connect as conn:
-            exchange: Exchange = self.__exchange_repo.get_or_raise_by_id(exchange_id)
+            exchange = self.__exchange_repo.select(conn, exchange)
+            conn.commit()
+
+        return exchange
+
+    def get_usd_exchanges(self, exchange_id: int) -> Exchange:
+        logger.info('Getting exchange by id', exchange_id=exchange_id)
+
+        exchange = [Exchange(currency='USD')]
+        with self.__db.connect as conn:
+            exchange = self.__exchange_repo.select(conn, exchange)
             conn.commit()
 
         return exchange

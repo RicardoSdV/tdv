@@ -68,5 +68,4 @@ options_table = Table(
     Column('open_interest', Integer, nullable=False),
     Column('implied_volatility', Integer, nullable=False),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
-    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )

@@ -5,23 +5,18 @@ from tdv.common_utils import timestamp_str
 from tdv.constants import LOGS_DIR_PATH
 
 
-class LoggerSetup:
+class LoggerFactory:
     __save_to_file = False
+    if __save_to_file:
+        structlog.configure(
+            logger_factory=structlog.WriteLoggerFactory(
+                file=(LOGS_DIR_PATH / timestamp_str()).with_suffix('.log').open('w')
+            ),
+        )
 
-    def __init__(self) -> None:
-        if self.__save_to_file:
-            structlog.configure(
-                logger_factory=structlog.WriteLoggerFactory(
-                    file=(LOGS_DIR_PATH / timestamp_str()).with_suffix('.log').open('w')
-                ),
-            )
-
-    def get_logger(self, name: str) -> BoundLoggerLazyProxy:
+    @staticmethod
+    def make_logger(name: str) -> BoundLoggerLazyProxy:
         return structlog.getLogger(name)
-
-
-logger_obj = LoggerSetup()
-
 
 
 # Experimental logger

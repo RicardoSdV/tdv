@@ -3,9 +3,9 @@ from typing import List
 
 from tdv.domain.external.yahoo_finance_service_proxy import YFserviceProxy, BaseServiceProxy
 from tdv.domain.types import Second
-from tdv.logger_setup import logger_obj
+from tdv.logger_setup import logger_factory
 
-logger = logger_obj.get_logger(__name__)
+logger = logger_factory.make_logger(__name__)
 
 
 class MainLoop:

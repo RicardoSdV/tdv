@@ -4,6 +4,9 @@ from click import Choice, group, option
 
 from tdv.domain.entities.exchange_entity import Exchanges
 from tdv.domain.types import ExchangeId
+from tdv.logger_setup import LoggerFactory
+
+logger = LoggerFactory.make_logger(__name__)
 
 
 @group('exchanges')
@@ -27,18 +30,20 @@ def create_all() -> None:
 
 
 @exchanges_group.command('get')
-@option('-n', '--exchange_name', 'exchange_name', required=True, default=None)
-@option('-i', '--exchange_id', 'exchange_id', required=True, type=ExchangeId, default=None)
+@option('-n', '--exchange_name', 'exchange_name', default=None)
+@option('-i', '--exchange_id', 'exchange_id', type=ExchangeId, default=None)
 def get(exchange_name: Optional[str], exchange_id: Optional[ExchangeId]) -> None:
     from tdv.domain.internal import services
 
     if exchange_id:
-        services.exchange_service.get_exchange_by_id(exchange_id)
+        result = services.exchange_service.get_exchange_by_id(exchange_id)
     elif exchange_name:
-        services.exchange_service.get_exchange_by_name(exchange_name)
+        result = services.exchange_service.get_exchange_by_name(exchange_name)
     else:
-        # TODO: Log no params
-        pass
+        result = None
+        logger.info('Must pass at least one arg to get exchange')
+
+    logger.info('Exchanges', result=result)
 
 
 @exchanges_group.command('delete')

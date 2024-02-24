@@ -7,10 +7,10 @@ from yfinance import Ticker
 
 from tdv.constants import MarketEvents
 from tdv.domain.types import Expirations, OptionChainsYF, Second
-from tdv.logger_setup import logger_obj
+from tdv.logger_setup import logger_factory
 from bin.depcr.json.option_chains_repo import OptionChainsRepo
 
-logger = logger_obj.get_logger(__name__)
+logger = logger_factory.make_logger(__name__)
 
 
 class BaseServiceProxy:
@@ -91,7 +91,6 @@ class YFserviceProxy(BaseServiceProxy):
     def __request_options(ticker: Ticker, expirations: Expirations) -> OptionChainsYF:
         logger.debug('Requesting options')
         return [ticker.option_chain(exp) for exp in expirations]
-
 
     @staticmethod
     def __request_expirations(ticker_name: str) -> Expirations:

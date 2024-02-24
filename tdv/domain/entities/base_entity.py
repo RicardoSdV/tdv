@@ -1,7 +1,7 @@
 from enum import Enum
-from typing import Any, Optional, List
+from typing import Any, Optional, List, Dict, Tuple
 
-from tdv.domain.types import EntityId
+from tdv.domain.types import EntityId, AttrName, Insertable
 
 
 class EntityEnum(Enum):
@@ -24,10 +24,18 @@ class Entity:
         self.id = entity_id
 
     def __repr__(self) -> str:
-        slot_values = ', '.join(f'{name}={getattr(self, name)}' for name in self.__slots__)
-        return f'{self.__class__.__name__}({slot_values})'
+        return f'{self.__class__.__name__}({self.to_dict()})'
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, self.__class__):
             return self.id == other.id
         return False
+
+    def to_dict(self) -> Dict[AttrName, Insertable]:
+        return {name: value for name in self.__slots__ if (value := getattr(self, name)) is not None}
+
+    def to_list(self) -> List[Insertable]:
+        return [attr for attr in (getattr(self, attr_name) for attr_name in self.__slots__) if attr is not None]
+
+    def not_none_slots(self) -> List[AttrName]:
+        return [attr_name for attr_name in self.__slots__ if getattr(self, attr_name) is not None]

@@ -1,41 +1,48 @@
 from collections import defaultdict
 from functools import cached_property
-from typing import Dict, Iterable, Tuple, List, Type, Union, Any
+from typing import Dict, Iterable, Tuple, List, Type, TypeVar
 
 from sqlalchemy import CursorResult, Insert, Table, Connection, Select, ColumnElement, Column, and_, bindparam, Row, \
-    Update, Delete
+    tuple_
 
-from tdv.domain.entities.base_entity import Entity
+from tdv.domain.types import Insertable, AttrName, NoReturnQuery
+
+EntityType = TypeVar('EntityType', bound='Entity')
+
+# TODO: Support insert one queries, atm using insert many to insert one
 
 
 class BaseSerializer:
     @cached_property
-    def _Entity(self) -> Type[Entity]:
+    def _Entity(self) -> Type[EntityType]:
         """Must override with the domain/entities entity that belongs to the overriding subclass"""
         raise NotImplementedError()
 
-    def _to_entities(self, result: CursorResult) -> List[Entity]:
+    def _to_entities(self, result: CursorResult) -> List[EntityType]:
         """Turn Row objects into domain/entities, must pass all params positionally"""
         return [self._Entity(*row) for row in result.fetchall()]
-
-    def _entities_to_dict(self, entities: Iterable[Entity]) -> List[Dict[str, Any]]:
-        """Turns domain/entities into param dicts of not None params"""
-        params = []
-        for entity in entities:
-            params.append(self._entity_to_dict(entity))
-        return params
 
     def _row_to_dict(self, row: Row) -> Dict:
         return {name: element for name, element in zip(self._Entity.__slots__, row)}
 
     @staticmethod
-    def _entity_to_dict(entity: Entity) -> Dict[str, Any]:
-        params = {}
-        for attr_name in entity.__slots__:
-            attr = getattr(entity, attr_name)
-            if attr is not None:
-                params[attr_name] = attr
-        return params
+    def _entities_to_dict(entities: Iterable[EntityType]) -> List[Dict[AttrName, Insertable]]:
+        """Turns domain/entities into param dicts of not None params"""
+        return [entity.to_dict() for entity in entities]
+
+    @staticmethod
+    def _entities_to_attrs_list(entities: Iterable[EntityType]) -> List[List[Insertable]]:
+        return [entity.to_list() for entity in entities]
+
+    @staticmethod
+    def _entities_to_filters(entities: Iterable[EntityType]) -> Dict[str, List]:
+        filters = defaultdict(list)
+        for entity in entities:
+            for attr_name in entity.__slots__:
+                attr = getattr(entity, attr_name)
+                if attr is not None:
+                    filters[attr_name].append(attr)
+        return dict(filters)
 
 
 class BaseQueryBuilder:
@@ -45,8 +52,12 @@ class BaseQueryBuilder:
         raise NotImplementedError()
 
     @cached_property
+    def _all_columns(self) -> Tuple[Column, ...]:
+        return tuple(column for column in self._table.c)  # Pycharm thinks _table.c isn't iterable, it's wrong.
+
+    @cached_property
     def _primary_key_columns(self) -> Tuple[Column, ...]:
-        return tuple(c for c in self._table.c if c.primary_key)  # Pycharm thinks _table.c isn't iterable, it's wrong.
+        return tuple(c for c in self._table.c if c.primary_key)
 
     @cached_property
     def _primary_keys_query(self) -> ColumnElement:
@@ -58,26 +69,44 @@ class BaseQueryBuilder:
     def _select_query(self) -> Select:
         return self._table.select()
 
+    def _any_by_attrs_condition(self, attrs: List[List[Insertable]], not_none_slots: List[AttrName]) -> ColumnElement:
+        return and_(tuple_(*[c for c in self._all_columns if c.name in not_none_slots]).in_(attrs))
+
     def _get_by_id_query(self) -> Select:
         return self._select_query().where(self._primary_keys_query)
 
-    def _returning_all(self, query: Union[Insert, Select, Update, Delete]) -> Union[Insert, Select, Update, Delete]:
+    def _turn_to_returning_all_query(self, query: NoReturnQuery) -> NoReturnQuery:
         return query.returning(self._table)
 
     @staticmethod
-    def _make_for_update(query: Select, key_share: bool = True) -> Select:
+    def _turn_into_where_query(query: Select, condition: ColumnElement) -> Select:
+        return query.where(condition)
+
+    @staticmethod
+    def _turn_into_for_update_query(query: Select, key_share: bool = True) -> Select:
         return query.with_for_update(key_share=key_share)
 
 
 class BaseRepo(BaseQueryBuilder, BaseSerializer):
-    def insert(self, conn: Connection, instances: Iterable[Entity]) -> List[Entity]:
-        """Insert one or more entities"""
-        query = self._returning_all(self._insert_query())
-        params = self._entities_to_dict(instances)
-        result = conn.execute(query, params)
-        result_entities = self._to_entities(result)
+    def insert(self, conn: Connection, entities: List[EntityType]) -> List[EntityType]:
+        query = self._insert_query()
+        query = self._turn_to_returning_all_query(query)
+        params: List[Dict] = self._entities_to_dict(entities)
 
-        return result_entities
+        result: CursorResult = conn.execute(query, params)
+        entities: List[EntityType] = self._to_entities(result)
+        return entities
 
-    def select(self, conn: Connection, instances: Iterable[Entity]) -> List[Entity]:
-        pass
+    def select(self, conn: Connection, entities: List[EntityType], for_update: bool = False) -> List[EntityType]:
+        query: Select = self._select_query()
+        if for_update:
+            query = self._turn_into_for_update_query(query)
+
+        attrs = self._entities_to_attrs_list(entities)
+        condition = self._any_by_attrs_condition(attrs, entities[0].not_none_slots())
+        query = self._turn_into_where_query(query, condition)
+
+        result = conn.execute(query)
+        entities = self._to_entities(result)
+
+        return entities

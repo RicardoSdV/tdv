@@ -2,18 +2,19 @@ import subprocess
 
 import click
 
+from tdv.logger_setup import LoggerFactory
+
+logger = LoggerFactory.make_logger(__name__)
+
 
 @click.group('run')
 def run_group() -> None:
     """Run different services such as Yahoo Finance or the APIs"""
 
 
-@run_group.command('test')
-def test() -> None:
+@run_group.command('log')
+def log() -> None:
     """ For testing logger """
-
-    from tdv.logger_setup import logger_obj
-    logger = logger_obj.get_logger(__name__)
     logger.info('Test message', test_arg='example')
 
 
