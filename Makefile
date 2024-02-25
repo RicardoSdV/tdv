@@ -1,5 +1,6 @@
 
 export PYTHONPATH := $(CURDIR)
+PRINT_SPACE := @echo ""
 
 DB_USER = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.USER.value)')
 DB_NAME = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.NAME.value)')
@@ -42,22 +43,22 @@ create_db:  # Create a psql DB for this project
 	- sudo -u postgres psql -c "CREATE DATABASE $(DB_NAME) OWNER $(DB_USER);"
 
 db_up:  # Run all alembic migration scripts to create all tables in DB
-	- cd $(ALEMBIC_PATH) && alembic upgrade head
+	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic upgrade head
 
 db:  # Log into db shell
 	- psql $(DB_NAME)
 
 db_rev:  # Create a new alembic revision script with arg REV, i.e make db_rev REV=add_table...
-	- cd $(ALEMBIC_PATH) && alembic revision -m "$(REV)"
+	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic revision -m "$(REV)"
 
 db_hist:  # Print alembic revision history
-	- cd $(ALEMBIC_PATH) && alembic history
+	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic history
 
 db_down:  # DANGER! Run downgrade script to revert most recent revision, will DELETE ALL DATA in that table
-	- cd $(ALEMBIC_PATH) && alembic downgrade -1
+	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic downgrade -1
 
 db_down_all:  # EXTREME DANGER! Deletes all tables in DB, will DELETE ALL DATA
-	- cd $(ALEMBIC_PATH) && alembic downgrade base
+	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic downgrade base
 
 drop_db:  # EXTREME DANGER!! Destroys project DB, will DELETE ALL DATA
 	- sudo -u postgres psql -c "DROP DATABASE $(DB_NAME);"

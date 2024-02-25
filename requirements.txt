@@ -7,6 +7,6 @@ sqlalchemy==2.0.27
 structlog==24.1.0
 pandas>=1.1,<2.0
 pandas_market_calendars==4.3.3
-psycopg2==2.9.9
+psycopg2-binary
 pytz
 yfinance==0.2.36
