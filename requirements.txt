@@ -10,9 +10,3 @@ pandas_market_calendars==4.3.3
 psycopg2-binary
 pytz
 yfinance==0.2.36
-
-flask~=3.0.2
-setuptools~=65.5.1
-flask_sqlalchemy
-flask_login
-werkzeug
