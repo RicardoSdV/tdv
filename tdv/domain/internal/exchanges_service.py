@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 logger = LoggerFactory.make_logger(__name__)
 
 
-class ExchangeService:
+class ExchangesService:
     def __init__(self, db: 'DB', exchange_repo: 'ExchangeRepo') -> None:
         self.__db = db
         self.__exchange_repo = exchange_repo
@@ -45,8 +45,8 @@ class ExchangeService:
 
         return exchange
 
-    def get_usd_exchanges(self, exchange_id: int) -> Exchange:
-        logger.info('Getting exchange by id', exchange_id=exchange_id)
+    def get_usd_exchanges(self) -> List[Exchange]:
+        logger.info('Getting USD exchanges')
 
         exchange = [Exchange(currency='USD')]
         with self.__db.connect as conn:

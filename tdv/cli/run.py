@@ -32,6 +32,7 @@ def yf() -> None:
 @run_group.command()
 def ping() -> None:
     """Runs the ping API on a gunicorn worker"""
+    # WSL -> Windows port: ip addr show eth0
     command = [
         'gunicorn',
         '--bind', '0.0.0.0:8000',

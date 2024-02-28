@@ -4,7 +4,7 @@ from tdv.infra.database import db
 from tdv.infra.repos import repos
 
 if TYPE_CHECKING:
-    from tdv.domain.internal.exchange_service import ExchangeService
+    from tdv.domain.internal.exchange_service import ExchangesService
     from tdv.domain.internal.option_chains_service import OptionChainsService
     from tdv.domain.internal.options_service import OptionsService
     from tdv.domain.internal.ticker_service import TickerService
@@ -12,16 +12,16 @@ if TYPE_CHECKING:
 
 class Services:
     def __init__(self) -> None:
-        self.__exchange_service: Optional['ExchangeService'] = None
+        self.__exchange_service: Optional['ExchangesService'] = None
         self.__ticker_service: Optional['TickerService'] = None
         self.__option_chains_service: Optional['OptionChainsService'] = None
         self.__options_service: Optional['OptionsService'] = None
 
     @property
-    def exchange_service(self) -> 'ExchangeService':
+    def exchange_service(self) -> 'ExchangesService':
         if self.__exchange_service is None:
-            from tdv.domain.internal.exchange_service import ExchangeService
-            self.__exchange_service = ExchangeService(db, repos.exchange_repo)
+            from tdv.domain.internal.exchange_service import ExchangesService
+            self.__exchange_service = ExchangesService(db, repos.exchange_repo)
         return self.__exchange_service
 
     @property
