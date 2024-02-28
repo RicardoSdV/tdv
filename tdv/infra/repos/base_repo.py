@@ -1,24 +1,28 @@
+"""
+This base repo is designed to be very easy to use, not efficient. As long as child repos override def _Entity
+and def _table properly, and the Entity is well-defined, Insert, Select, Update, Upsert & Delete queries
+should be fully functional out of the box. As to how, look at the available examples.
+"""
+
 from collections import defaultdict
 from functools import cached_property
-from typing import Dict, Iterable, Tuple, List, Type, TypeVar
+from typing import Dict, Iterable, Tuple, List, Type, TypeVar, Union
 
 from sqlalchemy import CursorResult, Insert, Table, Connection, Select, ColumnElement, Column, and_, bindparam, Row, \
-    tuple_
+    tuple_, Delete, Update
 
-from tdv.domain.types import Insertable, AttrName, NoReturnQuery
+from tdv.domain.types import Insertable, AttrName, NoReturnQuery, WhereAbleQuery
 
-EntityType = TypeVar('EntityType', bound='Entity')
-
-# TODO: Support insert one queries, atm using insert many to insert one
+EntityT = TypeVar('EntityT', bound='Entity')
 
 
 class BaseSerializer:
     @cached_property
-    def _Entity(self) -> Type[EntityType]:
-        """Must override with the domain/entities entity that belongs to the overriding subclass"""
+    def _Entity(self) -> Type[EntityT]:
+        """Override with the entity that belongs to the overriding subclass. Returns class, not object"""
         raise NotImplementedError()
 
-    def _to_entities(self, result: CursorResult) -> List[EntityType]:
+    def _to_entities(self, result: CursorResult) -> List[EntityT]:
         """Turn Row objects into domain/entities, must pass all params positionally"""
         return [self._Entity(*row) for row in result.fetchall()]
 
@@ -26,16 +30,16 @@ class BaseSerializer:
         return {name: element for name, element in zip(self._Entity.__slots__, row)}
 
     @staticmethod
-    def _entities_to_dict(entities: Iterable[EntityType]) -> List[Dict[AttrName, Insertable]]:
+    def _entities_to_dict(entities: Iterable[EntityT]) -> List[Dict[AttrName, Insertable]]:
         """Turns domain/entities into param dicts of not None params"""
         return [entity.to_dict() for entity in entities]
 
     @staticmethod
-    def _entities_to_attrs_list(entities: Iterable[EntityType]) -> List[List[Insertable]]:
+    def _entities_to_attrs_list(entities: Iterable[EntityT]) -> List[List[Insertable]]:
         return [entity.to_list() for entity in entities]
 
     @staticmethod
-    def _entities_to_filters(entities: Iterable[EntityType]) -> Dict[str, List]:
+    def _entities_to_filters(entities: Iterable[EntityT]) -> Dict[str, List]:
         filters = defaultdict(list)
         for entity in entities:
             for attr_name in entity.__slots__:
@@ -69,6 +73,12 @@ class BaseQueryBuilder:
     def _select_query(self) -> Select:
         return self._table.select()
 
+    def _delete_query(self) -> Delete:
+        return self._table.delete()
+
+    def _update_query(self) -> Update:
+        return self._table.update()
+
     def _any_by_attrs_condition(self, attrs: List[List[Insertable]], not_none_slots: List[AttrName]) -> ColumnElement:
         return and_(tuple_(*[c for c in self._all_columns if c.name in not_none_slots]).in_(attrs))
 
@@ -79,7 +89,7 @@ class BaseQueryBuilder:
         return query.returning(self._table)
 
     @staticmethod
-    def _turn_into_where_query(query: Select, condition: ColumnElement) -> Select:
+    def _turn_into_where_query(query: WhereAbleQuery, condition: ColumnElement) -> WhereAbleQuery:
         return query.where(condition)
 
     @staticmethod
@@ -88,16 +98,18 @@ class BaseQueryBuilder:
 
 
 class BaseRepo(BaseQueryBuilder, BaseSerializer):
-    def insert(self, conn: Connection, entities: List[EntityType]) -> List[EntityType]:
+    def insert(self, conn: Connection, entities: List[EntityT]) -> List[EntityT]:
         query = self._insert_query()
         query = self._turn_to_returning_all_query(query)
         params: List[Dict] = self._entities_to_dict(entities)
 
         result: CursorResult = conn.execute(query, params)
-        entities: List[EntityType] = self._to_entities(result)
+        entities: List[EntityT] = self._to_entities(result)
         return entities
 
-    def select(self, conn: Connection, entities: List[EntityType], for_update: bool = False) -> List[EntityType]:
+    def select(self, conn: Connection, entities: List[EntityT], for_update: bool = False) -> List[EntityT]:
+        """Generic Select, one or more, returning all, all entities should have the same None attrs"""
+
         query: Select = self._select_query()
         if for_update:
             query = self._turn_into_for_update_query(query)
@@ -110,3 +122,33 @@ class BaseRepo(BaseQueryBuilder, BaseSerializer):
         entities = self._to_entities(result)
 
         return entities
+
+    def delete(self, conn: Connection, entities: List[EntityT]) -> List[EntityT]:
+        query: Delete = self._delete_query()
+        query = self._turn_to_returning_all_query(query)
+
+        attrs = self._entities_to_attrs_list(entities)
+        condition = self._any_by_attrs_condition(attrs, entities[0].not_none_slots())
+        query = self._turn_into_where_query(query, condition)
+
+        result = conn.execute(query)
+        entities = self._to_entities(result)
+
+        return entities
+
+    def update(self, conn: Connection, entities: List[EntityT]) -> List[EntityT]:
+        query: Update = self._update_query()
+        query = self._turn_to_returning_all_query(query)
+
+        attrs = self._entities_to_attrs_list(entities)
+        condition = self._any_by_attrs_condition(attrs, entities[0].not_none_slots())
+        query = self._turn_into_where_query(query, condition)
+
+        result = conn.execute(query)
+        entities = self._to_entities(result)
+
+        return entities
+
+    def upsert(self, conn: Connection, entities: List[EntityT]) -> List[EntityT]:
+        # TODO
+        pass

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Tuple, Dict, List, Union, Any
 
 from pandas import DataFrame
-from sqlalchemy import Insert, Update, Delete
+from sqlalchemy import Insert, Update, Delete, Select
 
 # Strings
 AttrName = str
@@ -27,3 +27,4 @@ OptionChainYF = Tuple[DataFrame, DataFrame, Dict]
 OptionChainsYF = List[OptionChainYF]
 Insertable = Union[int, str, float, bool, None, datetime]
 NoReturnQuery = Union[Insert, Update, Delete]
+WhereAbleQuery = Union[Select, Update, Delete]

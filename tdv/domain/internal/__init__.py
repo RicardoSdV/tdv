@@ -4,7 +4,7 @@ from tdv.infra.database import db
 from tdv.infra.repos import repos
 
 if TYPE_CHECKING:
-    from tdv.domain.internal.exchange_service import ExchangesService
+    from tdv.domain.internal.exchanges_service import ExchangesService
     from tdv.domain.internal.option_chains_service import OptionChainsService
     from tdv.domain.internal.options_service import OptionsService
     from tdv.domain.internal.ticker_service import TickerService
@@ -20,7 +20,7 @@ class Services:
     @property
     def exchange_service(self) -> 'ExchangesService':
         if self.__exchange_service is None:
-            from tdv.domain.internal.exchange_service import ExchangesService
+            from tdv.domain.internal.exchanges_service import ExchangesService
             self.__exchange_service = ExchangesService(db, repos.exchange_repo)
         return self.__exchange_service
 
