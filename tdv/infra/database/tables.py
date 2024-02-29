@@ -27,7 +27,6 @@ exchanges_table = Table(
     Column('hist', Boolean, server_default='false', nullable=False),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
-    Index('ix_exchanges_name', 'name', unique=True),
 )
 
 tickers_table = Table(
