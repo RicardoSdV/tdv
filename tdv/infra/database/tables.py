@@ -1,5 +1,4 @@
-from sqlalchemy import MetaData, Table, Column, DateTime, func, Index, SmallInteger, BigInteger, String, ForeignKey, \
-    Boolean, Numeric, Integer
+from sqlalchemy import MetaData, Table, Column, DateTime, func, SmallInteger, BigInteger, String, ForeignKey, Boolean, Numeric, Integer
 
 from tdv.domain.entities.exchange_entity import Currencies
 

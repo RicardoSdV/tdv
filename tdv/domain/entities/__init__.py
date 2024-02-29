@@ -11,3 +11,4 @@ Entities must have __slots__ which hold the column names of the table it belongs
 exact same name as the column of the table. This is because the repos use slots to perform queries.
 
 """
+pass

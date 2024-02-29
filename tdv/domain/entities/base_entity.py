@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Optional, List, Dict, Iterable
+from typing import Any, Optional, List, Dict
 
 from tdv.domain.types import EntityId, AttrName, Insertable
 
