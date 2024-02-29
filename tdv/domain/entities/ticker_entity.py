@@ -17,7 +17,7 @@ class Companies(Enum):
 
 
 class Ticker(Entity):
-    __slots__ = ('id', 'exchange_id', 'ticker', 'company', 'live', 'hist', 'created_at', 'updated_at')
+    __slots__ = ('exchange_id', 'ticker', 'company', 'live', 'hist', 'created_at', 'updated_at')
 
     def __init__(
         self,

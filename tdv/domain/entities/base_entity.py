@@ -1,11 +1,12 @@
 from enum import Enum
-from typing import Any, Optional, List, Dict, Tuple
+from typing import Any, Optional, List, Dict, Iterable
 
 from tdv.domain.types import EntityId, AttrName, Insertable
 
 
 class EntityEnum(Enum):
     """Simplify enum handling by inheriting from this class"""
+
     @classmethod
     def validate_value(cls, value: Any) -> Any:
         assert value in cls._value2member_map_

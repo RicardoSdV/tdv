@@ -15,7 +15,7 @@ class Currencies(EntityEnum):
 
 
 class Exchange(Entity):
-    __slots__ = ('id', 'name', 'currency', 'live', 'hist', 'created_at', 'updated_at')
+    __slots__ = ('name', 'currency', 'live', 'hist', 'created_at', 'updated_at')
 
     def __init__(self,
                  exchange_id: Optional[ExchangeId] = None,

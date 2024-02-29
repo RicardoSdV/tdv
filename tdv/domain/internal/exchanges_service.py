@@ -41,8 +41,9 @@ class ExchangesService(DbInteractiveService):
 
     def update_exchange_live(self, exchange_name: str, is_live: bool) -> List[Exchange]:
         logger.debug('Updating exchange live status', exchange_name=exchange_name, is_live=is_live)
-        exchanges = [Exchange(name=exchange_name, live=is_live)]
-        exchanges = self._do_db_operation(self._repo.update, exchanges)
+        exchanges = [Exchange(name=exchange_name)]
+        params = {'live': is_live}
+        exchanges = self._do_db_operation(self._repo.update, exchanges, params)
         return exchanges
 
     def delete_exchange_by_name(self, exchange_name: str) -> List[Exchange]:

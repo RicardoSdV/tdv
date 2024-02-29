@@ -6,23 +6,22 @@ should be fully functional out of the box. As to how, look at the available exam
 
 from collections import defaultdict
 from functools import cached_property
-from typing import Dict, Iterable, Tuple, List, Type, TypeVar, Union
+from typing import Dict, Iterable, Tuple, List, Type
 
 from sqlalchemy import CursorResult, Insert, Table, Connection, Select, ColumnElement, Column, and_, bindparam, Row, \
     tuple_, Delete, Update
 
+from tdv.domain.entities.base_entity import Entity
 from tdv.domain.types import Insertable, AttrName, NoReturnQuery, WhereAbleQuery
-
-EntityT = TypeVar('EntityT', bound='Entity')
 
 
 class BaseSerializer:
     @cached_property
-    def _Entity(self) -> Type[EntityT]:
+    def _Entity(self) -> Type[Entity]:
         """Override with the entity that belongs to the overriding subclass. Returns class, not object"""
         raise NotImplementedError()
 
-    def _to_entities(self, result: CursorResult) -> List[EntityT]:
+    def _to_entities(self, result: CursorResult) -> List[Entity]:
         """Turn Row objects into domain/entities, must pass all params positionally"""
         return [self._Entity(*row) for row in result.fetchall()]
 
@@ -30,16 +29,16 @@ class BaseSerializer:
         return {name: element for name, element in zip(self._Entity.__slots__, row)}
 
     @staticmethod
-    def _entities_to_dict(entities: Iterable[EntityT]) -> List[Dict[AttrName, Insertable]]:
+    def _entities_to_params_dicts(entities: Iterable[Entity]) -> List[Dict[AttrName, Insertable]]:
         """Turns domain/entities into param dicts of not None params"""
         return [entity.to_dict() for entity in entities]
 
     @staticmethod
-    def _entities_to_attrs_list(entities: Iterable[EntityT]) -> List[List[Insertable]]:
+    def _entities_to_attrs_list(entities: Iterable[Entity]) -> List[List[Insertable]]:
         return [entity.to_list() for entity in entities]
 
     @staticmethod
-    def _entities_to_filters(entities: Iterable[EntityT]) -> Dict[str, List]:
+    def _entities_to_filters(entities: Iterable[Entity]) -> Dict[AttrName, List]:
         filters = defaultdict(list)
         for entity in entities:
             for attr_name in entity.__slots__:
@@ -98,16 +97,16 @@ class BaseQueryBuilder:
 
 
 class BaseRepo(BaseQueryBuilder, BaseSerializer):
-    def insert(self, conn: Connection, entities: List[EntityT]) -> List[EntityT]:
+    def insert(self, conn: Connection, entities: List[Entity]) -> List[Entity]:
         query = self._insert_query()
         query = self._turn_to_returning_all_query(query)
-        params: List[Dict] = self._entities_to_dict(entities)
+        params: List[Dict] = self._entities_to_params_dicts(entities)
 
         result: CursorResult = conn.execute(query, params)
-        entities: List[EntityT] = self._to_entities(result)
+        entities: List[Entity] = self._to_entities(result)
         return entities
 
-    def select(self, conn: Connection, entities: List[EntityT], for_update: bool = False) -> List[EntityT]:
+    def select(self, conn: Connection, entities: List[Entity], for_update: bool = False) -> List[Entity]:
         """Generic Select, one or more, returning all, all entities should have the same None attrs"""
 
         query: Select = self._select_query()
@@ -123,7 +122,24 @@ class BaseRepo(BaseQueryBuilder, BaseSerializer):
 
         return entities
 
-    def delete(self, conn: Connection, entities: List[EntityT]) -> List[EntityT]:
+    def update(self, conn: Connection, entities: List[Entity], params: Dict[AttrName, Insertable]) -> List[Entity]:
+        query: Update = self._update_query()
+        query = self._turn_to_returning_all_query(query)
+
+        attrs = self._entities_to_attrs_list(entities)
+        condition = self._any_by_attrs_condition(attrs, entities[0].not_none_slots())
+        query = self._turn_into_where_query(query, condition)
+
+        result = conn.execute(query, params)
+        entities = self._to_entities(result)
+
+        return entities
+
+    def upsert(self, conn: Connection, entities: List[Entity]) -> List[Entity]:
+        # TODO
+        raise NotImplementedError('Upsert not implemented')
+
+    def delete(self, conn: Connection, entities: List[Entity]) -> List[Entity]:
         query: Delete = self._delete_query()
         query = self._turn_to_returning_all_query(query)
 
@@ -135,20 +151,3 @@ class BaseRepo(BaseQueryBuilder, BaseSerializer):
         entities = self._to_entities(result)
 
         return entities
-
-    def update(self, conn: Connection, entities: List[EntityT]) -> List[EntityT]:
-        query: Update = self._update_query()
-        query = self._turn_to_returning_all_query(query)
-
-        attrs = self._entities_to_attrs_list(entities)
-        condition = self._any_by_attrs_condition(attrs, entities[0].not_none_slots())
-        query = self._turn_into_where_query(query, condition)
-
-        result = conn.execute(query)
-        entities = self._to_entities(result)
-
-        return entities
-
-    def upsert(self, conn: Connection, entities: List[EntityT]) -> List[EntityT]:
-        # TODO
-        pass
