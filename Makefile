@@ -42,11 +42,11 @@ db_user:  # Create a psql user
 create_db:  # Create a psql DB for this project
 	- sudo -u postgres psql -c "CREATE DATABASE $(DB_NAME) OWNER $(DB_USER);"
 
-db_up:  # Run all alembic migration scripts to create all tables in DB
-	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic upgrade head
-
 db:  # Log into db shell
 	- psql $(DB_NAME)
+
+db_up:  # Run all alembic migration scripts to create all tables in DB
+	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic upgrade head
 
 db_rev:  # Create a new alembic revision script with arg REV, i.e make db_rev REV=add_table...
 	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic revision -m "$(REV)"

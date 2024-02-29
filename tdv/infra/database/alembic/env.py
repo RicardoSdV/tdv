@@ -6,6 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from tdv.constants import DbInfo
+from tdv.infra.database.tables import metadata
 
 db_url = DbInfo.make_sqlalchemy_url()
 
@@ -16,7 +17,7 @@ config.set_main_option('sqlalchemy.url', db_url)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = None
+target_metadata = metadata
 
 
 def run_migrations_offline() -> None:
