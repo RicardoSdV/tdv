@@ -6,8 +6,8 @@ from schedule import Scheduler
 from yfinance import Ticker
 
 from tdv.constants import MarketEvents
+from tdv.domain.entities.ticker_entity import Tickers
 from tdv.domain.types import Expirations, OptionChainsYF, Second
-from bin.depcr.json.option_chains_repo import OptionChainsRepo
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
@@ -18,13 +18,11 @@ class BaseServiceProxy:
         raise NotImplementedError()
 
 
-class YFserviceProxy(BaseServiceProxy):
+class YFserviceProxy(BaseServiceProxy, Ticker):
     __update_options_interval: Second = 10
-    __exchange_tickers = {'NYSE': ('TSLA',)}  # TODO: Rethink were they will live, one place in sync with DB
-    __pretty_print_json = False
 
-    def __init__(self) -> None:
-        self.__option_chains_repo = OptionChainsRepo()
+    def __init__(self, ticker: Tickers) -> None:
+        super().__init__(ticker.value)
 
         self.__schedulers = {name: Scheduler() for name in self.__exchange_tickers.keys()}
         self.__calendars = {name: get_calendar(name) for name in self.__exchange_tickers.keys()}

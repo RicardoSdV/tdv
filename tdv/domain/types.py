@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, Dict, List, Union, Any
+from typing import Tuple, Dict, List, Union, Any, Callable
 
 from pandas import DataFrame
 from sqlalchemy import Insert, Update, Delete, Select
@@ -29,3 +29,6 @@ Insertable = Union[int, str, float, bool, None, datetime]
 NoReturnQuery = Union[Insert, Update, Delete]
 WhereAbleQuery = Union[Select, Update, Delete]
 UpdateParams = Dict[AttrName, Insertable]
+Handler = Callable[..., None]
+Args = Tuple[Any, ...]
+KwArgs = Dict[str, Any]

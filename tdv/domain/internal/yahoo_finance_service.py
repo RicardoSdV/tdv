@@ -1,0 +1,2 @@
+class YahooFinanceService:
+    pass
