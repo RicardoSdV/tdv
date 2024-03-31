@@ -6,7 +6,7 @@ from tdv.domain.types import OptionId, OptionChainId
 
 
 class Option(Entity):
-    __slots__ = ('option_chain_id', 'strike', 'last_trade', 'last_price', 'bid', 'ask', 'change',
+    __slots__ = ('id', 'option_chain_id', 'strike', 'last_trade', 'last_price', 'bid', 'ask', 'change',
                  'volume', 'open_interest', 'implied_volatility', 'created_at', 'updated_at')
 
     def __init__(
@@ -24,7 +24,7 @@ class Option(Entity):
             implied_volatility: Optional[float] = None,
             created_at: Optional[datetime] = None,
     ) -> None:
-        super().__init__(option_id)
+        self.id = option_id
         self.option_chain_id = option_chain_id
         self.strike = strike
         self.last_trade = last_trade

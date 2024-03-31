@@ -1,7 +1,7 @@
 from falcon import Request, Response, HTTP_200
 
 from tdv.api.base_resource import BaseResource
-from tdv.domain.internal.exchanges_service import ExchangesService
+from tdv.domain.internal.exchange_service import ExchangesService
 
 
 class ExchangesBaseResource(BaseResource):

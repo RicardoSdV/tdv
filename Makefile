@@ -49,7 +49,7 @@ db_up:  # Run all alembic migration scripts to create all tables in DB
 	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic upgrade head
 
 db_rev:  # Create a new alembic revision script with arg REV, i.e make db_rev REV=add_table...
-	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic revision -m "$(REV)"
+	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic revision --autogenerate -m "$(REV)"
 
 db_hist:  # Print alembic revision history
 	- . venv/bin/activate && cd $(ALEMBIC_PATH) && alembic history

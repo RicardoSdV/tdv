@@ -19,6 +19,7 @@ ExchangeId = EntityId
 TickerId = int
 OptionChainId = int
 OptionId = int
+UserId = int
 
 # Custom types
 Expirations = Tuple[Date, ...]

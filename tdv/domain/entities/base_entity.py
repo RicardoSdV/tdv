@@ -19,10 +19,7 @@ class EntityEnum(Enum):
 
 class Entity:
     """Base entity class, repo operation requires that __slots__ have the exact same name as table columns"""
-    __slots__ = ('id',)
-
-    def __init__(self, entity_id: Optional[EntityId]) -> None:
-        self.id = entity_id
+    __slots__ = ()
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}({self.to_dict()})'

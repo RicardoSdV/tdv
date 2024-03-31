@@ -15,7 +15,7 @@ class Currencies(EntityEnum):
 
 
 class Exchange(Entity):
-    __slots__ = ('name', 'currency', 'live', 'hist', 'created_at', 'updated_at')
+    __slots__ = ('id', 'name', 'currency', 'live', 'hist', 'created_at', 'updated_at')
 
     def __init__(self,
                  exchange_id: Optional[ExchangeId] = None,
@@ -26,7 +26,7 @@ class Exchange(Entity):
                  created_at: Optional[datetime] = None,
                  updated_at: Optional[datetime] = None,
                  ) -> None:
-        super().__init__(entity_id=exchange_id)
+        self.id = exchange_id
         self.name = None if name is None else Exchanges.validate_value(name)
         self.currency = None if currency is None else Currencies.validate_value(currency)
         self.live = live

@@ -67,3 +67,20 @@ options_table = Table(
     Column('implied_volatility', Integer, nullable=False),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
 )
+
+# TODO: Double check this
+users_table = Table(
+    'users', metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('username', String(200), nullable=False, unique=True),
+    Column('email', String(200), nullable=False, unique=True),
+    Column('password', String(200), nullable=False),
+    Column('created_at', DateTime, server_default=func.now(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+)
+
+portfolios_table = Table(
+    'portfolios', metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('user_id', BigInteger, ForeignKey(users_table.c.id), nullable=True),
+)

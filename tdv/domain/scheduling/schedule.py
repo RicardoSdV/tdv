@@ -39,8 +39,7 @@ class Schedule:
     def delete_old_jobs(self) -> None:
         delete_time = self.__delete_time()
         while self.__jobs and self.__jobs[-1].run_at < delete_time:
-            job = self.__jobs.pop()
-            job()
+            self.__jobs.pop()
 
     def __run_time(self) -> datetime:
         if self.__run_offset is None:

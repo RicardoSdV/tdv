@@ -14,7 +14,7 @@ class DbInteractiveService:
         self._db = db
         self._repo = repo
 
-    def _do_db_operation(self, method: Callable, entities: List[Entity], *args, **kwargs) -> List[Entity]:
+    def _do_db_operation(self, method: Callable, entities: List[Entity], *args, **kwargs) -> List[EntityT]:
         """Call a single repo method"""
         with self._db.connect as conn:
             entities = method(conn, entities, *args, **kwargs)

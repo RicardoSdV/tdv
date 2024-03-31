@@ -19,9 +19,6 @@ class ExchangeQueryBuilder(BaseQueryBuilder):
     def _table(self) -> Table:
         return exchanges_table
 
-    def _id_query(self) -> BinaryExpression:
-        return self._table.c.id
-
 
 class ExchangeRepo(ExchangeSerializer, ExchangeQueryBuilder, BaseRepo):
     pass
