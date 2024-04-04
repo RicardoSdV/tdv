@@ -15,7 +15,7 @@ metadata = MetaData()
 # SmallInteger -> +- 32 000  (2 bytes)
 # Integer -> +- 2 000 000 000  (4 bytes)
 # BigInteger ->  +- 9 000 000 000 000 000 000  (8 bytes)
-# Numeric(precision=10, scale=2) -> 10 000 000.01
+# Numeric(precision=24, scale=10) -> 10 000 000 000 000.000 000 000 1
 
 exchanges_table = Table(
     'exchanges', metadata,
@@ -79,8 +79,39 @@ users_table = Table(
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-portfolios_table = Table(
-    'portfolios', metadata,
+ticker_share_types_table = Table(
+    'ticker_share_types', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('user_id', BigInteger, ForeignKey(users_table.c.id), nullable=True),
+    Column('ticker_id', BigInteger, ForeignKey(tickers_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('share_type', String(200), nullable=False),
 )
+
+
+user_shares_table = Table(
+    'user_shares', metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('ticker_share_type_id', BigInteger, ForeignKey(ticker_share_types_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0'),
+    Column('created_at', DateTime, server_default=func.now(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+)
+
+# portfolio_options_table = Table(
+#     'portfolio_options', metadata,
+#     Column('id', BigInteger, primary_key=True, autoincrement=True),
+#     Column('option_id', BigInteger, ForeignKey(options_table.c.id, ondelete='RESTRICT'), nullable=False),
+#     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),  # If negative sell to open
+#     Column('created_at', DateTime, server_default=func.now(), nullable=False),
+#     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+# )
+#
+# portfolios_table = Table(
+#     'portfolios', metadata,
+#     Column('id', BigInteger, primary_key=True, autoincrement=True),
+#     Column('user_id', BigInteger, ForeignKey(users_table.c.id, ondelete='RESTRICT'), nullable=True),
+#     Column('user_shares_id', BigInteger, ForeignKey(user_shares_table.c.id, ondelete='RESTRICT'), nullable=False),
+#     Column('portfolio_options_id', BigInteger, ForeignKey(portfolio_options_table.c.id, ondelete='RESTRICT'), nullable=False),
+#     Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
+#     Column('created_at', DateTime, server_default=func.now(), nullable=False),
+#     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+# )

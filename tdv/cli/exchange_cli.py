@@ -18,6 +18,8 @@ def exchanges_group() -> None:
 @exchanges_group.command()
 @option('-n', '--exchange_name', 'exchange_name', required=True, type=Choice(Exchanges.to_list()))
 def create(exchange_name: str) -> None:
+    """Creates a new exchange"""
+
     from tdv.containers import InternalServices
     result = InternalServices.exchange_service().create_exchange(exchange_name)
     logger.info('Exchange created', result=result)

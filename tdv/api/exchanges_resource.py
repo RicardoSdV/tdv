@@ -1,11 +1,11 @@
 from falcon import Request, Response, HTTP_200
 
 from tdv.api.base_resource import BaseResource
-from tdv.domain.internal.exchange_service import ExchangesService
+from tdv.domain.internal.exchange_service import ExchangeService
 
 
 class ExchangesBaseResource(BaseResource):
-    def __init__(self, exchange_service: ExchangesService) -> None:
+    def __init__(self, exchange_service: ExchangeService) -> None:
         self.__exchanges_service = exchange_service
 
     def on_get(self, req: Request, resp: Response):

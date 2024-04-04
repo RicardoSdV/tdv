@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 logger = LoggerFactory.make_logger(__name__)
 
 
-class ExchangesService(DbInteractiveService):
+class ExchangeService(DbInteractiveService):
     def __init__(self, db: 'DB', exchange_repo: 'ExchangeRepo') -> None:
         super().__init__(db, exchange_repo)
 

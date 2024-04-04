@@ -22,7 +22,7 @@ def upgrade() -> None:
         'tickers',
         sa.Column('id', sa.Integer(), primary_key=True, autoincrement=True, nullable=False),
         sa.Column('exchange_id', sa.SmallInteger(), nullable=False),
-        sa.Column('ticker', sa.String(length=20), nullable=False),
+        sa.Column('ticker', sa.String(length=20), nullable=False),  # TODO: Add unique constraint
         sa.Column('company', sa.String(length=200), nullable=False),
         sa.Column('live', sa.Boolean(), server_default=sa.false(), nullable=False),
         sa.Column('hist', sa.Boolean(), server_default=sa.false(), nullable=False),

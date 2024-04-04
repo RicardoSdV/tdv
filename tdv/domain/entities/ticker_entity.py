@@ -11,7 +11,7 @@ class TickersEnum(EntityEnum):
     AMZN = 'AMZN'
 
 
-class Companies(Enum):
+class Companies(EntityEnum):
     TSLA = 'Tesla'
     AMZN = 'Amazon'
 
@@ -23,8 +23,8 @@ class Ticker(Entity):
         self,
         ticker_id: Optional[TickerId] = None,
         exchange_id: Optional[ExchangeId] = None,
-        ticker: Optional[TickersEnum] = None,
-        company: Optional[Companies] = None,
+        ticker_name: Optional[str] = None,
+        company_name: Optional[str] = None,
         live: Optional[bool] = None,
         hist: Optional[bool] = None,
         created_at: Optional[datetime] = None,
@@ -32,8 +32,8 @@ class Ticker(Entity):
     ) -> None:
         self.id = ticker_id
         self.exchange_id = exchange_id
-        self.ticker = ticker
-        self.company = company
+        self.ticker = None if ticker_name is None else TickersEnum.validate_value(ticker_name)
+        self.company = None if company_name is None else Companies.validate_value(company_name)
         self.live = live
         self.hist = hist
         self.created_at = created_at
