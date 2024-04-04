@@ -1,16 +1,16 @@
 import os
 
-import click
+from click import group, echo
 
 from tdv.constants import SOURCE_DIR_PATH
 
 
-@click.group('format')
+@group('format')
 def format_group() -> None:
     """For code formatting commands"""
 
 
-@format_group.command('quotes')
+@format_group.command()
 def quotes() -> None:
     """Turns double quotes into single in SOURCE_PATH except this file and docstrings"""
 
@@ -36,4 +36,4 @@ def quotes() -> None:
         with open(file_path, 'w', encoding='utf-8') as f:
             f.writelines(modified_lines)
 
-    click.echo('Quotes formatting complete.')
+    echo('Quotes formatting complete.')

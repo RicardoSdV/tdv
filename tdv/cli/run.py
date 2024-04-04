@@ -1,24 +1,24 @@
 import subprocess
 
-import click
+from click import group
 
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
 
 
-@click.group('run')
+@group('run')
 def run_group() -> None:
     """Run different services such as Yahoo Finance or the APIs"""
 
 
-@run_group.command('log')
+@run_group.command()
 def log() -> None:
     """ For testing logger """
     logger.info('Test message', test_arg='example')
 
 
-@run_group.command('yf')
+@run_group.command()
 def yf() -> None:
     """Run periodic requests to Yahoo Finance to request options data"""
     from tdv.constants import ROOT_DIR_PATH

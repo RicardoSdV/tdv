@@ -67,7 +67,6 @@ class Financials:
             res[freq] = self._fetch_time_series("cash-flow", freq, proxy)
         return res[freq]
 
-    @utils.log_indent_decorator
     def _fetch_time_series(self, name, timescale, proxy=None):
         # Fetching time series preferred over scraping 'QuoteSummaryStore',
         # because it matches what Yahoo shows. But for some tickers returns nothing, 

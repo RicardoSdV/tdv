@@ -33,7 +33,6 @@ from .data import YfData
 from . import shared
 
 
-@utils.log_indent_decorator
 def download(tickers, start=None, end=None, actions=False, threads=True, ignore_tz=None,
              group_by='column', auto_adjust=False, back_adjust=False, repair=False, keepna=False,
              progress=True, period="max", show_errors=None, interval="1d", prepost=False,

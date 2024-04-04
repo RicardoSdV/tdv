@@ -85,7 +85,6 @@ class TickerBase:
         # Limit recursion depth when repairing prices
         self._reconstruct_start_interval = None
 
-    @utils.log_indent_decorator
     def history(self, period="1mo", interval="1d",
                 start=None, end=None, prepost=False, actions=True,
                 auto_adjust=True, back_adjust=False, repair=False, keepna=False,
@@ -443,7 +442,6 @@ class TickerBase:
 
     # ------------------------
 
-    @utils.log_indent_decorator
     def _reconstruct_intervals_batch(self, df, interval, prepost, tag=-1):
         # Reconstruct values in df using finer-grained price data. Delimiter marks what to reconstruct
         logger = utils.get_yf_logger()
@@ -818,7 +816,6 @@ class TickerBase:
 
         return df_v2
 
-    @utils.log_indent_decorator
     def _fix_unit_mixups(self, df, interval, tz_exchange, prepost):
         if df.empty:
             return df
@@ -826,7 +823,6 @@ class TickerBase:
         df3 = self._fix_unit_random_mixups(df2, interval, tz_exchange, prepost)
         return df3
 
-    @utils.log_indent_decorator
     def _fix_unit_random_mixups(self, df, interval, tz_exchange, prepost):
         # Sometimes Yahoo returns few prices in cents/pence instead of $/£
         # I.e. 100x bigger
@@ -979,7 +975,6 @@ class TickerBase:
 
         return df2
 
-    @utils.log_indent_decorator
     def _fix_unit_switch(self, df, interval, tz_exchange):
         # Sometimes Yahoo returns few prices in cents/pence instead of $/£
         # I.e. 100x bigger
@@ -991,7 +986,6 @@ class TickerBase:
 
         return self._fix_prices_sudden_change(df, interval, tz_exchange, 100.0)
 
-    @utils.log_indent_decorator
     def _fix_zeroes(self, df, interval, tz_exchange, prepost):
         # Sometimes Yahoo returns prices=0 or NaN when trades occurred.
         # But most times when prices=0 or NaN returned is because no trades.
@@ -1102,7 +1096,6 @@ class TickerBase:
 
         return df2
 
-    @utils.log_indent_decorator
     def _fix_missing_div_adjust(self, df, interval, tz_exchange):
         # Sometimes, if a dividend occurred today, then Yahoo has not adjusted historic data.
         # Easy to detect and correct BUT ONLY IF the data 'df' includes today's dividend.
@@ -1172,7 +1165,6 @@ class TickerBase:
 
         return df2
 
-    @utils.log_indent_decorator
     def _fix_bad_stock_split(self, df, interval, tz_exchange):
         # Repair idea is to look for BIG daily price changes that closely match the
         # most recent stock split ratio. This indicates Yahoo failed to apply a new
@@ -1209,7 +1201,6 @@ class TickerBase:
 
         return self._fix_prices_sudden_change(df, interval, tz_exchange, split, correct_volume=True)
 
-    @utils.log_indent_decorator
     def _fix_prices_sudden_change(self, df, interval, tz_exchange, change, correct_volume=False):
         if df.empty:
             return df
@@ -1670,7 +1661,6 @@ class TickerBase:
         self._tz = tz
         return tz
 
-    @utils.log_indent_decorator
     def _fetch_ticker_tz(self, proxy, timeout):
         # Query Yahoo for fast price data just to get returned timezone
         proxy = proxy or self.proxy
@@ -1994,7 +1984,6 @@ class TickerBase:
             return data.to_dict()
         return data
 
-    @utils.log_indent_decorator
     def get_shares_full(self, start=None, end=None, proxy=None):
         logger = utils.get_yf_logger()
 
@@ -2101,7 +2090,6 @@ class TickerBase:
         self._news = data.get("news", [])
         return self._news
 
-    @utils.log_indent_decorator
     def get_earnings_dates(self, limit=12, proxy=None) -> Optional[pd.DataFrame]:
         """
         Get earning dates (future and historic)

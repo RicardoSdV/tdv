@@ -13,7 +13,7 @@ def users_group() -> None:
     """Users table related operations."""
 
 
-@users_group.command('create')
+@users_group.command()
 @option('-u', '--username', 'username', required=True)
 @option('-e', '--email', 'email', required=True)
 @option('-p', '--password', 'password', required=True)
@@ -23,7 +23,7 @@ def create(username: str, email: str, password: str) -> None:
     logger.info('User created', result=result)
 
 
-@users_group.command('delete')
+@users_group.command()
 @option('-u', '--username', 'username', required=False)
 @option('-e', '--email', 'email', required=False)
 @option('-i', '--id', 'user_id', required=False)
@@ -43,7 +43,7 @@ def delete(username: Optional[str], email: Optional[str], user_id: Optional[User
     logger.info('User deleted', result=result)
 
 
-@users_group.command('get')
+@users_group.command()
 @option('-e', '--email', 'email', required=True)
 @option('-p', '--password', 'password', required=True)
 def select(email: str, password: str) -> None:
@@ -52,7 +52,7 @@ def select(email: str, password: str) -> None:
     logger.info('User selected', result=result)
 
 
-@users_group.command('update_username')
+@users_group.command()
 @option('-u', '--username_new', 'username', required=True)
 @option('-e', '--email', 'email', required=True)
 @option('-p', '--password', 'password', required=True)

@@ -128,4 +128,8 @@ class YFserviceProxy(Ticker):
     #     return expirations
 
 
-YFserviceProxy(TickersEnum.TSLA.value).run()
+ticker = Ticker(TickersEnum.TSLA.value)
+options = ticker._download_options()
+print('options', json.dumps(options, indent=2))
+print('self._expirations', json.dumps(ticker._expirations, indent=2))
+print('self._underlying', json.dumps(ticker._underlying, indent=2))

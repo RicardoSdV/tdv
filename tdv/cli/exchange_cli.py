@@ -15,7 +15,7 @@ def exchanges_group() -> None:
 
 
 # TODO: Add help
-@exchanges_group.command('create')
+@exchanges_group.command()
 @option('-n', '--exchange_name', 'exchange_name', required=True, type=Choice(Exchanges.to_list()))
 def create(exchange_name: str) -> None:
     from tdv.containers import InternalServices
@@ -23,14 +23,14 @@ def create(exchange_name: str) -> None:
     logger.info('Exchange created', result=result)
 
 
-@exchanges_group.command('create_all')
+@exchanges_group.command()
 def create_all() -> None:
     from tdv.containers import InternalServices
     result = InternalServices.exchange_service().create_all_exchanges()
     logger.info('Exchanges created', result=result)
 
 
-@exchanges_group.command('get')
+@exchanges_group.command()
 @option('-n', '--exchange_name', 'exchange_name', type=str, default=None)
 @option('-i', '--exchange_id', 'exchange_id', type=ExchangeId, default=None)
 def get(exchange_name: Optional[str], exchange_id: Optional[ExchangeId]) -> None:
@@ -47,7 +47,7 @@ def get(exchange_name: Optional[str], exchange_id: Optional[ExchangeId]) -> None
     logger.info('Exchange selected', result=result)
 
 
-@exchanges_group.command('update_live')
+@exchanges_group.command()
 @option('-n', '--exchange_name', 'exchange_name', type=str)
 @option('-l', '--is_live', 'is_live', type=bool)
 def update_live(exchange_name: str, is_live: bool) -> None:
@@ -58,7 +58,7 @@ def update_live(exchange_name: str, is_live: bool) -> None:
     logger.info('Exchange updated', result=result)
 
 
-@exchanges_group.command('delete')
+@exchanges_group.command()
 @option('-n', '--exchange_name', 'exchange_name', default=None)
 def delete(exchange_name: Optional[str]) -> None:
     from tdv.containers import InternalServices

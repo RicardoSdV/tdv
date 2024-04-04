@@ -208,7 +208,6 @@ class YfData(metaclass=SingletonMeta):
         utils.get_yf_logger().debug(f"crumb = '{self._crumb}'")
         return self._crumb
 
-    @utils.log_indent_decorator
     def _get_cookie_and_crumb_basic(self, proxy, timeout):
         cookie = self._get_cookie_basic(proxy, timeout)
         crumb = self._get_crumb_basic(proxy, timeout)
@@ -275,7 +274,6 @@ class YfData(metaclass=SingletonMeta):
         self._save_session_cookies()
         return True
 
-    @utils.log_indent_decorator
     def _get_crumb_csrf(self, proxy=None, timeout=30):
         # Credit goes to @bot-unit #1729
 
@@ -306,7 +304,6 @@ class YfData(metaclass=SingletonMeta):
         utils.get_yf_logger().debug(f"crumb = '{self._crumb}'")
         return self._crumb
 
-    @utils.log_indent_decorator
     def _get_cookie_and_crumb(self, proxy=None, timeout=30):
         cookie, crumb, strategy = None, None, None
 
@@ -329,7 +326,6 @@ class YfData(metaclass=SingletonMeta):
             strategy = self._cookie_strategy
         return cookie, crumb, strategy
 
-    @utils.log_indent_decorator
     def get(self, url, user_agent_headers=None, params=None, proxy=None, timeout=30):
         # Important: treat input arguments as immutable.
 

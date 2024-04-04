@@ -96,6 +96,7 @@ def get_indented_logger(name=None):
 
 def log_indent_decorator(func):
     def wrapper(*args, **kwargs):
+        print('func', func.__name__)
         logger = get_indented_logger('yfinance')
         logger.debug(f'Entering {func.__name__}()')
 

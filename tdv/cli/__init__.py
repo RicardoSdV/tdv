@@ -1,9 +1,4 @@
-"""CLI Entry point, documentation: http://click.pocoo.org/"""
-
-from os import execv
-from subprocess import check_output
-
-import click
+from click import group
 
 from tdv.cli.exchange_cli import exchanges_group
 from tdv.cli.format import format_group
@@ -11,16 +6,9 @@ from tdv.cli.run import run_group
 from tdv.cli.users_cli import users_group
 
 
-@click.group()
+@group()
 def cli_root() -> None:
-    pass
-
-
-@cli_root.command()
-def shell() -> None:
-    """ ipython shell """
-    cmd = check_output(['which', 'ipython']).decode().replace('\n', '')
-    execv(cmd, [cmd])
+    """Welcome to the TDV CLI, choose a command group:"""
 
 
 cli_root.add_command(format_group)
