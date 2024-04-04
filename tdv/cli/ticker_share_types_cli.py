@@ -21,3 +21,14 @@ def create(ticker_name: str, share_type: str) -> None:
     from tdv.containers import InternalServices
     result = InternalServices.share_type_service().create_ticker_share_type(ticker_name, share_type)
     logger.info('Share type created', result=result)
+
+
+@share_types_group.command()
+@option('-t', '--ticker_name', 'ticker_name', required=True, type=Choice(TickersEnum.to_list()))
+@option('-s', '--share_type', 'share_type', required=True, type=Choice(ShareTypes.to_list()))
+def delete(ticker_name: str, share_type: str) -> None:
+    """Command to delete a share type from a ticker"""
+
+    from tdv.containers import InternalServices
+    result = InternalServices.share_type_service().delete_ticker_share_type(ticker_name, share_type)
+    logger.info('Share type deleted', result=result)

@@ -25,3 +25,13 @@ class ShareTypeService(DbInteractiveService):
 
         ticker_share_types = self._do_db_operation(self._repo.insert, ticker_share_types)
         return ticker_share_types
+
+    def delete_ticker_share_type(self, ticker_name: str, share_type: str) -> List[TickerShareType]:
+        logger.debug('Deleting ticker_share_type', ticker_name=ticker_name, share_type=share_type)
+
+        tickers = self.ticker_service.get_ticker_by_name(ticker_name)
+        ticker_id = tickers[0].id
+        ticker_share_types = [TickerShareType(ticker_id=ticker_id, share_type=share_type)]
+
+        ticker_share_types = self._do_db_operation(self._repo.delete, ticker_share_types)
+        return ticker_share_types
