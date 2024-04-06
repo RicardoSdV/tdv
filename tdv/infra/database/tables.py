@@ -97,15 +97,16 @@ user_shares_table = Table(
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-# portfolio_options_table = Table(
-#     'portfolio_options', metadata,
-#     Column('id', BigInteger, primary_key=True, autoincrement=True),
-#     Column('option_id', BigInteger, ForeignKey(options_table.c.id, ondelete='RESTRICT'), nullable=False),
-#     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),  # If negative sell to open
-#     Column('created_at', DateTime, server_default=func.now(), nullable=False),
-#     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
-# )
-#
+user_options_table = Table(
+    'user_options', metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('user_id', BigInteger, ForeignKey(users_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('option_id', BigInteger, ForeignKey(options_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),  # If negative sell to open
+    Column('created_at', DateTime, server_default=func.now(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+)
+
 # portfolios_table = Table(
 #     'portfolios', metadata,
 #     Column('id', BigInteger, primary_key=True, autoincrement=True),

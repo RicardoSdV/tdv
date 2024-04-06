@@ -23,6 +23,26 @@ def create(username: str, email: str, password: str) -> None:
     logger.info('User created', result=result)
 
 
+@users_group.command('get')
+@option('-e', '--email', 'email', required=True)
+@option('-p', '--password', 'password', required=True)
+def get(email: str, password: str) -> None:
+    from tdv.containers import Services
+    result = Services.users().get_user_by_email_and_password(email, password)
+    logger.info('User selected', result=result)
+
+
+@users_group.command()
+@option('-u', '--username_new', 'username', required=True)
+@option('-e', '--email', 'email', required=True)
+@option('-p', '--password', 'password', required=True)
+def update_username(username: str, email: str, password: str) -> None:
+    from tdv.containers import Services
+    result = Services.users().update_username(username, email, password)
+    logger.info('User updated', result=result)
+
+
+
 @users_group.command()
 @option('-u', '--username', 'username', required=False)
 @option('-e', '--email', 'email', required=False)
@@ -41,22 +61,3 @@ def delete(username: Optional[str], email: Optional[str], user_id: Optional[User
         logger.error('Must pass at least one arg to get exchange')
 
     logger.info('User deleted', result=result)
-
-
-@users_group.command()
-@option('-e', '--email', 'email', required=True)
-@option('-p', '--password', 'password', required=True)
-def select(email: str, password: str) -> None:
-    from tdv.containers import Services
-    result = Services.users().get_user_by_email_and_password(email, password)
-    logger.info('User selected', result=result)
-
-
-@users_group.command()
-@option('-u', '--username_new', 'username', required=True)
-@option('-e', '--email', 'email', required=True)
-@option('-p', '--password', 'password', required=True)
-def update_username(username: str, email: str, password: str) -> None:
-    from tdv.containers import Services
-    result = Services.users().update_username(username, email, password)
-    logger.info('User updated', result=result)
