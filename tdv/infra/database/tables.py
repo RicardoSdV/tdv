@@ -90,6 +90,7 @@ ticker_share_types_table = Table(
 user_shares_table = Table(
     'user_shares', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('user_id', BigInteger, ForeignKey(users_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('ticker_share_type_id', BigInteger, ForeignKey(ticker_share_types_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0'),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),

@@ -9,6 +9,7 @@ from tdv.domain.internal.option_service import OptionsService
 from tdv.domain.internal.share_type_service import ShareTypeService
 from tdv.domain.internal.ticker_service import TickerService
 from tdv.domain.internal.user_service import UsersService
+from tdv.domain.internal.user_shares_service import UserSharesService
 from tdv.infra.database import db
 from tdv.infra.repos.exchange_repo import ExchangeRepo
 from tdv.infra.repos.option_chains_repo import OptionChainsRepo
@@ -16,6 +17,7 @@ from tdv.infra.repos.options_repo import OptionsRepo
 from tdv.infra.repos.share_type_repo import ShareTypeRepo
 from tdv.infra.repos.ticker_repo import TickerRepo
 from tdv.infra.repos.user_repo import UserRepo
+from tdv.infra.repos.user_shares_repo import UserSharesRepo
 
 # C = ClassVar[TypeFactory]
 
@@ -35,6 +37,7 @@ class Repos(DeclarativeContainer):
     options: ClassVar[TypeFactory[OptionsRepo]] = Singleton(OptionsRepo)
     user: ClassVar[TypeFactory[UserRepo]] = Singleton(UserRepo)
     share_type: ClassVar[TypeFactory[ShareTypeRepo]] = Singleton(ShareTypeRepo)
+    user_shares: ClassVar[TypeFactory[UserSharesRepo]] = Singleton(UserSharesRepo)
 
 
 class Services(DeclarativeContainer):
@@ -45,6 +48,7 @@ class Services(DeclarativeContainer):
     options: ClassVar[TypeFactory[OptionsService]] = Singleton(OptionsService, db, Repos.options)
     share_type: ClassVar[TypeFactory[ShareTypeService]] = Singleton(ShareTypeService, db, Repos.share_type, ticker)
     users: ClassVar[TypeFactory[UsersService]] = Singleton(UsersService, db, Repos.user)
+    user_shares: ClassVar[TypeFactory[UserSharesService]] = Singleton(UserSharesService, db, Repos.user_shares)
 
 
 class ExternalServices(DeclarativeContainer):
