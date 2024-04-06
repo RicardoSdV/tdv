@@ -18,5 +18,18 @@ def create(user_id: int, ticker_share_type_id: int, count: int) -> None:
     """Creates entry in user_share table"""
 
     from tdv.containers import Services
-    result = Services.user_shares().create_user_share(user_id, ticker_share_type_id, count)
+    result = Services.user_shares().create_user_shares(user_id, ticker_share_type_id, count)
     logger.info('Users shares created', result=result)
+
+
+@user_shares_group.command()
+@option('-i', '--user_shares_id', 'user_shares_id', required=True)
+def delete(user_shares_id: int) -> None:
+    """Deletes entry in user_share table"""
+
+    from tdv.containers import Services
+    result = Services.user_shares().delete_user_shares_by_id(user_shares_id)
+    logger.info('User shares deleted', result=result)
+
+
+# change count

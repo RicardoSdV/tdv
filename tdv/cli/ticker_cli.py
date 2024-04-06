@@ -7,7 +7,7 @@ from tdv.logger_setup import LoggerFactory
 logger = LoggerFactory.make_logger(__name__)
 
 
-@group('ticker')
+@group('tickers')
 def ticker_group() -> None:
     """Tickers table related operations"""
 

@@ -13,10 +13,18 @@ class UserSharesService:
         self.db = db
         self.user_shares_repo = user_shares_repo
 
-    def create_user_share(self, user_id: int, ticker_share_type_id: int, count: Optional[int]) -> List[UserShare]:
-        logger.debug('Creating user_share', user_id=user_id, ticker_share_type_id=ticker_share_type_id, count=count)
+    def create_user_shares(self, user_id: int, ticker_share_type_id: int, count: Optional[int]) -> List[UserShare]:
+        logger.debug('Creating user_shares', user_id=user_id, ticker_share_type_id=ticker_share_type_id, count=count)
         user_shares = [UserShare(user_id=user_id, ticker_share_type_id=ticker_share_type_id, count=count)]
         with self.db.connect as conn:
             result = self.user_shares_repo.insert(conn, user_shares)
+            conn.commit()
+        return result
+
+    def delete_user_shares_by_id(self, user_shares_id: int) -> List[UserShare]:
+        logger.debug('Deleting user_shares', user_shares_id=user_shares_id)
+        user_shares = [UserShare(user_share_id=user_shares_id)]
+        with self.db.connect as conn:
+            result = self.user_shares_repo.delete(conn, user_shares)
             conn.commit()
         return result
