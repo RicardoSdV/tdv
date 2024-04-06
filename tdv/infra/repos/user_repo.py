@@ -9,9 +9,7 @@ from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 
 
 class UserSerializer(BaseSerializer):
-    @cached_property
-    def _Entity(self) -> Type[User]:
-        return User
+    _Entity = User
 
 
 class UserQueryBuilder(BaseQueryBuilder):

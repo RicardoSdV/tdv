@@ -9,9 +9,7 @@ from tdv.infra.repos.base_repo import BaseRepo, BaseSerializer, BaseQueryBuilder
 
 
 class ShareTypeSerializer(BaseSerializer):
-    @cached_property
-    def _Entity(self) -> Type[TickerShareType]:
-        return TickerShareType
+    _Entity = TickerShareType
 
 
 class ShareTypeQueryBuilder(BaseQueryBuilder):

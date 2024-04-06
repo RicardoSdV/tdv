@@ -20,15 +20,15 @@ def exchanges_group() -> None:
 def create(exchange_name: str) -> None:
     """Creates a new exchange"""
 
-    from tdv.containers import InternalServices
-    result = InternalServices.exchange_service().create_exchange(exchange_name)
+    from tdv.containers import Services
+    result = Services.exchange().create_exchange(exchange_name)
     logger.info('Exchange created', result=result)
 
 
 @exchanges_group.command()
 def create_all() -> None:
-    from tdv.containers import InternalServices
-    result = InternalServices.exchange_service().create_all_exchanges()
+    from tdv.containers import Services
+    result = Services.exchange().create_all_exchanges()
     logger.info('Exchanges created', result=result)
 
 
@@ -36,12 +36,12 @@ def create_all() -> None:
 @option('-n', '--exchange_name', 'exchange_name', type=str, default=None)
 @option('-i', '--exchange_id', 'exchange_id', type=ExchangeId, default=None)
 def get(exchange_name: Optional[str], exchange_id: Optional[ExchangeId]) -> None:
-    from tdv.containers import InternalServices
+    from tdv.containers import Services
 
     if exchange_id:
-        result = InternalServices.exchange_service().get_exchange_by_id(exchange_id)
+        result = Services.exchange().get_exchange_by_id(exchange_id)
     elif exchange_name:
-        result = InternalServices.exchange_service().get_exchange_by_name(exchange_name)
+        result = Services.exchange().get_exchange_by_name(exchange_name)
     else:
         result = None
         logger.error('Must pass at least one arg to get exchange')
@@ -53,9 +53,9 @@ def get(exchange_name: Optional[str], exchange_id: Optional[ExchangeId]) -> None
 @option('-n', '--exchange_name', 'exchange_name', type=str)
 @option('-l', '--is_live', 'is_live', type=bool)
 def update_live(exchange_name: str, is_live: bool) -> None:
-    from tdv.containers import InternalServices
+    from tdv.containers import Services
 
-    result = InternalServices.exchange_service().update_exchange_live(exchange_name, is_live)
+    result = Services.exchange().update_exchange_live(exchange_name, is_live)
 
     logger.info('Exchange updated', result=result)
 
@@ -63,10 +63,10 @@ def update_live(exchange_name: str, is_live: bool) -> None:
 @exchanges_group.command()
 @option('-n', '--exchange_name', 'exchange_name', default=None)
 def delete(exchange_name: Optional[str]) -> None:
-    from tdv.containers import InternalServices
+    from tdv.containers import Services
 
     if exchange_name:
-        result = InternalServices.exchange_service().delete_exchange_by_name(exchange_name)
+        result = Services.exchange().delete_exchange_by_name(exchange_name)
     else:
         result = None
         logger.info('Must pass at least one arg to get exchange')

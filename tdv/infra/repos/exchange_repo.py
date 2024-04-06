@@ -1,7 +1,6 @@
-from functools import cached_property
-from typing import Type
+from typing import ClassVar, Type
 
-from sqlalchemy import Table, BinaryExpression
+from sqlalchemy import Table
 
 from tdv.domain.entities.exchange_entity import Exchange
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
@@ -9,9 +8,7 @@ from tdv.infra.database.tables import exchanges_table
 
 
 class ExchangeSerializer(BaseSerializer):
-    @cached_property
-    def _Entity(self) -> Type[Exchange]:
-        return Exchange
+    _Entity: ClassVar[Type[Exchange]] = Exchange
 
 
 class ExchangeQueryBuilder(BaseQueryBuilder):

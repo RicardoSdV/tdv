@@ -38,7 +38,7 @@ class WebApp(BaseApplication):
         for route, resource in resources.routes.items():
             app.add_route(route, resource)
 
-    def set_options(self, custom_options: Optional[Dict] = None) -> None:
+    def set_options(self, custom_options: Optional[Dict[str, str]] = None) -> None:
         options = self.default_options if custom_options is None else custom_options
 
         for option_name, option_value in options.items():

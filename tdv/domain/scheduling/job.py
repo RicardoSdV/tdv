@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from tdv.domain.scheduling.task import Task
 
@@ -9,7 +10,7 @@ class Job:
 
     def __init__(self, run_at: datetime) -> None:
         self.run_at = run_at
-        self.__tasks = []
+        self.__tasks: List[Task] = []
 
     def __iadd__(self, task: Task) -> 'Job':
         self.__tasks.append(task)

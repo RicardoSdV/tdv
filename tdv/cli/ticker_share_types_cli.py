@@ -18,8 +18,8 @@ def share_types_group() -> None:
 def create(ticker_name: str, share_type: str) -> None:
     """Command to add a new share type to a ticker"""
 
-    from tdv.containers import InternalServices
-    result = InternalServices.share_type_service().create_ticker_share_type(ticker_name, share_type)
+    from tdv.containers import Services
+    result = Services.share_type().create_ticker_share_type(ticker_name, share_type)
     logger.info('Share type created', result=result)
 
 
@@ -29,6 +29,6 @@ def create(ticker_name: str, share_type: str) -> None:
 def delete(ticker_name: str, share_type: str) -> None:
     """Command to delete a share type from a ticker"""
 
-    from tdv.containers import InternalServices
-    result = InternalServices.share_type_service().delete_ticker_share_type(ticker_name, share_type)
+    from tdv.containers import Services
+    result = Services.share_type().delete_ticker_share_type(ticker_name, share_type)
     logger.info('Share type deleted', result=result)

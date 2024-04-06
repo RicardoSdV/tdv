@@ -29,6 +29,7 @@ class Schedule:
     def next_job_time(self) -> Optional[datetime]:
         if self.__jobs:
             return self.__jobs[0].run_at
+        return None
 
     def run_pending(self) -> None:
         run_time = self.__run_time()

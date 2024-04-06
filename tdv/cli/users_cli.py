@@ -18,8 +18,8 @@ def users_group() -> None:
 @option('-e', '--email', 'email', required=True)
 @option('-p', '--password', 'password', required=True)
 def create(username: str, email: str, password: str) -> None:
-    from tdv.containers import InternalServices
-    result = InternalServices.users_service().create_user(username, email, password)
+    from tdv.containers import Services
+    result = Services.users().create_user(username, email, password)
     logger.info('User created', result=result)
 
 
@@ -28,10 +28,10 @@ def create(username: str, email: str, password: str) -> None:
 @option('-e', '--email', 'email', required=False)
 @option('-i', '--id', 'user_id', required=False)
 def delete(username: Optional[str], email: Optional[str], user_id: Optional[UserId]) -> None:
-    from tdv.containers import InternalServices
+    from tdv.containers import Services
 
     if user_id:
-        result = InternalServices.users_service().delete_user_by_id(user_id)
+        result = Services.users().delete_user_by_id(user_id)
     elif email:
         raise NotImplementedError()
     elif username:
@@ -47,8 +47,8 @@ def delete(username: Optional[str], email: Optional[str], user_id: Optional[User
 @option('-e', '--email', 'email', required=True)
 @option('-p', '--password', 'password', required=True)
 def select(email: str, password: str) -> None:
-    from tdv.containers import InternalServices
-    result = InternalServices.users_service().get_user_by_email_and_password(email, password)
+    from tdv.containers import Services
+    result = Services.users().get_user_by_email_and_password(email, password)
     logger.info('User selected', result=result)
 
 
@@ -56,7 +56,7 @@ def select(email: str, password: str) -> None:
 @option('-u', '--username_new', 'username', required=True)
 @option('-e', '--email', 'email', required=True)
 @option('-p', '--password', 'password', required=True)
-def update_username(username, email, password):
-    from tdv.containers import InternalServices
-    result = InternalServices.users_service().update_username(username, email, password)
+def update_username(username: str, email: str, password: str) -> None:
+    from tdv.containers import Services
+    result = Services.users().update_username(username, email, password)
     logger.info('User updated', result=result)

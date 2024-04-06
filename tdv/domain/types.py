@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, Dict, List, Union, Any, Callable
+from typing import Tuple, Dict, List, Union, Any, Callable, TypeVar
 
 from pandas import DataFrame
 from sqlalchemy import Insert, Update, Delete, Select
@@ -26,9 +26,12 @@ Expirations = Tuple[Date, ...]
 OptionChains = List[List[Union[Dict, Any]]]
 OptionChainYF = Tuple[DataFrame, DataFrame, Dict]
 OptionChainsYF = List[OptionChainYF]
-Insertable = Union[int, str, float, bool, None, datetime]
+Insertable = TypeVar('Insertable', bound=Union[int, str, float, bool, None, datetime])
+Insertabless = List[List[Insertable]]
+# NoReturnQuery = TypeVar('NoReturnQuery', bound=Union[Insert, Update, Delete])
 NoReturnQuery = Union[Insert, Update, Delete]
-WhereAbleQuery = Union[Select, Update, Delete]
+# WhereAbleQuery = TypeVar('WhereAbleQuery', bound=Union[Any, Update, Delete])
+WhereAbleQuery = Union[Any, Update, Delete]
 UpdateParams = Dict[AttrName, Insertable]
 Handler = Callable[..., None]
 Args = Tuple[Any, ...]

@@ -18,8 +18,8 @@ def ticker_group() -> None:
 def create(ticker_name: str, exchange_name: str) -> None:
     """Creates a new ticker"""
 
-    from tdv.containers import InternalServices
-    result = InternalServices.ticker_service().create_ticker(ticker_name, exchange_name)
+    from tdv.containers import Services
+    result = Services.ticker().create_ticker(ticker_name, exchange_name)
     logger.info('Ticker created', result=result)
 
 
@@ -27,6 +27,6 @@ def create(ticker_name: str, exchange_name: str) -> None:
 @option('-n', '--ticker_name', 'ticker_name', required=True, type=Choice(TickersEnum.to_list()))
 def get(ticker_name: str) -> None:
     """Select ticker from db"""
-    from tdv.containers import InternalServices
-    result = InternalServices.get_ticker_by_name(ticker_name)
+    from tdv.containers import Services
+    result = Services.ticker().get_ticker_by_name(ticker_name)
     logger.info('Ticker selected', result=result)

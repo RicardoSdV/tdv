@@ -1,6 +1,7 @@
 from typing import Optional, TYPE_CHECKING, Dict
 
 from tdv.api.base_resource import BaseResource
+from tdv.containers import Services
 
 if TYPE_CHECKING:
     from tdv.api.ping_resource import PingResource
@@ -36,7 +37,7 @@ class Resources:
         if self.__exchanges_resource is None:
             from tdv.api.exchanges_resource import ExchangesBaseResource
 
-            self.__exchanges_resource = ExchangesBaseResource()
+            self.__exchanges_resource = ExchangesBaseResource(Services.exchange())
         return self.__exchanges_resource
 
 

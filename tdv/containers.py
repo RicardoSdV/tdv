@@ -1,3 +1,5 @@
+from typing import TypeVar, Callable, Type, Tuple, Dict, ClassVar, Any
+
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Singleton
 
@@ -15,23 +17,34 @@ from tdv.infra.repos.share_type_repo import ShareTypeRepo
 from tdv.infra.repos.ticker_repo import TickerRepo
 from tdv.infra.repos.user_repo import UserRepo
 
+# C = ClassVar[TypeFactory]
+
+# Used to make mypy understand that this will be an object of the type created e.g. ExchangeRepo
+T = TypeVar('T')  # Type
+TypeFactory = Callable[..., T]  # Type Factory
+
+
+def singleton(class_type: Type[T], *args: Any, **kwargs: Any) -> TypeFactory[T]:
+    return Singleton(class_type, *args, **kwargs)
+
 
 class Repos(DeclarativeContainer):
-    exchange_repo = Singleton(ExchangeRepo)
-    ticker_repo = Singleton(TickerRepo)
-    option_chains_repo = Singleton(OptionChainsRepo)
-    options_repo = Singleton(OptionsRepo)
-    user_repo = Singleton(UserRepo)
-    share_type_repo = Singleton(ShareTypeRepo)
+    exchange: ClassVar[TypeFactory[ExchangeRepo]] = Singleton(ExchangeRepo)
+    ticker: ClassVar[TypeFactory[TickerRepo]] = Singleton(TickerRepo)
+    option_chains: ClassVar[TypeFactory[OptionChainsRepo]] = Singleton(OptionChainsRepo)
+    options: ClassVar[TypeFactory[OptionsRepo]] = Singleton(OptionsRepo)
+    user: ClassVar[TypeFactory[UserRepo]] = Singleton(UserRepo)
+    share_type: ClassVar[TypeFactory[ShareTypeRepo]] = Singleton(ShareTypeRepo)
 
 
-class InternalServices(DeclarativeContainer):
-    exchange_service = Singleton(ExchangeService, db=db, exchange_repo=Repos.exchange_repo)
-    ticker_service = Singleton(TickerService, db=db, ticker_repo=Repos.ticker_repo, exchange_service=exchange_service)
-    option_chains_service = Singleton(OptionChainsService, db=db, option_chains_repo=Repos.option_chains_repo)
-    options_service = Singleton(OptionsService, db=db, options_repo=Repos.options_repo)
-    share_type_service = Singleton(ShareTypeService, db=db, share_type_repo=Repos.share_type_repo, ticker_service=ticker_service)
-    users_service = Singleton(UsersService, db=db, users_repo=Repos.user_repo)
+class Services(DeclarativeContainer):
+    exchange: ClassVar[TypeFactory[ExchangeService]] = Singleton(ExchangeService, db, Repos.exchange)
+    ticker = Singleton(TickerService, db, Repos.ticker, exchange)
+    # ticker = singleton(TickerService, db, Repos.ticker, exchange)
+    option_chains: ClassVar[TypeFactory[OptionChainsService]] = Singleton(OptionChainsService, db, Repos.option_chains)
+    options: ClassVar[TypeFactory[OptionsService]] = Singleton(OptionsService, db, Repos.options)
+    share_type: ClassVar[TypeFactory[ShareTypeService]] = Singleton(ShareTypeService, db, Repos.share_type, ticker)
+    users: ClassVar[TypeFactory[UsersService]] = Singleton(UsersService, db, Repos.user)
 
 
 class ExternalServices(DeclarativeContainer):
