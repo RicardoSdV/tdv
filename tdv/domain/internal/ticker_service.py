@@ -18,13 +18,14 @@ class TickerService:
     def create_ticker(self, ticker_name: str, exchange_name: str) -> List[Ticker]:
         logger.debug('Creating ticker', ticker_name=ticker_name)
 
-        exchanges = self.exchange_service.get_exchange_by_name(exchange_name)
-        exchange_id = exchanges[0].id
-
-        company_name = getattr(Companies, ticker_name.upper()).value
-        tickers = [Ticker(exchange_id=exchange_id, ticker_name=ticker_name, company_name=company_name)]
-
         with self.db.connect as conn:
+
+            exchanges = self.exchange_service.get_exchange_by_name(exchange_name, conn)
+            exchange_id = exchanges[0].id
+
+            company_name = getattr(Companies, ticker_name.upper()).value
+            tickers = [Ticker(exchange_id=exchange_id, ticker_name=ticker_name, company_name=company_name)]
+
             result = self.ticker_repo.insert(conn, tickers)
             conn.commit()
 

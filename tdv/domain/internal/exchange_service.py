@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
+
+from sqlalchemy import Connection
 
 from tdv.domain.entities.exchange_entity import Exchanges, Exchange
 from tdv.logger_setup import LoggerFactory
@@ -39,12 +41,17 @@ class ExchangeService:
             conn.commit()
         return result
 
-    def get_exchange_by_name(self, exchange_name: str) -> List[Exchange]:
+    def get_exchange_by_name(self, exchange_name: str, conn: Optional[Connection] = None) -> List[Exchange]:
         logger.debug('Getting exchange by name', exchange_name=exchange_name)
         exchanges = [Exchange(name=exchange_name)]
-        with self.db.connect as conn:
+
+        if conn is None:
+            with self.db.connect as conn:
+                result = self.exchange_repo.select(conn, exchanges)
+                conn.commit()
+        else:
             result = self.exchange_repo.select(conn, exchanges)
-            conn.commit()
+
         return result
 
     def update_exchange_live(self, exchange_name: str, is_live: bool) -> List[Exchange]:
