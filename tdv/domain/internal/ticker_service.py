@@ -10,7 +10,7 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class TickerService:
-    def __init__(self, db: 'DB', ticker_repo: 'TickerRepo', exchange_service: ExchangeService) -> None:
+    def __init__(self, db: 'DB', ticker_repo: 'TickerRepo', exchange_service: 'ExchangeService') -> None:
         self.db = db
         self.ticker_repo = ticker_repo
         self.exchange_service = exchange_service
@@ -25,17 +25,17 @@ class TickerService:
         tickers = [Ticker(exchange_id=exchange_id, ticker_name=ticker_name, company_name=company_name)]
 
         with self.db.connect as conn:
-            self.ticker_repo.insert(conn, exchanges)
+            result = self.ticker_repo.insert(conn, tickers)
             conn.commit()
 
-        return tickers
+        return result
 
     def get_ticker_by_name(self, ticker_name: str) -> List[Ticker]:
         logger.debug('Getting ticker by name', ticker_name=ticker_name)
         tickers = [Ticker(ticker_name=ticker_name)]
 
         with self.db.connect as conn:
-            self.ticker_repo.select(conn, tickers)
+            result = self.ticker_repo.select(conn, tickers)
             conn.commit()
 
-        return tickers
+        return result

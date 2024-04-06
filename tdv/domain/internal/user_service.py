@@ -41,10 +41,10 @@ class UsersService:
         users = [User(email=email, password=password)]
 
         with self.db.connect as conn:
-            users = self.users_repo.select(conn, users)
+            result = self.users_repo.select(conn, users)
             conn.commit()
 
-        return users
+        return result
 
     def update_username(self, username: str, email: str, password: str) -> List[User]:
         logger.debug('Updating username', new_username=username, email=email, password=password)
@@ -52,7 +52,7 @@ class UsersService:
         params = {'username': username}
 
         with self.db.connect as conn:
-            users = self.users_repo.update(conn, users, params)
+            result = self.users_repo.update(conn, users, params)
             conn.commit()
 
-        return users
+        return result

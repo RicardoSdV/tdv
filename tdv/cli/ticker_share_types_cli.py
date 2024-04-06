@@ -7,7 +7,7 @@ from tdv.logger_setup import LoggerFactory
 logger = LoggerFactory.make_logger(__name__)
 
 
-@group('share_types')
+@group('share-types')
 def share_types_group() -> None:
     """ticker_share_types table related operations"""
 

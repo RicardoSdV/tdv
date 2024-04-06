@@ -17,6 +17,6 @@ class UserSharesService:
         logger.debug('Creating user_share', user_id=user_id, ticker_share_type_id=ticker_share_type_id, count=count)
         user_shares = [UserShare(user_id=user_id, ticker_share_type_id=ticker_share_type_id, count=count)]
         with self.db.connect as conn:
-            user_shares = self.user_shares_repo.insert(conn, user_shares)
+            result = self.user_shares_repo.insert(conn, user_shares)
             conn.commit()
-        return user_shares
+        return result

@@ -9,7 +9,7 @@ from tdv.logger_setup import LoggerFactory
 logger = LoggerFactory.make_logger(__name__)
 
 
-class ShareTypeService():
+class ShareTypeService:
     def __init__(self, db: 'DB', share_type_repo: 'ShareTypeRepo', ticker_service: TickerService) -> None:
         self.db = db
         self.share_type_repo = share_type_repo
@@ -19,14 +19,15 @@ class ShareTypeService():
         logger.debug('Creating ticker_share_type', ticker_name=ticker_name, share_type=share_type)
 
         tickers = self.ticker_service.get_ticker_by_name(ticker_name)
+        print('tickers', tickers)
         ticker_id = tickers[0].id
         ticker_share_types = [TickerShareType(ticker_id=ticker_id, share_type=share_type)]
 
         with self.db.connect as conn:
-            ticker_share_types = self.share_type_repo.insert(conn, ticker_share_types)
+            result = self.share_type_repo.insert(conn, ticker_share_types)
             conn.commit()
 
-        return ticker_share_types
+        return result
 
     def delete_ticker_share_type(self, ticker_name: str, share_type: str) -> List[TickerShareType]:
         logger.debug('Deleting ticker_share_type', ticker_name=ticker_name, share_type=share_type)
@@ -36,7 +37,7 @@ class ShareTypeService():
         ticker_share_types = [TickerShareType(ticker_id=ticker_id, share_type=share_type)]
 
         with self.db.connect as conn:
-            ticker_share_types = self.share_type_repo.delete(conn, ticker_share_types)
+            result = self.share_type_repo.delete(conn, ticker_share_types)
             conn.commit()
 
-        return ticker_share_types
+        return result
