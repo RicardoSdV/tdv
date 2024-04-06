@@ -48,7 +48,7 @@ class Services(DeclarativeContainer):
     options: ClassVar[TypeFactory[OptionsService]] = Singleton(OptionsService, db, Repos.options)
     share_type: ClassVar[TypeFactory[ShareTypeService]] = Singleton(ShareTypeService, db, Repos.share_type, ticker)
     users: ClassVar[TypeFactory[UsersService]] = Singleton(UsersService, db, Repos.user)
-    user_shares: ClassVar[TypeFactory[UserSharesService]] = Singleton(UserSharesService, db, Repos.user_shares)
+    user_shares: ClassVar[TypeFactory[UserSharesService]] = Singleton(UserSharesService, db, Repos.user_shares, ticker, share_type)
 
 
 class ExternalServices(DeclarativeContainer):

@@ -1,4 +1,6 @@
-from typing import List
+from typing import List, Optional
+
+from sqlalchemy import Connection
 
 from tdv.domain.entities.ticker_entity import Ticker, Companies
 from tdv.domain.internal.exchange_service import ExchangeService
@@ -31,12 +33,15 @@ class TickerService:
 
         return result
 
-    def get_ticker_by_name(self, ticker_name: str) -> List[Ticker]:
+    def get_ticker_by_name(self, ticker_name: str, conn: Optional[Connection] = None) -> List[Ticker]:
         logger.debug('Getting ticker by name', ticker_name=ticker_name)
         tickers = [Ticker(ticker_name=ticker_name)]
 
-        with self.db.connect as conn:
+        if conn is None:
+            with self.db.connect as conn:
+                result = self.ticker_repo.select(conn, tickers)
+                conn.commit()
+        else:
             result = self.ticker_repo.select(conn, tickers)
-            conn.commit()
 
         return result

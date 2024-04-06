@@ -11,7 +11,7 @@ class UserShare(Entity):
                  user_share_id: Optional[int] = None,
                  user_id: Optional[int] = None,
                  ticker_share_type_id: Optional[int] = None,
-                 count: Optional[int] = None,
+                 count: Optional[float] = None,
                  created_at: Optional[datetime] = None,
                  updated_at: Optional[datetime] = None,
                  ) -> None:
