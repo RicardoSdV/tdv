@@ -9,7 +9,7 @@ from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
 
-
+# TODO: change counts from floats to Decimal
 class UserSharesService:
     def __init__(
             self,
@@ -31,11 +31,11 @@ class UserSharesService:
             conn.commit()
         return result
 
-    def delete_user_shares_by_id(self, user_shares_id: int) -> List[UserShare]:
-        logger.debug('Deleting user_shares', user_shares_id=user_shares_id)
-        user_shares = [UserShare(user_share_id=user_shares_id)]
+    def get_user_shares_by_user_id(self, user_id: int) -> List[UserShare]:
+        logger.debug('Getting user_shares by user_id', user_id=user_id)
+        user_shares = [UserShare(user_id=user_id)]
         with self.db.connect as conn:
-            result = self.user_shares_repo.delete(conn, user_shares)
+            result = self.user_shares_repo.select(conn, user_shares)
             conn.commit()
         return result
 
@@ -50,5 +50,13 @@ class UserSharesService:
             ticker_share_type_id = ticker_share_types[0].id
             user_shares = [UserShare(user_id=user_id, ticker_share_type_id=ticker_share_type_id)]
             result = self.user_shares_repo.update(conn, user_shares, params)
+            conn.commit()
+        return result
+
+    def delete_user_shares_by_id(self, user_shares_id: int) -> List[UserShare]:
+        logger.debug('Deleting user_shares', user_shares_id=user_shares_id)
+        user_shares = [UserShare(user_share_id=user_shares_id)]
+        with self.db.connect as conn:
+            result = self.user_shares_repo.delete(conn, user_shares)
             conn.commit()
         return result
