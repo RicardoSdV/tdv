@@ -17,6 +17,7 @@ metadata = MetaData()
 # BigInteger ->  +- 9 000 000 000 000 000 000  (8 bytes)
 # Numeric(precision=24, scale=10) -> 10 000 000 000 000.000 000 000 1
 
+# live and hist here??
 exchanges_table = Table(
     'exchanges', metadata,
     Column('id', SmallInteger, primary_key=True, autoincrement=True),
@@ -68,6 +69,13 @@ options_table = Table(
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
 )
 
+ticker_share_types_table = Table(
+    'ticker_share_types', metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('ticker_id', BigInteger, ForeignKey(tickers_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('share_type', String(200), nullable=False),
+)
+
 # TODO: Double check this
 users_table = Table(
     'users', metadata,
@@ -79,41 +87,39 @@ users_table = Table(
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-ticker_share_types_table = Table(
-    'ticker_share_types', metadata,
+# TODO: Keep track of cash over time. If we keep track of all the other comments, we can also calculate the account value over time
+portfolios_table = Table(
+    'portfolios', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('ticker_id', BigInteger, ForeignKey(tickers_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('share_type', String(200), nullable=False),
+    Column('user_id', BigInteger, ForeignKey(users_table.c.id, ondelete='RESTRICT'), nullable=True),
+    Column('portfolio_shares_id', nullable=False),
+    Column('portfolio_options_id', nullable=False),
+    Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
+    Column('created_at', DateTime, server_default=func.now(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-
-user_shares_table = Table(
+# TODO: Keep track of the share count over time for the portfolio
+portfolio_shares_table = Table(
     'user_shares', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('user_id', BigInteger, ForeignKey(users_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('portfolio_id', BigInteger, ForeignKey(portfolios_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('ticker_share_type_id', BigInteger, ForeignKey(ticker_share_types_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0'),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-user_options_table = Table(
+# TODO: Could  be nice to add a way to keep track of the value of the options since last analysis,
+#  we keep a record of the count
+portfolio_options_table = Table(
     'user_options', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('user_id', BigInteger, ForeignKey(users_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('portfolio_id', BigInteger, ForeignKey(portfolios_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('option_id', BigInteger, ForeignKey(options_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),  # If negative sell to open
+    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),  # If negative: sell to open
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-# portfolios_table = Table(
-#     'portfolios', metadata,
-#     Column('id', BigInteger, primary_key=True, autoincrement=True),
-#     Column('user_id', BigInteger, ForeignKey(users_table.c.id, ondelete='RESTRICT'), nullable=True),
-#     Column('user_shares_id', BigInteger, ForeignKey(user_shares_table.c.id, ondelete='RESTRICT'), nullable=False),
-#     Column('portfolio_options_id', BigInteger, ForeignKey(portfolio_options_table.c.id, ondelete='RESTRICT'), nullable=False),
-#     Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
-#     Column('created_at', DateTime, server_default=func.now(), nullable=False),
-#     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
-# )
+
