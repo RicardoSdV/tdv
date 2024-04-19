@@ -17,7 +17,6 @@ metadata = MetaData()
 # BigInteger ->  +- 9 000 000 000 000 000 000  (8 bytes)
 # Numeric(precision=24, scale=10) -> 10 000 000 000 000.000 000 000 1
 
-# live and hist here??
 exchanges_table = Table(
     'exchanges', metadata,
     Column('id', SmallInteger, primary_key=True, autoincrement=True),
@@ -45,7 +44,6 @@ option_chains_table = Table(
     'option_chains', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('ticker_id', Integer, ForeignKey(tickers_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('size', SmallInteger, server_default='100', nullable=False),
     Column('underlying_price', Numeric(precision=10, scale=2), nullable=False),
     Column('is_call', Boolean, nullable=False),
     Column('expiry', DateTime, nullable=False),
@@ -66,6 +64,7 @@ options_table = Table(
     Column('volume', Integer, nullable=False),
     Column('open_interest', Integer, nullable=False),
     Column('implied_volatility', Integer, nullable=False),
+    Column('size', Integer, server_default='100', nullable=False),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
 )
 

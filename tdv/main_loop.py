@@ -1,28 +1,28 @@
-# TODO: Redo
+from time import sleep
 
-# from time import sleep
-# from typing import List
-#
-# from tdv.domain.external.yahoo_finance_service_proxy import YFserviceProxy
-# from tdv.domain.types import Second
-# from tdv.logger_setup import LoggerFactory
-#
-# logger = LoggerFactory.make_logger(__name__)
-#
+from tdv.constants import MAIN_LOOP_SLEEP_TIME
+from tdv.containers import ExternalServices
+from tdv.logger_setup import LoggerFactory
 
-# class MainLoop:
-#     __sleep_time: Second = 1
-#
-#     def __init__(self) -> None:
-#         self.__services_with_jobs: List[BaseServiceProxy] = [
-#             YFserviceProxy(),
-#         ]
-#
-#     def run(self) -> None:
-#         while True:
-#             try:
-#                 for service in self.__services_with_jobs:
-#                     service.run_pending()
-#                 sleep(self.__sleep_time)
-#             except Exception as e:
-#                 logger.exception('Main loop', exc=e)
+logger = LoggerFactory.make_logger(__name__)
+
+class MainLoop:
+    @staticmethod
+    def run() -> None:
+
+
+
+        sleep_time = MAIN_LOOP_SLEEP_TIME
+
+        yahoo_finance_service_proxy = ExternalServices.yahoo_finance()
+
+        while True:
+            try:
+                print('yes')
+                yahoo_finance_service_proxy.run_pending()
+
+                sleep(sleep_time)
+            except Exception as e:
+                logger.exception('Main loop', exc=e)
+
+

@@ -45,3 +45,9 @@ class TickerService:
             result = self.ticker_repo.select(conn, tickers)
 
         return result
+
+    def get_ticker_id_by_name(self, ticker_name: str, conn: Optional[Connection] = None) -> int:
+        logger.debug('Getting ticker id by name', ticker_name=ticker_name)
+        tickers = [Ticker(ticker_name=ticker_name)]
+        result = self.ticker_repo.select(conn, tickers)
+        return result[0].id

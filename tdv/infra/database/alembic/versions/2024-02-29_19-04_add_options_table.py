@@ -31,6 +31,7 @@ def upgrade() -> None:
         sa.Column('volume', sa.Integer(), nullable=False),
         sa.Column('open_interest', sa.Integer(), nullable=False),
         sa.Column('implied_volatility', sa.Integer(), nullable=False),
+        sa.Column('size', sa.Integer(), server_default='100', nullable=False),
         sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.ForeignKeyConstraint(['option_chain_id'], ['option_chains.id'], ondelete='RESTRICT'),
         sa.PrimaryKeyConstraint('id')

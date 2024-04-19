@@ -1,5 +1,5 @@
 """
-This base repo is designed to be very easy to use, not efficient. As long as child repos override def _Entity
+This base repo is designed to be very easy to use, not efficient. As long as child repos override _Entity
 and def _table properly, and the Entity is well-defined, Insert, Select, Update, Upsert & Delete queries
 should be fully functional out of the box. As to how, look at the available examples.
 """

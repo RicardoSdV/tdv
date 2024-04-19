@@ -6,7 +6,6 @@ from sqlalchemy import Insert, Update, Delete, Select
 
 # Strings
 AttrName = str
-Date = str
 TickerName = str
 TimeStr = str
 TimeStamp = str
@@ -22,15 +21,13 @@ OptionId = int
 UserId = int
 
 # Custom types
-Expirations = Tuple[Date, ...]
+Expiries = Tuple[str, ...]
 OptionChains = List[List[Union[Dict, Any]]]
 OptionChainYF = Tuple[DataFrame, DataFrame, Dict]
 OptionChainsYF = List[OptionChainYF]
 Insertable = TypeVar('Insertable', bound=Union[int, str, float, bool, None, datetime])
 Insertabless = List[List[Insertable]]
-# NoReturnQuery = TypeVar('NoReturnQuery', bound=Union[Insert, Update, Delete])
 NoReturnQuery = Union[Insert, Update, Delete]
-# WhereAbleQuery = TypeVar('WhereAbleQuery', bound=Union[Any, Update, Delete])
 WhereAbleQuery = Union[Any, Update, Delete]
 UpdateParams = Dict[AttrName, Insertable]
 Handler = Callable[..., None]

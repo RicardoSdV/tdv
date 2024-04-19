@@ -1,13 +1,17 @@
 from datetime import datetime
 from typing import Optional
 
-from tdv.domain.entities.base_entity import Entity
+from tdv.domain.entities.base_entity import Entity, EntityEnum
 from tdv.domain.types import OptionId, OptionChainId
+
+
+class ContractSizes(EntityEnum):
+    REGULAR = 100
 
 
 class Option(Entity):
     __slots__ = ('id', 'option_chain_id', 'strike', 'last_trade', 'last_price', 'bid', 'ask', 'change',
-                 'volume', 'open_interest', 'implied_volatility', 'created_at', 'updated_at')
+                 'volume', 'open_interest', 'implied_volatility', 'size', 'created_at')
 
     def __init__(
             self,
@@ -22,6 +26,7 @@ class Option(Entity):
             volume: Optional[int] = None,
             open_interest: Optional[int] = None,
             implied_volatility: Optional[float] = None,
+            size: Optional[str] = None,
             created_at: Optional[datetime] = None,
     ) -> None:
         self.id = option_id
@@ -35,4 +40,5 @@ class Option(Entity):
         self.volume = volume
         self.open_interest = open_interest
         self.implied_volatility = implied_volatility
+        self.size = getattr(ContractSizes, size).value
         self.created_at = created_at

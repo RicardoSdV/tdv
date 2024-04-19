@@ -1,7 +1,7 @@
 import structlog
 from structlog._config import BoundLoggerLazyProxy
 
-from tdv.common_utils import timestamp_str
+from tdv.utils import timestamp_str
 from tdv.constants import LOGS_DIR_PATH
 
 

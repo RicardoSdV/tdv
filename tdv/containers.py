@@ -1,8 +1,9 @@
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Singleton
 
+from tdv.domain.external.yahoo_finance_service_proxy import YahooFinanceServiceProxy
 from tdv.domain.internal.exchange_service import ExchangeService
-from tdv.domain.internal.option_chain_service import OptionChainsService
+from tdv.domain.internal.option_chains_service import OptionChainsService
 from tdv.domain.internal.option_service import OptionsService
 from tdv.domain.internal.portfolio_options_service import PortfolioOptionsService
 from tdv.domain.internal.portfolios_service import PortfoliosService
@@ -10,6 +11,7 @@ from tdv.domain.internal.share_type_service import ShareTypeService
 from tdv.domain.internal.ticker_service import TickerService
 from tdv.domain.internal.user_service import UsersService
 from tdv.domain.internal.portfolio_shares_service import PortfolioSharesService
+from tdv.domain.internal.yahoo_finance_service import YahooFinanceService
 from tdv.infra.database import db
 from tdv.infra.repos.exchange_repo import ExchangeRepo
 from tdv.infra.repos.option_chains_repo import OptionChainsRepo
@@ -37,14 +39,15 @@ class Repos(DeclarativeContainer):
 class Services(DeclarativeContainer):
     exchange = Singleton(ExchangeService, db, Repos.exchange)
     ticker = Singleton(TickerService, db, Repos.ticker, exchange)
-    option_chains = Singleton(OptionChainsService, db, Repos.option_chains)
+    option_chains = Singleton(OptionChainsService, Repos.option_chains, ticker)
     options = Singleton(OptionsService, db, Repos.options)
     share_type = Singleton(ShareTypeService, db, Repos.share_type, ticker)
     users = Singleton(UsersService, db, Repos.user)
     portfolio_shares = Singleton(PortfolioSharesService, db, Repos.portfolio_shares, Repos.ticker, Repos.share_type)
     portfolio_options = Singleton(PortfolioOptionsService, db, Repos.portfolio_options)
     portfolios = Singleton(PortfoliosService, db, Repos.portfolios)
+    yahoo_finance = Singleton(YahooFinanceService, db, option_chains, options)
 
 
 class ExternalServices(DeclarativeContainer):
-    pass
+    yahoo_finance = Singleton(YahooFinanceServiceProxy, Services.yahoo_finance)

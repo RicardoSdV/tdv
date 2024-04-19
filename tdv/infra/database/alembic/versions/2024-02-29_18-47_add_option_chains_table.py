@@ -22,7 +22,6 @@ def upgrade() -> None:
         'option_chains',
         sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
         sa.Column('ticker_id', sa.Integer(), nullable=False),
-        sa.Column('size', sa.SmallInteger(), server_default='100', nullable=False),
         sa.Column('underlying_price', sa.Numeric(precision=10, scale=2), nullable=False),
         sa.Column('is_call', sa.Boolean(), nullable=False),
         sa.Column('expiry', sa.DateTime(), nullable=False),

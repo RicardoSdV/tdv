@@ -21,6 +21,8 @@ CLI_ROOT_COMMAND = PROJECT_NAME
 CLI_ROOT_MODULE = f'{PROJECT_NAME}.cli'
 CLI_ROOT_FUNC_NAME = 'cli_root'
 
+MAIN_LOOP_SLEEP_TIME = 1
+
 
 class DbInfo(Enum):
     USER = os.environ.get('USER')
@@ -39,3 +41,4 @@ class DbInfo(Enum):
 class MarketEvents(Enum):
     OPEN = 'market_open'
     CLOSE = 'market_close'
+

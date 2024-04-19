@@ -22,7 +22,7 @@ def log() -> None:
 def yf() -> None:
     """Run periodic requests to Yahoo Finance to request options data"""
     from tdv.constants import ROOT_DIR_PATH
-    from tdv.common_utils import declare_path
+    from tdv.utils import declare_path
     from tdv.run import run
 
     declare_path(ROOT_DIR_PATH)
