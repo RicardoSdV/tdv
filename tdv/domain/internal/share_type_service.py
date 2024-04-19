@@ -12,7 +12,12 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class ShareTypeService:
-    def __init__(self, db: 'DB', share_type_repo: 'ShareTypeRepo', ticker_service: TickerService) -> None:
+    def __init__(
+            self,
+            db: 'DB',
+            share_type_repo: 'ShareTypeRepo',
+            ticker_service: 'TickerService'
+    ) -> None:
         self.db = db
         self.share_type_repo = share_type_repo
         self.ticker_service = ticker_service

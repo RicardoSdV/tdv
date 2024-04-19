@@ -92,8 +92,8 @@ portfolios_table = Table(
     'portfolios', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('user_id', BigInteger, ForeignKey(users_table.c.id, ondelete='RESTRICT'), nullable=True),
-    Column('portfolio_shares_id', nullable=False),
-    Column('portfolio_options_id', nullable=False),
+    Column('portfolio_shares_id', nullable=True),
+    Column('portfolio_options_id', nullable=True),
     Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
@@ -101,7 +101,7 @@ portfolios_table = Table(
 
 # TODO: Keep track of the share count over time for the portfolio
 portfolio_shares_table = Table(
-    'user_shares', metadata,
+    'portfolio_shares', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('portfolio_id', BigInteger, ForeignKey(portfolios_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('ticker_share_type_id', BigInteger, ForeignKey(ticker_share_types_table.c.id, ondelete='RESTRICT'), nullable=False),
@@ -113,7 +113,7 @@ portfolio_shares_table = Table(
 # TODO: Could  be nice to add a way to keep track of the value of the options since last analysis,
 #  we keep a record of the count
 portfolio_options_table = Table(
-    'user_options', metadata,
+    'portfolio_options', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('portfolio_id', BigInteger, ForeignKey(portfolios_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('option_id', BigInteger, ForeignKey(options_table.c.id, ondelete='RESTRICT'), nullable=False),
@@ -121,5 +121,3 @@ portfolio_options_table = Table(
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
-
-
