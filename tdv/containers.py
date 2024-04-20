@@ -43,7 +43,7 @@ class Services(DeclarativeContainer):
     options = Singleton(OptionsService, Repos.options)
     share_type = Singleton(ShareTypeService, db, Repos.share_type, ticker)
     users = Singleton(UsersService, db, Repos.user)
-    portfolio_shares = Singleton(PortfolioSharesService, db, Repos.portfolio_shares, Repos.ticker, Repos.share_type)
+    portfolio_shares = Singleton(PortfolioSharesService, db, Repos.portfolio_shares, ticker, share_type)
     portfolio_options = Singleton(PortfolioOptionsService, db, Repos.portfolio_options)
     portfolios = Singleton(PortfoliosService, db, Repos.portfolios)
     yahoo_finance = Singleton(YahooFinanceService, db, option_chains, options)

@@ -23,7 +23,7 @@ def upgrade() -> None:
     op.create_table(
         'exchanges',
         sa.Column('id', sa.SmallInteger(), autoincrement=True, nullable=False),
-        sa.Column('name', sa.String(20), nullable=False),
+        sa.Column('name', sa.String(20), nullable=False, unique=True),
         sa.Column('currency', sa.String(20), server_default=Currencies.US_DOLLAR.value, nullable=False),
         sa.Column('live', sa.Boolean(), server_default=sa.false(), nullable=False),
         sa.Column('hist', sa.Boolean(), server_default=sa.false(), nullable=False),

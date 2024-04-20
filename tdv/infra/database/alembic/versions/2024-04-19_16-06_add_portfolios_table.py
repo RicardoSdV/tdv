@@ -23,8 +23,6 @@ def upgrade() -> None:
         'portfolios',
         sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
         sa.Column('user_id', sa.BigInteger(), nullable=True),
-        sa.Column('portfolio_shares_id', sa.BigInteger(), nullable=True),
-        sa.Column('portfolio_options_id', sa.BigInteger(), nullable=True),
         sa.Column('cash', sa.Numeric(precision=18, scale=2), server_default='0.00', nullable=False),
         sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),

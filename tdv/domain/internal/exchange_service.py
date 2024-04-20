@@ -20,9 +20,9 @@ class ExchangeService:
 
     def create_exchange(self, exchange_name: str) -> List[Exchange]:
         logger.debug('Creating exchange', exchange_name=exchange_name)
-        exchanges = [Exchange(name=exchange_name)]
         with self.db.connect as conn:
-            result = self.exchange_repo.insert(conn, exchanges)
+            exchange = [Exchange(name=exchange_name)]
+            result = self.exchange_repo.insert(conn, exchange)
             conn.commit()
         return result
 

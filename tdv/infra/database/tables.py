@@ -20,7 +20,7 @@ metadata = MetaData()
 exchanges_table = Table(
     'exchanges', metadata,
     Column('id', SmallInteger, primary_key=True, autoincrement=True),
-    Column('name', String(20), nullable=False),
+    Column('name', String(20), nullable=False, unique=True),
     Column('currency', String(20), server_default=Currencies.US_DOLLAR.value, nullable=False),
     Column('live', Boolean, server_default='false', nullable=False),
     Column('hist', Boolean, server_default='false', nullable=False),
@@ -91,8 +91,6 @@ portfolios_table = Table(
     'portfolios', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('user_id', BigInteger, ForeignKey(users_table.c.id, ondelete='RESTRICT'), nullable=True),
-    Column('portfolio_shares_id', nullable=True),
-    Column('portfolio_options_id', nullable=True),
     Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
