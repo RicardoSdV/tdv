@@ -91,8 +91,6 @@ portfolios_table = Table(
     'portfolios', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('user_id', BigInteger, ForeignKey(users_table.c.id, ondelete='RESTRICT'), nullable=True),
-    Column('portfolio_shares_id', nullable=True),
-    Column('portfolio_options_id', nullable=True),
     Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
