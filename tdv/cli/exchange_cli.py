@@ -28,7 +28,10 @@ def create(exchange_name: str) -> None:
 @exchanges_group.command()
 def create_all() -> None:
     from tdv.containers import Services
-    result = Services.exchange().create_all_exchanges()
+    from tdv.infra.database import db
+
+    with db.connect as conn:
+        result = Services.exchange().create_all_exchanges(conn)
     logger.info('Exchanges created', result=result)
 
 

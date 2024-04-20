@@ -2,7 +2,7 @@ from typing import Optional
 
 from click import group, option, Choice
 
-from tdv.domain.entities.ticker_entity import TickersEnum
+from tdv.domain.entities.ticker_entity import Tickers
 from tdv.domain.entities.ticker_share_type_entity import ShareTypes
 from tdv.logger_setup import LoggerFactory
 
@@ -16,7 +16,7 @@ def portfolio_shares_group() -> None:
 
 @portfolio_shares_group.command('create')
 @option('-p', '--portfolio_id', 'portfolio_id', required=True)
-@option('-t', '--ticker', 'ticker', type=Choice(TickersEnum.to_list()), required=True)
+@option('-t', '--ticker', 'ticker', type=Choice(Tickers.to_list()), required=True)
 @option('-s', '--ticker_share_type_id', 'ticker_share_type_id', required=True)
 @option('-c', '--count', 'count', required=True)
 def create(portfolio_id: int, ticker: str, ticker_share_type_id: str, count: Optional[int]) -> None:
@@ -41,7 +41,7 @@ def get_portfolio_shares(user_id: int, portfolio_id: int) -> None:
 @portfolio_shares_group.command('update-count')
 @option('-u', '--user_id', 'user_id', required=True)
 @option('-p', '--portfolio_id', 'portfolio_id', required=True)
-@option('-t', '--ticker', 'ticker', type=Choice(TickersEnum.to_list()), required=True)
+@option('-t', '--ticker', 'ticker', type=Choice(Tickers.to_list()), required=True)
 @option('-s', '--share_type', 'share_type', type=Choice(ShareTypes.to_list()), required=True)
 @option('-c', '--count', 'count', required=True)
 def update_count(user_id: int, portfolio_id: int, ticker: str, share_type: str, count: float) -> None:

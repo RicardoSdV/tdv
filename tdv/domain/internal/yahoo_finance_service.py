@@ -13,37 +13,23 @@ class YahooFinanceService:
         self.options_service = options_service
 
     def save_option_chains(self, option_chains: OptionChains, expiries: Expiries, ticker_name: str) -> None:
+
         for expiry, option_chain in zip(expiries, option_chains):
             calls, puts, underlying = option_chain
-            pretty_print(underlying)
-            underlying_price = underlying['regularMarketPrice']
+
+            # pretty_print(puts)
+            # return
 
             with self.db.connect as conn:
-                option_chain_id = self.option_chains_service.insert_option_chain_get_id(
-                    underlying_price, True, expiry, ticker_name, conn
+
+                option_chain_id = self.option_chains_service.create_option_chain_get_id(
+                    underlying['regularMarketPrice'], True, expiry, ticker_name, conn
                 )
+                self.options_service.create_options(calls, option_chain_id, conn)
+
+                # option_chain_id = self.option_chains_service.create_option_chain_get_id(
+                #     underlying['regularMarketPrice'], False, expiry, ticker_name, conn
+                # )
+                # self.options_service.create_options(puts, option_chain_id, conn)
+
                 conn.commit()
-
-            try:
-                index = 0
-                while True:
-                    with self.db.connect as conn:
-
-                        self.options_service.insert_option(
-                            calls['strike'][index],
-                            calls['lastTradeDate'][index],
-                            calls['lastPrice'][index],
-                            calls['bid'][index],
-                            calls['ask'][index],
-                            calls['change'][index],
-                            calls['volume'][index],
-                            calls['openInterest'][index],
-                            calls['impliedVolatility'][index],
-                            calls['contractSize'][index],
-                            conn,
-                        )
-
-                    index += 1
-
-            except KeyError:
-                return

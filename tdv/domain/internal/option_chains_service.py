@@ -12,11 +12,11 @@ class OptionChainsService:
         self.option_chains_repo = option_chains_repo
         self.ticker_service = ticker_service
 
-    def insert_option_chain_get_id(
+    def create_option_chain_get_id(
             self, underlying_price: int, is_call: bool, expiry: str, ticker_name: str, conn: Connection
     ) -> int:
 
-        ticker_id = self.ticker_service.get_ticker_id_by_name(ticker_name)
+        ticker_id = self.ticker_service.get_ticker_id_by_name(ticker_name, conn)
         option_chains = [OptionChain(
             ticker_id=ticker_id, underlying_price=underlying_price, is_call=is_call, expiry=str_to_datetime(expiry)
         )]

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from sqlalchemy import Connection
 
+from tdv.constants import TICKERS_BY_EXCHANGE
 from tdv.domain.entities.exchange_entity import Exchanges, Exchange
 from tdv.logger_setup import LoggerFactory
 
@@ -25,12 +26,10 @@ class ExchangeService:
             conn.commit()
         return result
 
-    def create_all_exchanges(self) -> List[Exchange]:
-        exchanges = [Exchange(name=name.value) for name in Exchanges]
+    def create_all_exchanges(self, conn: Connection) -> List[Exchange]:
+        exchanges = [Exchange(name=name) for name in TICKERS_BY_EXCHANGE]
         logger.debug('Creating all exchanges', exchanges=exchanges)
-        with self.db.connect as conn:
-            result = self.exchange_repo.insert(conn, exchanges)
-            conn.commit()
+        result = self.exchange_repo.insert(conn, exchanges)
         return result
 
     def get_exchange_by_id(self, exchange_id: int) -> List[Exchange]:

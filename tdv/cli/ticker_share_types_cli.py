@@ -1,6 +1,6 @@
 from click import group, option, Choice
 
-from tdv.domain.entities.ticker_entity import TickersEnum
+from tdv.domain.entities.ticker_entity import Tickers
 from tdv.domain.entities.ticker_share_type_entity import ShareTypes
 from tdv.logger_setup import LoggerFactory
 
@@ -13,7 +13,7 @@ def share_types_group() -> None:
 
 
 @share_types_group.command()
-@option('-t', '--ticker_name', 'ticker_name', required=True, type=Choice(TickersEnum.to_list()))
+@option('-t', '--ticker_name', 'ticker_name', required=True, type=Choice(Tickers.to_list()))
 @option('-s', '--share_type', 'share_type', required=True, type=Choice(ShareTypes.to_list()))
 def create(ticker_name: str, share_type: str) -> None:
     """Command to add a new share type to a ticker"""
@@ -24,7 +24,7 @@ def create(ticker_name: str, share_type: str) -> None:
 
 
 @share_types_group.command()
-@option('-t', '--ticker_name', 'ticker_name', required=True, type=Choice(TickersEnum.to_list()))
+@option('-t', '--ticker_name', 'ticker_name', required=True, type=Choice(Tickers.to_list()))
 @option('-s', '--share_type', 'share_type', required=True, type=Choice(ShareTypes.to_list()))
 def delete(ticker_name: str, share_type: str) -> None:
     """Command to delete a share type from a ticker"""

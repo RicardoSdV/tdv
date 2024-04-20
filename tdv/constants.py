@@ -3,6 +3,9 @@ from enum import Enum
 from pathlib import Path
 
 
+from tdv.domain.entities.exchange_entity import Exchanges
+from tdv.domain.entities.ticker_entity import Tickers
+
 # Paths (all absolute)
 SOURCE_DIR_PATH = Path(__file__).resolve().parent
 ROOT_DIR_PATH = SOURCE_DIR_PATH.parent
@@ -41,4 +44,9 @@ class DbInfo(Enum):
 class MarketEvents(Enum):
     OPEN = 'market_open'
     CLOSE = 'market_close'
+
+
+TICKERS_BY_EXCHANGE = {  # All tickers and exchanges to be auto inserted into DB
+    Exchanges.NEW_YORK.value: [Tickers.TSLA.value]
+}
 

@@ -40,7 +40,7 @@ class Services(DeclarativeContainer):
     exchange = Singleton(ExchangeService, db, Repos.exchange)
     ticker = Singleton(TickerService, db, Repos.ticker, exchange)
     option_chains = Singleton(OptionChainsService, Repos.option_chains, ticker)
-    options = Singleton(OptionsService, db, Repos.options)
+    options = Singleton(OptionsService, Repos.options)
     share_type = Singleton(ShareTypeService, db, Repos.share_type, ticker)
     users = Singleton(UsersService, db, Repos.user)
     portfolio_shares = Singleton(PortfolioSharesService, db, Repos.portfolio_shares, Repos.ticker, Repos.share_type)
