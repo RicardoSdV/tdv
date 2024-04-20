@@ -23,7 +23,7 @@ def create(portfolio_id: int, ticker: str, ticker_share_type_id: str, count: Opt
     """Creates entry in user_share table"""
 
     from tdv.containers import Services
-    result = Services.portfolio_shares().create(portfolio_id, ticker, ticker_share_type_id, count)
+    result = Services.portfolio_shares().create_exchange(portfolio_id, ticker, ticker_share_type_id, count)
     logger.info('Portfolio shares created', result=result)
 
 
