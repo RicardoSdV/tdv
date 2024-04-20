@@ -39,14 +39,14 @@ class Repos(DeclarativeContainer):
 class Services(DeclarativeContainer):
     exchange = Singleton(ExchangeService, db, Repos.exchange)
     ticker = Singleton(TickerService, db, Repos.ticker, exchange)
-    option_chains = Singleton(OptionChainsService, Repos.option_chains, ticker)
+    option_chains = Singleton(OptionChainsService, Repos.option_chains)
     options = Singleton(OptionsService, Repos.options)
     share_type = Singleton(ShareTypeService, db, Repos.share_type, ticker)
     users = Singleton(UsersService, db, Repos.user)
     portfolio_shares = Singleton(PortfolioSharesService, db, Repos.portfolio_shares, ticker, share_type)
     portfolio_options = Singleton(PortfolioOptionsService, db, Repos.portfolio_options)
     portfolios = Singleton(PortfoliosService, db, Repos.portfolios)
-    yahoo_finance = Singleton(YahooFinanceService, db, option_chains, options)
+    yahoo_finance = Singleton(YahooFinanceService, db, ticker, option_chains, options)
 
 
 class ExternalServices(DeclarativeContainer):

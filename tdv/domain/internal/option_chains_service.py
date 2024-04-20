@@ -8,15 +8,13 @@ from tdv.utils import str_to_datetime
 
 class OptionChainsService:
 
-    def __init__(self, option_chains_repo: OptionChainsRepo, ticker_service: TickerService) -> None:
+    def __init__(self, option_chains_repo: OptionChainsRepo) -> None:
         self.option_chains_repo = option_chains_repo
-        self.ticker_service = ticker_service
 
     def create_option_chain_get_id(
-            self, underlying_price: int, is_call: bool, expiry: str, ticker_name: str, conn: Connection
+            self, underlying_price: int, is_call: bool, expiry: str, ticker_id: int, conn: Connection
     ) -> int:
 
-        ticker_id = self.ticker_service.get_ticker_id_by_name(ticker_name, conn)
         option_chains = [OptionChain(
             ticker_id=ticker_id, underlying_price=underlying_price, is_call=is_call, expiry=str_to_datetime(expiry)
         )]
