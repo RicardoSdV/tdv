@@ -3,7 +3,7 @@ from typing import Type, ClassVar
 from sqlalchemy import Table
 
 from tdv.domain.entities.ticker_entity import Ticker
-from tdv.infra.database.tables import tickers_table
+from tdv.infra.database.tables import ticker_table
 from tdv.infra.repos.base_repo import BaseRepo, BaseSerializer, BaseQueryBuilder
 
 
@@ -14,7 +14,7 @@ class TickerSerializer(BaseSerializer):
 class TickerQueryBuilder(BaseQueryBuilder):
     @property
     def _table(self) -> Table:
-        return tickers_table
+        return ticker_table
 
 
 class TickerRepo(TickerSerializer, TickerQueryBuilder, BaseRepo):
