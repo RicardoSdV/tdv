@@ -15,9 +15,6 @@ def str_to_datetime(date_string: str) -> datetime:
     return datetime.strptime(date_string, '%Y-%m-%d')
 
 
-def declare_path(path: Path) -> None:
-    sys.path.append(str(path))
-
 
 def _turn_to_str(_any: str) -> str:
     return str(_any)

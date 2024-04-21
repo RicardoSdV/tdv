@@ -5,7 +5,7 @@ from tdv.domain.entities.base_entity import Entity
 from tdv.domain.types import UserId
 
 
-class User(Entity):
+class Account(Entity):
     __slots__ = ('id', 'username', 'email', 'password', 'created_at', 'updated_at')
 
     def __init__(self,

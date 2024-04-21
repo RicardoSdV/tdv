@@ -9,7 +9,7 @@ from tdv.domain.internal.portfolio_options_service import PortfolioOptionsServic
 from tdv.domain.internal.portfolios_service import PortfoliosService
 from tdv.domain.internal.share_type_service import ShareTypeService
 from tdv.domain.internal.ticker_service import TickerService
-from tdv.domain.internal.user_service import UsersService
+from tdv.domain.internal.account_service import AccountService
 from tdv.domain.internal.portfolio_shares_service import PortfolioSharesService
 from tdv.domain.internal.yahoo_finance_service import YahooFinanceService
 from tdv.infra.database import db
@@ -20,7 +20,7 @@ from tdv.infra.repos.portfolio_options_repo import PortfolioOptionsRepo
 from tdv.infra.repos.portfolios_repo import PortfoliosRepo
 from tdv.infra.repos.share_type_repo import ShareTypeRepo
 from tdv.infra.repos.ticker_repo import TickerRepo
-from tdv.infra.repos.user_repo import UserRepo
+from tdv.infra.repos.account_repo import UserRepo
 from tdv.infra.repos.portfolio_shares_repo import PortfolioSharesRepo
 
 
@@ -42,7 +42,7 @@ class Services(DeclarativeContainer):
     option_chains = Singleton(OptionChainsService, Repos.option_chains)
     options = Singleton(OptionsService, Repos.options)
     share_type = Singleton(ShareTypeService, db, Repos.share_type, ticker)
-    users = Singleton(UsersService, db, Repos.user)
+    users = Singleton(AccountService, db, Repos.user)
     portfolio_shares = Singleton(PortfolioSharesService, db, Repos.portfolio_shares, ticker, share_type)
     portfolio_options = Singleton(PortfolioOptionsService, db, Repos.portfolio_options)
     portfolios = Singleton(PortfoliosService, db, Repos.portfolios)

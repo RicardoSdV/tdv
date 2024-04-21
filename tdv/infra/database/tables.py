@@ -1,4 +1,5 @@
-from sqlalchemy import MetaData, Table, Column, DateTime, func, SmallInteger, BigInteger, String, ForeignKey, Boolean, Numeric, Integer
+from sqlalchemy import (MetaData, Table, Column, DateTime, func, SmallInteger, BigInteger, String, ForeignKey, Boolean,
+                        Numeric, Integer)
 
 from tdv.domain.entities.exchange_entity import Currencies
 
@@ -88,7 +89,7 @@ account_table = Table(
 portfolio_table = Table(
     'portfolio', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('user_id', BigInteger, ForeignKey(account_table.c.id, ondelete='RESTRICT'), nullable=True),
+    Column('user_id', BigInteger, ForeignKey(account_table.c.id, ondelete='CASCADE'), nullable=True),
     Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
@@ -97,7 +98,7 @@ portfolio_table = Table(
 portfolio_share_table = Table(
     'portfolio_share', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
     Column('ticker_share_type_id', BigInteger, ForeignKey(ticker_share_type_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0'),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
@@ -107,7 +108,7 @@ portfolio_share_table = Table(
 portfolio_option_table = Table(
     'portfolio_option', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
     Column('option_id', BigInteger, ForeignKey(option_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),  # If negative: sell to open
     Column('created_at', DateTime, server_default=func.now(), nullable=False),

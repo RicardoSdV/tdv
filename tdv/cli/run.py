@@ -1,5 +1,3 @@
-import subprocess
-
 from click import group
 
 from tdv.logger_setup import LoggerFactory
@@ -20,18 +18,22 @@ def log() -> None:
 
 @run_group.command()
 def yf() -> None:
-    """Run periodic requests to Yahoo Finance to request options data"""
+    """Run periodic requests to Yahoo Finance to request options data & save in DB"""
+
+    import sys
+
     from tdv.constants import ROOT_DIR_PATH
-    from tdv.utils import declare_path
     from tdv.run import run
 
-    declare_path(ROOT_DIR_PATH)
+    sys.path.append(str(ROOT_DIR_PATH))
     run()
 
 
 @run_group.command()
 def ping() -> None:
     """Runs the ping API on a gunicorn worker"""
+    import subprocess
+
     # WSL -> Windows port: ip addr show eth0
     command = [
         'gunicorn',

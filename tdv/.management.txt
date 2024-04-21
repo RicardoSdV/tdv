@@ -1,0 +1,46 @@
+Why: Project management is good to improve coordination, efficiency & focusing efforts towards business goals.
+
+How to use:
+    - Move tasks to "Is Doing" from "Will Do" & commit to main to make everyone aware
+    - Move or add tasks that should be done ASAP to "Will do" after expert consulting & commit to main
+    - Add any ideas to "Could do", no need to commit to main
+    - Move tasks from "Is Doing" to "Was Done" when task is finished
+
+
+=======================================================================================================================
+Is Doing:
+    - Description: Tasks under active development i.e. someone else working on this task will be redundant, add your
+    name to know who is doing what. The trend would be for tasks in this section to be more atomic.
+
+    - Tasks:
+        - (Ric): Trimming CLI to include only necessary commands
+        - (Ric): Renaming tables & related to singular
+=======================================================================================================================
+
+=======================================================================================================================
+Will do:
+    - Description: Tasks that will be done relatively shortly. Keep number small, focused, prioritized.
+
+    - Tasks:
+        - Account:
+            - Session: log in once, work with that rather than passing username or something for every operation
+=======================================================================================================================
+
+=======================================================================================================================
+Could do:
+    - Description: More than less generic functionality which might or might not be done any time soon.
+
+    - Tasks:
+        - Account:
+            - Use google to handle accounts
+
+=======================================================================================================================
+
+=======================================================================================================================
+Was done:
+    - Account:
+        - Create an account
+        - Update username
+        - Delete an account
+        -
+=======================================================================================================================

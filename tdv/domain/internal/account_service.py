@@ -1,24 +1,24 @@
 from typing import TYPE_CHECKING, List, Dict
 
-from tdv.domain.entities.user_entity import User
+from tdv.domain.entities.account_entity import Account
 from tdv.domain.types import UserId
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
-    from tdv.infra.repos.user_repo import UserRepo
+    from tdv.infra.repos.account_repo import UserRepo
 
 logger = LoggerFactory.make_logger(__name__)
 
 
-class UsersService:
+class AccountService:
     def __init__(self, db: 'DB', users_repo: 'UserRepo') -> None:
         self.db = db
         self.users_repo = users_repo
 
-    def create_user(self, username: str, email: str, password: str) -> List[User]:
+    def create_account(self, username: str, email: str, password: str) -> List[Account]:
         logger.debug('Creating user', username=username, email=email, password=password)
-        users = [User(username=username, email=email, password=password)]
+        users = [Account(username=username, email=email, password=password)]
 
         with self.db.connect as conn:
             users = self.users_repo.insert(conn, users)
@@ -26,9 +26,9 @@ class UsersService:
 
         return users
 
-    def delete_user_by_id(self, user_id: UserId) -> List[User]:
+    def delete_account_by_id(self, user_id: UserId) -> List[Account]:
         logger.debug('Deleting user by ID', user_id=user_id)
-        users = [User(user_id=user_id)]
+        users = [Account(user_id=user_id)]
 
         with self.db.connect as conn:
             users = self.users_repo.delete(conn, users)
@@ -36,9 +36,9 @@ class UsersService:
 
         return users
 
-    def get_user_by_email_and_password(self, email: str, password: str) -> List[User]:
+    def get_account_by_email_and_password(self, email: str, password: str) -> List[Account]:
         logger.debug('Selecting user by email and password', email=email, password=password)
-        users = [User(email=email, password=password)]
+        users = [Account(email=email, password=password)]
 
         with self.db.connect as conn:
             result = self.users_repo.select(conn, users)
@@ -46,9 +46,9 @@ class UsersService:
 
         return result
 
-    def update_username(self, username: str, email: str, password: str) -> List[User]:
+    def update_username(self, username: str, email: str, password: str) -> List[Account]:
         logger.debug('Updating username', new_username=username, email=email, password=password)
-        users = [User(email=email, password=password)]
+        users = [Account(email=email, password=password)]
         params = {'username': username}
 
         with self.db.connect as conn:
