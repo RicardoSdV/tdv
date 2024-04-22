@@ -32,7 +32,16 @@ Could do:
 
     - Tasks:
         - Account:
-            - Use google to handle accounts
+            - Use Google to handle accounts
+        - Change from floats to decimal:
+            - share count in portfolio_shares_service.py
+            - option count in portfolio_options_service.py
+            - cash in portfolio_service.py
+            - Unsure about:
+                - strike, last-price, bid, ask, change, implied_volatility in option_table in tables.py are Numeric
+                - underlying_price in option_chain_table in tables.py is also Numeric
+        - YF service proxy:
+            - Rethink where Exchanges with Ticker dictionary is stored (one place in sync with DB)
 
 =======================================================================================================================
 

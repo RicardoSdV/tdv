@@ -8,7 +8,6 @@ from tdv.logger_setup import LoggerFactory
 logger = LoggerFactory.make_logger(__name__)
 
 
-# TODO: change counts from floats to Decimal
 class PortfolioOptionsService:
     def __init__(self, db: 'DB', portfolio_options_repo: 'PortfolioOptionsRepo') -> None:
         self.db = db

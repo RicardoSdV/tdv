@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Callable, Optional
+from typing import Callable
 
 from pandas import DataFrame
 from pandas_market_calendars import get_calendar
@@ -16,7 +16,7 @@ logger = LoggerFactory.make_logger(__name__)
 
 class YahooFinanceServiceProxy:
     __update_options_interval: Second = 10
-    __exchange_tickers = {'NYSE': ('TSLA',)}  # TODO: Rethink were they will live, one place in sync with DB
+    __exchange_tickers = {'NYSE': ('TSLA',)}
     force_requests = True
 
     def __init__(self, yahoo_finance_service: 'YahooFinanceService') -> None:
@@ -91,7 +91,6 @@ class YahooFinanceServiceProxy:
             serialized_option_chains = self.serialize_yf_option_chains(tesla_option_chains)
 
             self.yahoo_finance_service.save_option_chains(serialized_option_chains, expiries, ticker_name)
-
 
     @staticmethod
     def __request_options(ticker: Ticker, expirations: Expiries) -> OptionChainsYF:
