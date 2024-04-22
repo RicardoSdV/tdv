@@ -6,6 +6,7 @@ from tdv.domain.scheduling.task import Task
 
 class Job:
     """A Job holds & calls one or more instances of Task, at a given time"""
+
     __slots__ = ('run_at', '__tasks')
 
     def __init__(self, run_at: datetime) -> None:

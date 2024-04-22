@@ -8,7 +8,7 @@ from yfinance import Ticker
 
 from tdv.constants import MarketEvents
 from tdv.domain.internal.yahoo_finance_service import YahooFinanceService
-from tdv.domain.types import Expiries, OptionChainsYF, Second, OptionChains
+from tdv.domain.types import Expiries, OptionChainsYF, Second, Options
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
@@ -43,11 +43,21 @@ class YahooFinanceServiceProxy:
             next_open = self.__get_next_market_time(exchange, MarketEvents.OPEN)
             next_close = self.__get_next_market_time(exchange, MarketEvents.CLOSE)
             if next_open > next_close:
-                logger.debug('Market open right now', exchange=exchange, next_open=next_open, next_close=next_close)
+                logger.debug(
+                    'Market open right now',
+                    exchange=exchange,
+                    next_open=next_open,
+                    next_close=next_close,
+                )
                 self.__schedule_periodic_requests(scheduler, self.__update_options, exchange)
                 self.__schedule_market_events(scheduler, next_close, self.__on_market_close, exchange)
             else:
-                logger.debug('Market closed', exchange=exchange, next_open=next_open, next_close=next_close)
+                logger.debug(
+                    'Market closed',
+                    exchange=exchange,
+                    next_open=next_open,
+                    next_close=next_close,
+                )
                 self.__schedule_market_events(scheduler, next_open, self.__on_market_open, exchange)
 
     @classmethod
@@ -76,7 +86,12 @@ class YahooFinanceServiceProxy:
         calendar = self.__calendars[exchange]
         schedule = calendar.schedule(start_date=now, end_date=now + timedelta(days=10))
         next_time = getattr(schedule, market_event.value)[0].to_pydatetime()
-        logger.debug('Next market time gotten', exchange=exchange, next_time=next_time, market_event=market_event)
+        logger.debug(
+            'Next market time gotten',
+            exchange=exchange,
+            next_time=next_time,
+            market_event=market_event,
+        )
         return next_time
 
     def __update_options(self, exchange: str) -> None:
@@ -90,7 +105,7 @@ class YahooFinanceServiceProxy:
 
             serialized_option_chains = self.serialize_yf_option_chains(tesla_option_chains)
 
-            self.yahoo_finance_service.save_option_chains(serialized_option_chains, expiries, ticker_name)
+            self.yahoo_finance_service.save_option(serialized_option_chains, expiries, ticker_name)
 
     @staticmethod
     def __request_options(ticker: Ticker, expirations: Expiries) -> OptionChainsYF:
@@ -104,7 +119,7 @@ class YahooFinanceServiceProxy:
         return expirations
 
     @staticmethod
-    def serialize_yf_option_chains(option_chains: OptionChainsYF) -> OptionChains:
+    def serialize_yf_option_chains(option_chains: OptionChainsYF) -> Options:
         return [
             [el.to_dict() if isinstance(el, DataFrame) else el for el in option_chain]
             for option_chain in option_chains

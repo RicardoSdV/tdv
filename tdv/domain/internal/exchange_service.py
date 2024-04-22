@@ -54,7 +54,11 @@ class ExchangeService:
         return result
 
     def update_exchange_live(self, exchange_name: str, is_live: bool) -> List[Exchange]:
-        logger.debug('Updating exchange live status', exchange_name=exchange_name, is_live=is_live)
+        logger.debug(
+            'Updating exchange live status',
+            exchange_name=exchange_name,
+            is_live=is_live,
+        )
         exchanges = [Exchange(name=exchange_name)]
         params = {'live': is_live}
         with self.db.connect as conn:

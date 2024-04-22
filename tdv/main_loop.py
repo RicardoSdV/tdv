@@ -6,11 +6,10 @@ from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
 
+
 class MainLoop:
     @staticmethod
     def run() -> None:
-
-
 
         sleep_time = MAIN_LOOP_SLEEP_TIME
 
@@ -24,5 +23,3 @@ class MainLoop:
                 sleep(sleep_time)
             except Exception as e:
                 logger.exception('Main loop', exc=e)
-
-

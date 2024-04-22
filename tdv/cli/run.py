@@ -12,7 +12,7 @@ def run_group() -> None:
 
 @run_group.command()
 def log() -> None:
-    """ For testing logger """
+    """For testing logger"""
     logger.info('Test message', test_arg='example')
 
 
@@ -37,9 +37,12 @@ def ping() -> None:
     # WSL -> Windows port: ip addr show eth0
     command = [
         'gunicorn',
-        '--bind', '0.0.0.0:8000',
-        '--workers', '1',
-        '--worker-class', 'sync',
-        'tdv.api.ping:create_app()'
+        '--bind',
+        '0.0.0.0:8000',
+        '--workers',
+        '1',
+        '--worker-class',
+        'sync',
+        'tdv.api.ping:create_app()',
     ]
     subprocess.run(command)

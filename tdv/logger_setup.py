@@ -9,9 +9,7 @@ class LoggerFactory:
     __save_to_file = False
     if __save_to_file:
         structlog.configure(
-            logger_factory=structlog.WriteLoggerFactory(
-                file=(LOGS_DIR_PATH / timestamp_str()).with_suffix('.log').open('w')
-            ),
+            logger_factory=structlog.WriteLoggerFactory(file=(LOGS_DIR_PATH / timestamp_str()).with_suffix('.log').open('w')),
         )
 
     @staticmethod

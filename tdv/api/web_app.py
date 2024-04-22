@@ -30,7 +30,7 @@ class WebApp(BaseApplication):
             'workers': self.__default_workers,
             'accesslog': '-',
             'errorlog': '-',
-            'worker_class': 'gevent'
+            'worker_class': 'gevent',
         }
 
     def add_routes(self) -> None:
@@ -44,4 +44,3 @@ class WebApp(BaseApplication):
         for option_name, option_value in options.items():
             if option_name in self.cfg.settings and option_value is not None:
                 self.cfg.set(option_name.lower(), option_value)
-

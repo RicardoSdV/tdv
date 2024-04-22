@@ -1,24 +1,24 @@
-"""add_ticker_share_type_table
+"""add_contract_size_table
 
-Revision ID: a4a567a38f5e
-Revises: ef82ec3eb28a
-Create Date: 2024-04-21 16:48:34.842428
+Revision ID: c03db9b5a7cf
+Revises: bcbcd82731d3
+Create Date: 2024-04-22 22:22:09.606133
 
 """
 from typing import Sequence, Union
 
 from alembic import op
+import sqlalchemy as sa
 
-from tdv.infra.database.tables import ticker_share_type_table
+from tdv.infra.database.tables import contract_size_table
 
 # revision identifiers, used by Alembic.
-revision: str = 'a4a567a38f5e'
-down_revision: Union[str, None] = 'ef82ec3eb28a'
+revision: str = 'c03db9b5a7cf'
+down_revision: Union[str, None] = 'bcbcd82731d3'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-
-table = ticker_share_type_table
+table = contract_size_table
 
 
 def upgrade() -> None:
@@ -27,4 +27,3 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table(table.name)
-

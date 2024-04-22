@@ -22,7 +22,7 @@ UserId = int
 
 # Custom types
 Expiries = Tuple[str, ...]
-OptionChains = List[List[Union[Dict, Any]]]
+Options = List[List[Union[Dict, Any]]]
 OptionChainYF = Tuple[DataFrame, DataFrame, Dict]
 OptionChainsYF = List[OptionChainYF]
 Insertable = TypeVar('Insertable', bound=Union[int, str, float, bool, None, datetime])

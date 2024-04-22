@@ -46,7 +46,4 @@ class MarketEvents(Enum):
     CLOSE = 'market_close'
 
 
-TICKERS_BY_EXCHANGE = {  # All tickers and exchanges to be auto inserted into DB
-    Exchanges.NEW_YORK.value: [Tickers.TSLA.value]
-}
-
+TICKERS_BY_EXCHANGE = {Exchanges.NEW_YORK.value: [Tickers.TSLA.value]}  # All tickers and exchanges to be auto inserted into DB

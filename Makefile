@@ -69,6 +69,9 @@ drop_db:  # EXTREME DANGER!! Destroys project DB, will DELETE ALL DATA
 configs:  # Runs the parser found in tdv.common_utils to set the alembic.ini DB path
 	- $(shell python3 -c 'from tdv.common_utils import config_parser; config_parser()')
 
+fmt:  # Run black with appropriate char limit
+	- sudo black --line-length 128 --skip-string-normalization .
+
 clean:  # Remove compiled Python files, cached directories & build artifacts
 	- find . -name \*.pyc -delete
 	- find . -depth -name __pycache__ -exec rm -rf {} \;

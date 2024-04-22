@@ -7,16 +7,23 @@ from tdv.domain.types import ExchangeId, TickerId
 
 class Tickers(EntityEnum):
     TSLA = 'TSLA'
-    AMZN = 'AMZN'
 
 
 class Companies(EntityEnum):
     TSLA = 'Tesla'
-    AMZN = 'Amazon'
 
 
 class Ticker(Entity):
-    __slots__ = ('id', 'exchange_id', 'ticker', 'company', 'live', 'hist', 'created_at', 'updated_at')
+    __slots__ = (
+        'id',
+        'exchange_id',
+        'ticker',
+        'company',
+        'live',
+        'hist',
+        'created_at',
+        'updated_at',
+    )
 
     def __init__(
         self,

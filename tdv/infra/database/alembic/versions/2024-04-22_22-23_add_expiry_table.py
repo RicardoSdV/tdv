@@ -1,24 +1,24 @@
-"""add_portfolio_option_table
+"""add_expiry_table
 
-Revision ID: 1a4693247ea6
-Revises: 2d5559c4b3cf
-Create Date: 2024-04-21 19:12:19.691514
+Revision ID: 892241b2816c
+Revises: c03db9b5a7cf
+Create Date: 2024-04-22 22:23:17.526748
 
 """
 from typing import Sequence, Union
 
 from alembic import op
+import sqlalchemy as sa
 
-from tdv.infra.database.tables import portfolio_option_table
+from tdv.infra.database.tables import expiry_table
 
 # revision identifiers, used by Alembic.
-revision: str = '1a4693247ea6'
-down_revision: Union[str, None] = '2d5559c4b3cf'
+revision: str = '892241b2816c'
+down_revision: Union[str, None] = 'c03db9b5a7cf'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-
-table = portfolio_option_table
+table = expiry_table
 
 
 def upgrade() -> None:
@@ -27,4 +27,3 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table(table.name)
-

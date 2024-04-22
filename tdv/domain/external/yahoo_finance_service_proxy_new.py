@@ -30,9 +30,9 @@
 #
 #     def _download_options(self, date=None):
 #         if date is None:
-#             url = f"{self._base_url}/v7/finance/options/{self.ticker}"
+#             url = f'{self._base_url}/v7/finance/options/{self.ticker}'
 #         else:
-#             url = f"{self._base_url}/v7/finance/options/{self.ticker}?date={date}"
+#             url = f'{self._base_url}/v7/finance/options/{self.ticker}?date={date}'
 #
 #         r = self._data.get(url=url, proxy=self.proxy).json()
 #         # print('r:', json.dumps(r, indent=2))

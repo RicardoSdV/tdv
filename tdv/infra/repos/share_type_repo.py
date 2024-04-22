@@ -1,5 +1,3 @@
-
-
 from sqlalchemy import Table
 
 from tdv.domain.entities.ticker_share_type_entity import TickerShareType

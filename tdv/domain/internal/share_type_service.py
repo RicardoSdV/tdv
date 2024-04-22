@@ -13,10 +13,10 @@ logger = LoggerFactory.make_logger(__name__)
 
 class ShareTypeService:
     def __init__(
-            self,
-            db: 'DB',
-            share_type_repo: 'ShareTypeRepo',
-            ticker_service: 'TickerService'
+        self,
+        db: 'DB',
+        share_type_repo: 'ShareTypeRepo',
+        ticker_service: 'TickerService',
     ) -> None:
         self.db = db
         self.share_type_repo = share_type_repo
@@ -39,7 +39,6 @@ class ShareTypeService:
         logger.debug('Getting ticker_share_type by ticker_id', ticker_id=ticker_id)
         tickers = [TickerShareType(ticker_id=ticker_id)]
         return self.share_type_repo.select(conn, tickers)
-
 
     def delete_ticker_share_type(self, ticker_name: str, share_type: str) -> List[TickerShareType]:
         logger.debug('Deleting ticker_share_type', ticker_name=ticker_name, share_type=share_type)

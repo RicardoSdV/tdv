@@ -1,24 +1,24 @@
-"""add_account_table
+"""add_call_table
 
-Revision ID: 4261e68b2cc3
-Revises: a4a567a38f5e
-Create Date: 2024-04-21 19:05:27.588134
+Revision ID: 15f91ab8f1a0
+Revises: 3ee68448ec05
+Create Date: 2024-04-22 22:25:09.422955
 
 """
 from typing import Sequence, Union
 
 from alembic import op
+import sqlalchemy as sa
 
-from tdv.infra.database.tables import account_table
+from tdv.infra.database.tables import call_table
 
 # revision identifiers, used by Alembic.
-revision: str = '4261e68b2cc3'
-down_revision: Union[str, None] = 'a4a567a38f5e'
+revision: str = '15f91ab8f1a0'
+down_revision: Union[str, None] = '3ee68448ec05'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-
-table = account_table
+table = call_table
 
 
 def upgrade() -> None:
@@ -27,4 +27,3 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table(table.name)
-

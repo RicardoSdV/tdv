@@ -17,15 +17,16 @@ class Currencies(EntityEnum):
 class Exchange(Entity):
     __slots__ = ('id', 'name', 'currency', 'live', 'hist', 'created_at', 'updated_at')
 
-    def __init__(self,
-                 exchange_id: Optional[ExchangeId] = None,
-                 name: Optional[str] = None,
-                 currency: Optional[str] = None,
-                 live: Optional[bool] = None,
-                 hist: Optional[bool] = None,
-                 created_at: Optional[datetime] = None,
-                 updated_at: Optional[datetime] = None,
-                 ) -> None:
+    def __init__(
+        self,
+        exchange_id: Optional[ExchangeId] = None,
+        name: Optional[str] = None,
+        currency: Optional[str] = None,
+        live: Optional[bool] = None,
+        hist: Optional[bool] = None,
+        created_at: Optional[datetime] = None,
+        updated_at: Optional[datetime] = None,
+    ) -> None:
         self.id = exchange_id
         self.name = None if name is None else Exchanges.validate_value(name)
         self.currency = None if currency is None else Currencies.validate_value(currency)

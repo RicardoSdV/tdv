@@ -1,24 +1,24 @@
-"""add_portfolio_table
+"""add_put_table
 
-Revision ID: 51449f56ade0
-Revises: 4261e68b2cc3
-Create Date: 2024-04-21 19:08:29.399736
+Revision ID: a078b71ae08a
+Revises: 15f91ab8f1a0
+Create Date: 2024-04-22 22:26:43.705581
 
 """
 from typing import Sequence, Union
 
 from alembic import op
+import sqlalchemy as sa
 
-from tdv.infra.database.tables import portfolio_table
+from tdv.infra.database.tables import put_table
 
 # revision identifiers, used by Alembic.
-revision: str = '51449f56ade0'
-down_revision: Union[str, None] = '4261e68b2cc3'
+revision: str = 'a078b71ae08a'
+down_revision: Union[str, None] = '15f91ab8f1a0'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-
-table = portfolio_table
+table = put_table
 
 
 def upgrade() -> None:

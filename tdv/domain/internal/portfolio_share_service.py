@@ -12,23 +12,39 @@ logger = LoggerFactory.make_logger(__name__)
 
 class PortfolioSharesService:
     def __init__(
-            self,
-            db: 'DB',
-            portfolio_shares_repo: 'PortfolioSharesRepo',
-            ticker_repo: 'TickerService',
-            share_type_repo: 'ShareTypeService',
+        self,
+        db: 'DB',
+        portfolio_shares_repo: 'PortfolioSharesRepo',
+        ticker_repo: 'TickerService',
+        share_type_repo: 'ShareTypeService',
     ) -> None:
         self.db = db
         self.portfolio_shares_repo = portfolio_shares_repo
         self.ticker_repo = ticker_repo
         self.share_type_repo = share_type_repo
 
-    def create(self, portfolio_id: int, ticker: str, ticker_share_type_id: int, count: Optional[float]) -> List[PortfolioShare]:
-        logger.debug('Creating portfolio_shares', portfolio_id=portfolio_id, ticker=ticker,
-                     ticker_share_type_id=ticker_share_type_id, count=count)
+    def create(
+        self,
+        portfolio_id: int,
+        ticker: str,
+        ticker_share_type_id: int,
+        count: Optional[float],
+    ) -> List[PortfolioShare]:
+        logger.debug(
+            'Creating portfolio_shares',
+            portfolio_id=portfolio_id,
+            ticker=ticker,
+            ticker_share_type_id=ticker_share_type_id,
+            count=count,
+        )
         portfolio_shares = [
-            PortfolioShare(portfolio_id=portfolio_id, ticker=ticker, ticker_share_type_id=ticker_share_type_id,
-                           count=count)]
+            PortfolioShare(
+                portfolio_id=portfolio_id,
+                ticker=ticker,
+                ticker_share_type_id=ticker_share_type_id,
+                count=count,
+            )
+        ]
         with self.db.connect as conn:
             result = self.portfolio_shares_repo.insert(conn, portfolio_shares)
             conn.commit()

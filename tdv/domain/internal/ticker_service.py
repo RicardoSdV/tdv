@@ -28,7 +28,13 @@ class TickerService:
             exchange_id = exchanges[0].id
 
             company_name = getattr(Companies, ticker_name.upper()).value
-            tickers = [Ticker(exchange_id=exchange_id, ticker_name=ticker_name, company_name=company_name)]
+            tickers = [
+                Ticker(
+                    exchange_id=exchange_id,
+                    ticker_name=ticker_name,
+                    company_name=company_name,
+                )
+            ]
 
             result = self.ticker_repo.insert(conn, tickers)
             conn.commit()
@@ -44,12 +50,16 @@ class TickerService:
                 Ticker(
                     exchange_id=exchange.id,
                     ticker_name=ticker_name,
-                    company_name=getattr(Companies, ticker_name.upper()).value
+                    company_name=getattr(Companies, ticker_name.upper()).value,
                 )
                 for ticker_name in ticker_names
             ]
 
-            logger.debug('Creating all tickers for exchange', exchange=exchange.name, tickers=tickers)
+            logger.debug(
+                'Creating all tickers for exchange',
+                exchange=exchange.name,
+                tickers=tickers,
+            )
 
             results.append(self.ticker_repo.insert(conn, tickers))
         return results

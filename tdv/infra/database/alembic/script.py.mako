@@ -17,10 +17,12 @@ down_revision: Union[str, None] = ${repr(down_revision)}
 branch_labels: Union[str, Sequence[str], None] = ${repr(branch_labels)}
 depends_on: Union[str, Sequence[str], None] = ${repr(depends_on)}
 
+table =
+
 
 def upgrade() -> None:
-    ${upgrades if upgrades else "pass"}
+    ${upgrades if upgrades else "op.create_table(table.name, *[column for column in table.columns])"}
 
 
 def downgrade() -> None:
-    ${downgrades if downgrades else "pass"}
+    ${downgrades if downgrades else "op.drop_table(table.name)"}

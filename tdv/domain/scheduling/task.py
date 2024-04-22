@@ -6,9 +6,15 @@ from tdv.domain.types import Args, Handler, KwArgs
 
 class Task:
     """Class that holds a Callable and optionally its args and kwargs for calling at a later point in time"""
+
     __slots__ = ('__handler', '__args', '__kwargs')
 
-    def __init__(self, handler: Handler, args: Optional[Args] = None, kwargs: Optional[KwArgs] = None) -> None:
+    def __init__(
+        self,
+        handler: Handler,
+        args: Optional[Args] = None,
+        kwargs: Optional[KwArgs] = None,
+    ) -> None:
         self.__handler: Handler = handler
         self.__args: Optional[Args] = args
         self.__kwargs: Optional[KwArgs] = kwargs

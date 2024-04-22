@@ -26,6 +26,7 @@ class EntityProtocol(Protocol):
 
 class Entity:
     """Base entity class, repo operation requires that __slots__ have the exact same name as table columns"""
+
     __slots__: Tuple[str, ...] = ()
 
     def __init__(self, *_: Args, **__: KwArgs) -> None:

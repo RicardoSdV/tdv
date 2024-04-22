@@ -14,7 +14,7 @@ Is Doing:
 
     - Tasks:
         - (Ric): Trimming CLI to include only necessary commands
-        - (Ric): Renaming tables & related to singular
+        - (Ric): Normalizing main trading data table
 =======================================================================================================================
 
 =======================================================================================================================
@@ -24,6 +24,17 @@ Will do:
     - Tasks:
         - Account:
             - Session: log in once, work with that rather than passing username or something for every operation
+
+        - Portfolio:
+            - Create a portfolio
+            - Add shares to a portfolio
+            - Add options to a portfolio
+            - Get all portfolio data & pretty print
+            - Do analysis
+
+        - Ticker:
+            - Live / Historical support hybrid: Download options every certain interval & use the last DB insertion
+            as the "live" data to perform analysis.
 =======================================================================================================================
 
 =======================================================================================================================
@@ -32,16 +43,19 @@ Could do:
 
     - Tasks:
         - Account:
-            - Use Google to handle accounts
-        - Change from floats to decimal:
-            - share count in portfolio_shares_service.py
-            - option count in portfolio_options_service.py
-            - cash in portfolio_service.py
-            - Unsure about:
-                - strike, last-price, bid, ask, change, implied_volatility in option_table in tables.py are Numeric
-                - underlying_price in option_chain_table in tables.py is also Numeric
+            - Make account secure, passwords etc (use google? way better than handling accounts)
+
         - YF service proxy:
             - Rethink where Exchanges with Ticker dictionary is stored (one place in sync with DB)
+
+        -Ticker:
+            - Historical support: Have a comprehensive set of options downloaded & perform analysis based on timestamps
+            - Live support: Download options and perform analysis without having the options pass through the DB
+
+        - Portfolio:
+            - Update portfolio shares
+            - Update portfolio options
+            - Delete a portfolio
 
 =======================================================================================================================
 

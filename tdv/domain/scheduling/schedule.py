@@ -11,6 +11,7 @@ class Schedule:
     Holds a list of jobs, which can be run based on their run_at attr, optionally applying an offset.
     Can discard events that are further in the past than the threshold.
     """
+
     __slots__ = ('__jobs', '__run_offset', '__delete_offset')
 
     def __init__(self, offset: Optional[timedelta] = None, threshold: Optional[timedelta] = None) -> None:

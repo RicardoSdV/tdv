@@ -1,45 +1,33 @@
-import math
-from typing import Dict
-
 from sqlalchemy import Connection
 
-from tdv.domain.entities.option_entity import Option, ContractSizes
-from tdv.infra.repos.options_repo import OptionsRepo
+from tdv.domain.entities.option_entity import Option
+from tdv.infra.repos.option_repo import OptionRepo
+from tdv.utils import str_to_datetime
 
 
-class OptionsService:
-    def __init__(self, options_repo: OptionsRepo) -> None:
-        self.options_repo = options_repo
+class OptionService:
+    def __init__(self, option_repo: OptionRepo) -> None:
+        self.option_repo = option_repo
 
-    def create_options(self, options: Dict, option_chain_id: int, conn: Connection) -> None:
-        option_entities = []
+    def create_option_get_id(
+        self,
+        strike: float,
+        underlying_price: int,
+        is_call: bool,
+        expiry: str,
+        ticker_id: int,
+        conn: Connection,
+    ) -> int:
 
-        for strike, last_trade_date, last_price, bid, ask, change, volume, open_interest, implied_volatility, size in zip(
-                options['strike'].values(),
-                options['lastTradeDate'].values(),
-                options['lastPrice'].values(),
-                options['bid'].values(),
-                options['ask'].values(),
-                options['change'].values(),
-                options['volume'].values(),
-                options['openInterest'].values(),
-                options['impliedVolatility'].values(),
-                options['contractSize'].values(),
-        ):
-            option_entities.append(
-                Option(
-                    option_chain_id=option_chain_id,
-                    strike=strike,
-                    last_trade_date=last_trade_date,
-                    last_price=last_price,
-                    bid=bid,
-                    ask=ask,
-                    change=change,
-                    volume=0 if math.isnan(volume) else int(volume),
-                    open_interest=open_interest,
-                    implied_volatility=implied_volatility,
-                    size=getattr(ContractSizes, size).value,
-                )
+        option_chains = [
+            Option(
+                ticker_id=ticker_id,
+                strike=strike,
+                underlying_price=underlying_price,
+                is_call=is_call,
+                expiry=str_to_datetime(expiry),
             )
+        ]
 
-        self.options_repo.insert(conn, option_entities)
+        option_chains = self.option_repo.insert(conn, option_chains)
+        return option_chains[0].id
