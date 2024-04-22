@@ -1,7 +1,6 @@
 from sqlalchemy import Connection
 
 from tdv.domain.entities.option_chain_entity import OptionChain
-from tdv.domain.internal.ticker_service import TickerService
 from tdv.infra.repos.option_chains_repo import OptionChainsRepo
 from tdv.utils import str_to_datetime
 

@@ -35,7 +35,7 @@ class OptionsService:
                     bid=bid,
                     ask=ask,
                     change=change,
-                    volume= 0 if math.isnan(volume) else int(volume),
+                    volume=0 if math.isnan(volume) else int(volume),
                     open_interest=open_interest,
                     implied_volatility=implied_volatility,
                     size=getattr(ContractSizes, size).value,
