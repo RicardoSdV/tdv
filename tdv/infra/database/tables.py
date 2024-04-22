@@ -64,8 +64,9 @@ insert_time_table = Table(
 share_history_table = Table(
     'share_history', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('insert_time_id', BigInteger, ForeignKey(insert_time_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('price', Integer, nullable=False),
+    Column('price', Numeric(precision=10, scale=2), nullable=False),
 )
 
 contract_size_table = Table(
@@ -119,55 +120,59 @@ put_table = Table(
     Column('implied_volatility', Numeric(precision=22, scale=20), nullable=False),
 )
 
-# ticker_share_type_table = Table(
-#     'ticker_share_type',
-#     metadata,
-#     Column('id', BigInteger, primary_key=True, autoincrement=True),
-#     Column('ticker_id', BigInteger, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
-#     Column('share_type', String(200), nullable=False),
-# )
-#
-# account_table = Table(
-#     'account',
-#     metadata,
-#     Column('id', BigInteger, primary_key=True, autoincrement=True),
-#     Column('username', String(200), nullable=False, unique=True),
-#     Column('email', String(200), nullable=False, unique=True),
-#     Column('password', String(200), nullable=False),
-#     Column('created_at', DateTime, server_default=func.now(), nullable=False),
-#     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
-# )
-#
-# portfolio_table = Table(
-#     'portfolio',
-#     metadata,
-#     Column('id', BigInteger, primary_key=True, autoincrement=True),
-#     Column('user_id', BigInteger, ForeignKey(account_table.c.id, ondelete='CASCADE'), nullable=True),
-#     Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
-#     Column('created_at', DateTime, server_default=func.now(), nullable=False),
-#     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
-# )
-#
-# portfolio_share_table = Table(
-#     'portfolio_share',
-#     metadata,
-#     Column('id', BigInteger, primary_key=True, autoincrement=True),
-#     Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
-#     Column('ticker_share_type_id', BigInteger, ForeignKey(ticker_share_type_table.c.id, ondelete='RESTRICT'),
-#            nullable=False),
-#     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0'),
-#     Column('created_at', DateTime, server_default=func.now(), nullable=False),
-#     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
-# )
-#
-# portfolio_option_table = Table(
-#     'portfolio_option',
-#     metadata,
-#     Column('id', BigInteger, primary_key=True, autoincrement=True),
-#     Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
-#     Column('option_id', BigInteger, ForeignKey(option_table.c.id, ondelete='RESTRICT'), nullable=False),
-#     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),
-#     # If negative: sell to open
-#     Column('created_at', DateTime, server_default=func.now(), nullable=False),
-#     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
-# )
+account_table = Table(
+    'account',
+    metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('username', String(200), nullable=False, unique=True),
+    Column('email', String(200), nullable=False, unique=True),
+    Column('password', String(200), nullable=False),
+    Column('created_at', DateTime, server_default=func.now(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+)
+
+portfolio_table = Table(
+    'portfolio',
+    metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('user_id', BigInteger, ForeignKey(account_table.c.id, ondelete='CASCADE'), nullable=True),
+    Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
+    Column('created_at', DateTime, server_default=func.now(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+)
+
+portfolio_share_table = Table(
+    'portfolio_share',
+    metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
+    Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0'),
+    # If negative: short
+    Column('created_at', DateTime, server_default=func.now(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+)
+
+portfolio_call_table = Table(
+    'portfolio_call',
+    metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
+    Column('option_id', BigInteger, ForeignKey(call_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),
+    # If negative: sell to open
+    Column('created_at', DateTime, server_default=func.now(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+)
+
+portfolio_put_table = Table(
+    'portfolio_put',
+    metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
+    Column('option_id', BigInteger, ForeignKey(put_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),
+    # If negative: sell to open
+    Column('created_at', DateTime, server_default=func.now(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+)
