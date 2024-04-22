@@ -158,7 +158,7 @@ portfolio_call_table = Table(
     metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
-    Column('option_id', BigInteger, ForeignKey(call_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('call_id', BigInteger, ForeignKey(call_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),
     # If negative: sell to open
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
@@ -170,7 +170,7 @@ portfolio_put_table = Table(
     metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
-    Column('option_id', BigInteger, ForeignKey(put_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('put_id', BigInteger, ForeignKey(put_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),
     # If negative: sell to open
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
