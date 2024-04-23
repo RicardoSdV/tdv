@@ -30,6 +30,13 @@ metadata = MetaData()
 # BigInteger ->  +- 9 000 000 000 000 000 000  (8 bytes)
 # Numeric(precision=24, scale=10) -> 10 000 000 000 000.000 000 000 1
 
+company_table = Table(
+    'company', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('name', String(2000), nullable=False),
+    Column('short_name', String(2000), nullable=False),
+)
+
 exchange_table = Table(
     'exchange',
     metadata,
@@ -46,13 +53,18 @@ ticker_table = Table(
     'ticker',
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('exchange_id', SmallInteger, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('ticker', String(20), nullable=False),
-    Column('company', String(200), nullable=False),
     Column('live', Boolean, server_default='false', nullable=False),
     Column('hist', Boolean, server_default='false', nullable=False),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+)
+
+exchange_ticker_table = Table(
+    'exchange_ticker', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('exchange_id', SmallInteger, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
 )
 
 insert_time_table = Table(
@@ -61,18 +73,10 @@ insert_time_table = Table(
     Column('time', DateTime, nullable=False),
 )
 
-share_history_table = Table(
-    'share_history', metadata,
-    Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('insert_time_id', BigInteger, ForeignKey(insert_time_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('price', Numeric(precision=10, scale=2), nullable=False),
-)
-
 contract_size_table = Table(
     'contract_size', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('size', BigInteger, nullable=False),
+    Column('size', Integer, nullable=False),
 )
 
 expiry_table = Table(
@@ -80,18 +84,26 @@ expiry_table = Table(
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('contract_size_id', Integer, ForeignKey(contract_size_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('expiry', DateTime, nullable=False),
+    Column('expiry_date', DateTime, nullable=False),
+)
+
+share_hist_table = Table(
+    'share_hist', metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('insert_time_id', BigInteger, ForeignKey(insert_time_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('price', Numeric(precision=10, scale=2), nullable=False),
 )
 
 strike_table = Table(
     'strike', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('expiry_id', BigInteger, ForeignKey(expiry_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('strike', Numeric(precision=10, scale=2), nullable=False),
+    Column('strike_price', Numeric(precision=10, scale=2), nullable=False),
 )
 
-call_table = Table(
-    'call', metadata,
+call_hist_table = Table(
+    'call_hist', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('strike_id', BigInteger, ForeignKey(strike_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('insert_time_id', BigInteger, ForeignKey(insert_time_table.c.id, ondelete='RESTRICT'), nullable=False),
@@ -105,8 +117,8 @@ call_table = Table(
     Column('implied_volatility', Numeric(precision=22, scale=20), nullable=False),
 )
 
-put_table = Table(
-    'put', metadata,
+put_hist_table = Table(
+    'put_hist', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('strike_id', BigInteger, ForeignKey(strike_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('insert_time_id', BigInteger, ForeignKey(insert_time_table.c.id, ondelete='RESTRICT'), nullable=False),
@@ -147,32 +159,21 @@ portfolio_share_table = Table(
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
     Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0'),
-    # If negative: short
+    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0'),  # -ve = short
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-portfolio_call_table = Table(
-    'portfolio_call',
-    metadata,
+portfolio_option_table = Table(
+    'portfolio_option', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
-    Column('call_id', BigInteger, ForeignKey(call_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),
-    # If negative: sell to open
+    Column('strike_id', BigInteger, ForeignKey(strike_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),  # -ve = sell to open
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-portfolio_put_table = Table(
-    'portfolio_put',
-    metadata,
-    Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
-    Column('put_id', BigInteger, ForeignKey(put_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),
-    # If negative: sell to open
-    Column('created_at', DateTime, server_default=func.now(), nullable=False),
-    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
-)
+option_table = Table('option', metadata)
+option_history_table = Table('option_history', metadata)
+ticker_share_type_table = Table('ticker_share_type', metadata)

@@ -10,7 +10,7 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from tdv.infra.database.tables import share_history_table
+from tdv.infra.database.tables import share_hist_table
 
 # revision identifiers, used by Alembic.
 revision: str = 'bcbcd82731d3'
@@ -18,7 +18,7 @@ down_revision: Union[str, None] = '1c9b029d0b08'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-table = share_history_table
+table = share_hist_table
 
 
 def upgrade() -> None:
