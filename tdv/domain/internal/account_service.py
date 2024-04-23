@@ -46,6 +46,16 @@ class AccountService:
 
         return result
 
+    def get_account_by_username_and_password(self, username: str, password: str) -> List[Account]:
+        logger.debug('Selecting user by username and password', email=username, password=password)
+        users = [Account(email=username, password=password)]
+
+        with self.db.connect as conn:
+            result = self.users_repo.select(conn, users)
+            conn.commit()
+
+        return result
+
     def update_username(self, username: str, email: str, password: str) -> List[Account]:
         logger.debug('Updating username', new_username=username, email=email, password=password)
         users = [Account(email=email, password=password)]

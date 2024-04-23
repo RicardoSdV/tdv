@@ -3,7 +3,6 @@ from typing import Optional
 from click import group, option, Choice
 
 from tdv.domain.entities.ticker_entity import Tickers
-from tdv.domain.entities.ticker_share_type_entity import ShareTypes
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
@@ -14,14 +13,13 @@ def portfolios_group() -> None:
     """Portfolio related operations."""
 
 
-@portfolios_group.command('create')
-@option('-u', '--user_id', 'user_id', required=True)
-def create(user_id: int) -> None:
-    """Creates an entry in portfolio table"""
+@portfolios_group.command()
+def create() -> None:
+    """Creates portfolio for current user"""
 
     from tdv.containers import Services
 
-    result = Services.portfolio().create_portfolio(user_id)
+    result = Services.portfolio().create_portfolio()
     logger.info('Portfolio created', result=result)
 
 

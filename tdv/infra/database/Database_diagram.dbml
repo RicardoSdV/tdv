@@ -25,7 +25,6 @@ Table ticker {
 }
 
 Table exchange_ticker {
-  id Integer [pk, increment]
   exchange_id Int [not null, ref: > exchange.id]
   ticker_id Int [not null, ref: > ticker.id]
 }

@@ -4,7 +4,7 @@ from typing import Optional
 from tdv.domain.entities.base_entity import Entity
 
 
-class Portfolios(Entity):
+class Portfolio(Entity):
     __slots__ = (
         'id',
         'user_id',

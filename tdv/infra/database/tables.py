@@ -15,6 +15,7 @@ from sqlalchemy import (
 
 from tdv.domain.entities.exchange_entity import Currencies
 
+# fmt: off
 """
 All SQL Alchemy Tables are defined here.
 
@@ -38,8 +39,7 @@ company_table = Table(
 )
 
 exchange_table = Table(
-    'exchange',
-    metadata,
+    'exchange', metadata,
     Column('id', SmallInteger, primary_key=True, autoincrement=True),
     Column('name', String(20), nullable=False, unique=True),
     Column('currency', String(20), server_default=Currencies.US_DOLLAR.value, nullable=False),
@@ -50,10 +50,9 @@ exchange_table = Table(
 )
 
 ticker_table = Table(
-    'ticker',
-    metadata,
+    'ticker', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('ticker', String(20), nullable=False),
+    Column('ticker', String(20), nullable=False, unique=True),
     Column('live', Boolean, server_default='false', nullable=False),
     Column('hist', Boolean, server_default='false', nullable=False),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
@@ -62,9 +61,8 @@ ticker_table = Table(
 
 exchange_ticker_table = Table(
     'exchange_ticker', metadata,
-    Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('exchange_id', SmallInteger, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('exchange_id', SmallInteger, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False, primary_key=True),
+    Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False, primary_key=True),
 )
 
 insert_time_table = Table(
@@ -133,8 +131,7 @@ put_hist_table = Table(
 )
 
 account_table = Table(
-    'account',
-    metadata,
+    'account', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('username', String(200), nullable=False, unique=True),
     Column('email', String(200), nullable=False, unique=True),
@@ -144,8 +141,7 @@ account_table = Table(
 )
 
 portfolio_table = Table(
-    'portfolio',
-    metadata,
+    'portfolio', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('user_id', BigInteger, ForeignKey(account_table.c.id, ondelete='CASCADE'), nullable=True),
     Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
@@ -154,8 +150,7 @@ portfolio_table = Table(
 )
 
 portfolio_share_table = Table(
-    'portfolio_share',
-    metadata,
+    'portfolio_share', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
     Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
@@ -174,6 +169,4 @@ portfolio_option_table = Table(
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-option_table = Table('option', metadata)
-option_history_table = Table('option_history', metadata)
-ticker_share_type_table = Table('ticker_share_type', metadata)
+# fmt: on

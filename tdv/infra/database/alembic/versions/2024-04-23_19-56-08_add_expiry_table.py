@@ -1,8 +1,8 @@
-"""add_contract_size_table
+"""add_expiry_table
 
-Revision ID: c03db9b5a7cf
-Revises: bcbcd82731d3
-Create Date: 2024-04-22 22:22:09.606133
+Revision ID: b6c8fc336ea3
+Revises: 26716fdefd51
+Create Date: 2024-04-23 19:56:08.899109
 
 """
 from typing import Sequence, Union
@@ -10,15 +10,15 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from tdv.infra.database.tables import contract_size_table
+from tdv.infra.database.tables import expiry_table
 
 # revision identifiers, used by Alembic.
-revision: str = 'c03db9b5a7cf'
-down_revision: Union[str, None] = 'bcbcd82731d3'
+revision: str = 'b6c8fc336ea3'
+down_revision: Union[str, None] = '26716fdefd51'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-table = contract_size_table
+table = expiry_table
 
 
 def upgrade() -> None:

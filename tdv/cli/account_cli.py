@@ -57,3 +57,15 @@ def delete_by_id(account_id: int) -> None:
 
     result = Services.account().delete_account_by_id(account_id)
     logger.info('Account deleted', result=result)
+
+
+@account_group.command()
+@option('-u', '--username', 'username', required=True)
+@option('-p', '--password', 'password', required=True)
+def login(username: str, password: str) -> None:
+    """login to an account"""
+
+    from tdv.containers import Services
+
+    result = Services.session().login(username, password)
+    logger.info('Account created', result=result)

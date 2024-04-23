@@ -1,8 +1,8 @@
-"""add_call_table
+"""add_portfolio_share_table
 
-Revision ID: 15f91ab8f1a0
-Revises: 3ee68448ec05
-Create Date: 2024-04-22 22:25:09.422955
+Revision ID: a9ad5f274f59
+Revises: a7af800b4e24
+Create Date: 2024-04-23 19:58:42.103214
 
 """
 from typing import Sequence, Union
@@ -10,15 +10,15 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from tdv.infra.database.tables import call_hist_table
+from tdv.infra.database.tables import portfolio_share_table
 
 # revision identifiers, used by Alembic.
-revision: str = '15f91ab8f1a0'
-down_revision: Union[str, None] = '3ee68448ec05'
+revision: str = 'a9ad5f274f59'
+down_revision: Union[str, None] = 'a7af800b4e24'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-table = call_hist_table
+table = portfolio_share_table
 
 
 def upgrade() -> None:

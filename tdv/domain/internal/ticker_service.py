@@ -17,29 +17,6 @@ class TickerService:
     def __init__(self, db: 'DB', ticker_repo: 'TickerRepo', exchange_service: 'ExchangeService') -> None:
         self.db = db
         self.ticker_repo = ticker_repo
-        self.exchange_service = exchange_service
-
-    def create_ticker(self, ticker_name: str, exchange_name: str) -> List[Ticker]:
-        logger.debug('Creating ticker', ticker_name=ticker_name)
-
-        with self.db.connect as conn:
-
-            exchanges = self.exchange_service.get_exchange_by_name(exchange_name, conn)
-            exchange_id = exchanges[0].id
-
-            company_name = getattr(Companies, ticker_name.upper()).value
-            tickers = [
-                Ticker(
-                    exchange_id=exchange_id,
-                    ticker_name=ticker_name,
-                    company_name=company_name,
-                )
-            ]
-
-            result = self.ticker_repo.insert(conn, tickers)
-            conn.commit()
-
-        return result
 
     def create_all_tickers(self, exchanges: List[Exchange], conn: Connection) -> List[List[Ticker]]:
         results = []
@@ -48,9 +25,7 @@ class TickerService:
 
             tickers = [
                 Ticker(
-                    exchange_id=exchange.id,
-                    ticker_name=ticker_name,
-                    company_name=getattr(Companies, ticker_name.upper()).value,
+                    exchange_id=exchange.id, ticker_name=ticker_name, company_name=getattr(Companies, ticker_name.upper()).value
                 )
                 for ticker_name in ticker_names
             ]

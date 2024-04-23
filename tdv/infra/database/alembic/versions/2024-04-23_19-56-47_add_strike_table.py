@@ -1,8 +1,8 @@
-"""add_put_table
+"""add_strike_table
 
-Revision ID: a078b71ae08a
-Revises: 15f91ab8f1a0
-Create Date: 2024-04-22 22:26:43.705581
+Revision ID: 3d3fb992aca9
+Revises: 0665aea818f3
+Create Date: 2024-04-23 19:56:47.606441
 
 """
 from typing import Sequence, Union
@@ -10,15 +10,15 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from tdv.infra.database.tables import put_hist_table
+from tdv.infra.database.tables import strike_table
 
 # revision identifiers, used by Alembic.
-revision: str = 'a078b71ae08a'
-down_revision: Union[str, None] = '15f91ab8f1a0'
+revision: str = '3d3fb992aca9'
+down_revision: Union[str, None] = '0665aea818f3'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-table = put_hist_table
+table = strike_table
 
 
 def upgrade() -> None:

@@ -13,7 +13,7 @@ Is Doing:
     name to know who is doing what. The trend would be for tasks in this section to be more atomic.
 
     - Tasks:
-        - (Ric): Trimming CLI to include only necessary commands
+        - (Ric): Being able to insert all exchanges and tickers
         - (Ric): Normalizing main trading data table
 =======================================================================================================================
 

@@ -1,8 +1,8 @@
-"""add_share_history_table
+"""add_company_table
 
-Revision ID: bcbcd82731d3
-Revises: 1c9b029d0b08
-Create Date: 2024-04-22 22:17:20.353502
+Revision ID: 936afec1a05a
+Revises: bc5cb1f3e078
+Create Date: 2024-04-23 19:53:24.652089
 
 """
 from typing import Sequence, Union
@@ -10,15 +10,15 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from tdv.infra.database.tables import share_hist_table
+from tdv.infra.database.tables import company_table
 
 # revision identifiers, used by Alembic.
-revision: str = 'bcbcd82731d3'
-down_revision: Union[str, None] = '1c9b029d0b08'
+revision: str = '936afec1a05a'
+down_revision: Union[str, None] = 'bc5cb1f3e078'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-table = share_hist_table
+table = company_table
 
 
 def upgrade() -> None:

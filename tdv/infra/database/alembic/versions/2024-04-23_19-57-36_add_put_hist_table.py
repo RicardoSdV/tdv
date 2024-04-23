@@ -1,8 +1,8 @@
-"""add_expiry_table
+"""add_put_hist_table
 
-Revision ID: 892241b2816c
-Revises: c03db9b5a7cf
-Create Date: 2024-04-22 22:23:17.526748
+Revision ID: 73fcf6da478b
+Revises: 1aeb69995334
+Create Date: 2024-04-23 19:57:36.493015
 
 """
 from typing import Sequence, Union
@@ -10,15 +10,15 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from tdv.infra.database.tables import expiry_table
+from tdv.infra.database.tables import put_hist_table
 
 # revision identifiers, used by Alembic.
-revision: str = '892241b2816c'
-down_revision: Union[str, None] = 'c03db9b5a7cf'
+revision: str = '73fcf6da478b'
+down_revision: Union[str, None] = '1aeb69995334'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-table = expiry_table
+table = put_hist_table
 
 
 def upgrade() -> None:

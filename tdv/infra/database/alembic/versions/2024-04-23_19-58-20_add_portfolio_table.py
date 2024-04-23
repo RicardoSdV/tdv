@@ -1,8 +1,8 @@
-"""add_strike_table
+"""add_portfolio_table
 
-Revision ID: 3ee68448ec05
-Revises: 892241b2816c
-Create Date: 2024-04-22 22:24:02.136075
+Revision ID: a7af800b4e24
+Revises: 5706223ab0bd
+Create Date: 2024-04-23 19:58:20.100828
 
 """
 from typing import Sequence, Union
@@ -10,15 +10,15 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from tdv.infra.database.tables import strike_table
+from tdv.infra.database.tables import portfolio_table
 
 # revision identifiers, used by Alembic.
-revision: str = '3ee68448ec05'
-down_revision: Union[str, None] = '892241b2816c'
+revision: str = 'a7af800b4e24'
+down_revision: Union[str, None] = '5706223ab0bd'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-table = strike_table
+table = portfolio_table
 
 
 def upgrade() -> None:
