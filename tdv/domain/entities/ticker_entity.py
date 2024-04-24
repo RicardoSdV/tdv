@@ -14,11 +14,12 @@ class Companies(EntityEnum):
 
 
 class Ticker(Entity):
-    __slots__ = ('id', 'ticker', 'live', 'hist', 'created_at', 'updated_at')
+    __slots__ = ('id', 'exchange_id', 'ticker', 'live', 'hist', 'created_at', 'updated_at')
 
     def __init__(
         self,
         ticker_id: Optional[TickerId] = None,
+        exchange_id: Optional[ExchangeId] = None,
         ticker_name: Optional[str] = None,
         live: Optional[bool] = None,
         hist: Optional[bool] = None,
@@ -27,6 +28,7 @@ class Ticker(Entity):
     ) -> None:
         self.id = ticker_id
         self.ticker = None if ticker_name is None else Tickers.validate_value(ticker_name)
+        self.exchange_id = exchange_id
         self.live = live
         self.hist = hist
         self.created_at = created_at

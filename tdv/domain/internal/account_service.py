@@ -6,13 +6,13 @@ from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
-    from tdv.infra.repos.account_repo import UserRepo
+    from tdv.infra.repos.account_repo import AccountRepo
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class AccountService:
-    def __init__(self, db: 'DB', users_repo: 'UserRepo') -> None:
+    def __init__(self, db: 'DB', users_repo: 'AccountRepo') -> None:
         self.db = db
         self.users_repo = users_repo
 

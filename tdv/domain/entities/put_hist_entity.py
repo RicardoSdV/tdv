@@ -3,18 +3,15 @@ from typing import Optional
 
 from pandas._libs.tslibs.timestamps import Timestamp
 
-from tdv.domain.entities.base_entity import Entity, EntityEnum
-from tdv.domain.types import OptionId, OptionChainId
+from tdv.domain.entities.base_entity import Entity
+from tdv.domain.types import PutHistId, StrikeId, InsertTimeId
 
 
-class ContractSizes(EntityEnum):
-    REGULAR = 100
-
-
-class OptionHistory(Entity):
+class PutHist(Entity):
     __slots__ = (
         'id',
-        'option_id',
+        'strike_id',
+        'insert_time_id',
         'last_trade_date',
         'last_price',
         'bid',
@@ -23,15 +20,14 @@ class OptionHistory(Entity):
         'volume',
         'open_interest',
         'implied_volatility',
-        'size',
-        'created_at',
     )
 
     def __init__(
         self,
-        option_history_id: Optional[OptionId] = None,
-        option_id: Optional[OptionChainId] = None,
-        last_trade_date: Optional[Timestamp] = None,
+        put_hist_id: Optional[PutHistId] = None,
+        strike_id: Optional[StrikeId] = None,
+        insert_time_id: Optional[InsertTimeId] = None,
+        last_trade_date: Optional[datetime] = None,
         last_price: Optional[float] = None,
         bid: Optional[float] = None,
         ask: Optional[float] = None,
@@ -39,11 +35,10 @@ class OptionHistory(Entity):
         volume: Optional[int] = None,
         open_interest: Optional[int] = None,
         implied_volatility: Optional[float] = None,
-        size: Optional[int] = None,
-        created_at: Optional[datetime] = None,
     ) -> None:
-        self.id = option_history_id
-        self.option_id = option_id
+        self.id = put_hist_id
+        self.strike_id = strike_id
+        self.insert_time_id = insert_time_id
         self.last_trade_date = last_trade_date
         self.last_price = last_price
         self.bid = bid
@@ -52,5 +47,3 @@ class OptionHistory(Entity):
         self.volume = volume
         self.open_interest = open_interest
         self.implied_volatility = implied_volatility
-        self.size = size
-        self.created_at = created_at

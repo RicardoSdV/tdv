@@ -11,19 +11,19 @@ from tdv.domain.internal.account_service import AccountService
 from tdv.domain.internal.yahoo_finance_service import YahooFinanceService
 from tdv.infra.database import db
 from tdv.infra.repos.exchange_repo import ExchangeRepo
-from tdv.infra.repos.portfolio_options_repo import PortfolioOptionsRepo
-from tdv.infra.repos.portfolios_repo import PortfolioRepo
+from tdv.infra.repos.portfolio_option_repo import PortfolioOptionRepo
+from tdv.infra.repos.portfolio_repo import PortfolioRepo
 from tdv.infra.repos.ticker_repo import TickerRepo
-from tdv.infra.repos.account_repo import UserRepo
-from tdv.infra.repos.portfolio_shares_repo import PortfolioSharesRepo
+from tdv.infra.repos.account_repo import AccountRepo
+from tdv.infra.repos.portfolio_share_repo import PortfolioShareRepo
 
 
 class Repos(DeclarativeContainer):
     exchange = Singleton(ExchangeRepo)
     ticker = Singleton(TickerRepo)
-    user = Singleton(UserRepo)
-    portfolio_share = Singleton(PortfolioSharesRepo)
-    portfolio_option = Singleton(PortfolioOptionsRepo)
+    account = Singleton(AccountRepo)
+    portfolio_share = Singleton(PortfolioShareRepo)
+    portfolio_option = Singleton(PortfolioOptionRepo)
     portfolio = Singleton(PortfolioRepo)
 
 

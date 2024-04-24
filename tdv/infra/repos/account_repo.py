@@ -1,5 +1,4 @@
-from functools import cached_property
-from typing import Type
+from typing import ClassVar, Type
 
 from sqlalchemy import Table
 
@@ -9,7 +8,7 @@ from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 
 
 class AccountSerializer(BaseSerializer):
-    _Entity = Account
+    _Entity: ClassVar[Type[Account]] = Account
 
 
 class AccountQueryBuilder(BaseQueryBuilder):
@@ -18,5 +17,5 @@ class AccountQueryBuilder(BaseQueryBuilder):
         return account_table
 
 
-class UserRepo(AccountSerializer, AccountQueryBuilder, BaseRepo):
+class AccountRepo(AccountSerializer, AccountQueryBuilder, BaseRepo):
     pass

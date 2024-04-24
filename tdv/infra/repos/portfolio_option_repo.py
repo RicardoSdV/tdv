@@ -7,15 +7,15 @@ from tdv.infra.database.tables import portfolio_option_table
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 
 
-class PortfolioOptionsSerializer(BaseSerializer):
+class PortfolioOptionSerializer(BaseSerializer):
     _Entity: ClassVar[Type[PortfolioOption]] = PortfolioOption
 
 
-class PortfolioOptionsQueryBuilder(BaseQueryBuilder):
+class PortfolioOptionQueryBuilder(BaseQueryBuilder):
     @property
     def _table(self) -> Table:
         return portfolio_option_table
 
 
-class PortfolioOptionsRepo(PortfolioOptionsSerializer, PortfolioOptionsQueryBuilder, BaseRepo):
+class PortfolioOptionRepo(PortfolioOptionSerializer, PortfolioOptionQueryBuilder, BaseRepo):
     pass

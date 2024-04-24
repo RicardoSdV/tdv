@@ -7,7 +7,7 @@ from tdv.logger_setup import LoggerFactory
 if TYPE_CHECKING:
     from tdv.domain.internal.session_service import SessionService
     from tdv.infra.database import DB
-    from tdv.infra.repos.portfolios_repo import PortfolioRepo
+    from tdv.infra.repos.portfolio_repo import PortfolioRepo
 
 
 logger = LoggerFactory.make_logger(__name__)
