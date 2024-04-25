@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity
-from tdv.domain.types import UserId
 
 
 class Account(Entity):
@@ -10,7 +9,7 @@ class Account(Entity):
 
     def __init__(
         self,
-        user_id: Optional[UserId] = None,
+        user_id: Optional[int] = None,
         username: Optional[str] = None,
         email: Optional[str] = None,
         password: Optional[str] = None,

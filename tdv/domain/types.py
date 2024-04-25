@@ -12,13 +12,13 @@ TimeStamp = str
 TimeZone = str
 
 # Integers
-Second = int
 EntityId = int
 ExchangeId = EntityId
-TickerId = int
 OptionChainId = int
 OptionId = int
-UserId = int
+Second = int
+TickerId = int
+
 
 # Custom types
 Expiries = Tuple[str, ...]

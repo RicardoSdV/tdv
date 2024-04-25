@@ -15,8 +15,6 @@ Is Doing:
     - Tasks:
         - (Ric): Being able to insert all exchanges and tickers
         - (Ric): Normalizing main trading data table
-        - (Jai): Create a repo for each table
-        - (Jai): Add the new repos to containers.py
 =======================================================================================================================
 
 =======================================================================================================================
@@ -67,5 +65,4 @@ Was done:
         - Create an account
         - Update username
         - Delete an account
-        -
 =======================================================================================================================

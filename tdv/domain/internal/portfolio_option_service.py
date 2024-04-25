@@ -2,14 +2,14 @@ from typing import List, Optional
 
 from tdv.domain.entities.portfolio_option_entity import PortfolioOption
 from tdv.infra.database import DB
-from tdv.infra.repos.portfolio_options_repo import PortfolioOptionsRepo
+from tdv.infra.repos.portfolio_option_repo import PortfolioOptionRepo
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class PortfolioOptionService:
-    def __init__(self, db: 'DB', portfolio_options_repo: 'PortfolioOptionsRepo') -> None:
+    def __init__(self, db: 'DB', portfolio_options_repo: 'PortfolioOptionRepo') -> None:
         self.db = db
         self.portfolio_options_repo = portfolio_options_repo
 

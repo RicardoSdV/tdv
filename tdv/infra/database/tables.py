@@ -52,6 +52,7 @@ exchange_table = Table(
 ticker_table = Table(
     'ticker', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('exchange_id', SmallInteger, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('ticker', String(20), nullable=False, unique=True),
     Column('live', Boolean, server_default='false', nullable=False),
     Column('hist', Boolean, server_default='false', nullable=False),
@@ -59,11 +60,11 @@ ticker_table = Table(
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-exchange_ticker_table = Table(
-    'exchange_ticker', metadata,
-    Column('exchange_id', SmallInteger, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False, primary_key=True),
-    Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False, primary_key=True),
-)
+# exchange_ticker_table = Table(
+#     'exchange_ticker', metadata,
+#     Column('exchange_id', SmallInteger, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False, primary_key=True),
+#     Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False, primary_key=True),
+# )
 
 insert_time_table = Table(
     'insert_time', metadata,
@@ -143,7 +144,7 @@ account_table = Table(
 portfolio_table = Table(
     'portfolio', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('user_id', BigInteger, ForeignKey(account_table.c.id, ondelete='CASCADE'), nullable=True),
+    Column('account_id', BigInteger, ForeignKey(account_table.c.id, ondelete='CASCADE'), nullable=True),
     Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),

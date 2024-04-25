@@ -10,21 +10,37 @@ from tdv.domain.internal.ticker_service import TickerService
 from tdv.domain.internal.account_service import AccountService
 from tdv.domain.internal.yahoo_finance_service import YahooFinanceService
 from tdv.infra.database import db
+from tdv.infra.repos.call_hist_repo import CallHistRepo
+from tdv.infra.repos.company_repo import CompanyRepo
+from tdv.infra.repos.contract_size_repo import ContractSizeRepo
 from tdv.infra.repos.exchange_repo import ExchangeRepo
-from tdv.infra.repos.portfolio_options_repo import PortfolioOptionsRepo
-from tdv.infra.repos.portfolios_repo import PortfolioRepo
+from tdv.infra.repos.expiry_repo import ExpiryRepo
+from tdv.infra.repos.insert_time_repo import InsertTimeRepo
+from tdv.infra.repos.portfolio_option_repo import PortfolioOptionRepo
+from tdv.infra.repos.portfolio_repo import PortfolioRepo
+from tdv.infra.repos.put_hist_repo import PutHistRepo
+from tdv.infra.repos.share_hist_repo import ShareHistRepo
+from tdv.infra.repos.strike_repo import StrikeRepo
 from tdv.infra.repos.ticker_repo import TickerRepo
-from tdv.infra.repos.account_repo import UserRepo
-from tdv.infra.repos.portfolio_shares_repo import PortfolioSharesRepo
+from tdv.infra.repos.account_repo import AccountRepo
+from tdv.infra.repos.portfolio_share_repo import PortfolioShareRepo
 
 
 class Repos(DeclarativeContainer):
+    account = Singleton(AccountRepo)
+    call_hist = Singleton(CallHistRepo)
+    company = Singleton(CompanyRepo)
+    contract_size = Singleton(ContractSizeRepo)
     exchange = Singleton(ExchangeRepo)
-    ticker = Singleton(TickerRepo)
-    user = Singleton(UserRepo)
-    portfolio_share = Singleton(PortfolioSharesRepo)
-    portfolio_option = Singleton(PortfolioOptionsRepo)
+    expiry = Singleton(ExpiryRepo)
+    insert_time = Singleton(InsertTimeRepo)
+    portfolio_option = Singleton(PortfolioOptionRepo)
     portfolio = Singleton(PortfolioRepo)
+    portfolio_share = Singleton(PortfolioShareRepo)
+    put_hist = Singleton(PutHistRepo)
+    share_hist = Singleton(ShareHistRepo)
+    strike = Singleton(StrikeRepo)
+    ticker = Singleton(TickerRepo)
 
 
 class Services(DeclarativeContainer):

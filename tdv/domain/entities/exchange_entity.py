@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-from tdv.domain.types import ExchangeId
 from tdv.domain.entities.base_entity import Entity, EntityEnum
 
 
@@ -19,7 +18,7 @@ class Exchange(Entity):
 
     def __init__(
         self,
-        exchange_id: Optional[ExchangeId] = None,
+        exchange_id: Optional[int] = None,
         name: Optional[str] = None,
         currency: Optional[str] = None,
         live: Optional[bool] = None,
