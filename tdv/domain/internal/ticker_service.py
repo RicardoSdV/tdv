@@ -14,7 +14,7 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class TickerService:
-    def __init__(self, db: 'DB', ticker_repo: 'TickerRepo', exchange_service: 'ExchangeService') -> None:
+    def __init__(self, db: 'DB', ticker_repo: 'TickerRepo') -> None:
         self.db = db
         self.ticker_repo = ticker_repo
 
@@ -23,18 +23,9 @@ class TickerService:
         for exchange in exchanges:
             ticker_names = TICKERS_BY_EXCHANGE[exchange.name]
 
-            tickers = [
-                Ticker(
-                    exchange_id=exchange.id, ticker_name=ticker_name, company_name=getattr(Companies, ticker_name.upper()).value
-                )
-                for ticker_name in ticker_names
-            ]
+            tickers = [Ticker(exchange_id=exchange.id, ticker_name=ticker_name) for ticker_name in ticker_names]
 
-            logger.debug(
-                'Creating all tickers for exchange',
-                exchange=exchange.name,
-                tickers=tickers,
-            )
+            logger.debug('Creating all tickers for exchange', exchange=exchange.name, tickers=tickers)
 
             results.append(self.ticker_repo.insert(conn, tickers))
         return results

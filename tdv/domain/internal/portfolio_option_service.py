@@ -13,7 +13,9 @@ class PortfolioOptionService:
         self.db = db
         self.portfolio_options_repo = portfolio_options_repo
 
-    def create_portfolio_options(self, portfolio_id: int, option_id: int, count: Optional[float]) -> List[PortfolioOption]:
+    def create_portfolio_options(
+        self, portfolio_id: int, option_id: int, count: Optional[float]
+    ) -> List[PortfolioOption]:
         logger.debug(
             'Creating user_options',
             portfolio_id=portfolio_id,
@@ -27,7 +29,9 @@ class PortfolioOptionService:
             conn.commit()
         return result
 
-    def get_portfolio_options_by_user_id_and_portfolio_id(self, account_id: int, portfolio_id: int) -> List[PortfolioOption]:
+    def get_portfolio_options_by_user_id_and_portfolio_id(
+        self, account_id: int, portfolio_id: int
+    ) -> List[PortfolioOption]:
         logger.debug(
             'Getting user_options by user_id and option_id',
             account_id=account_id,
@@ -39,7 +43,9 @@ class PortfolioOptionService:
             conn.commit()
         return result
 
-    def update_count_by_user_id_and_option_id(self, user_id: int, option_id: int, count: float) -> List[PortfolioOption]:
+    def update_count_by_user_id_and_option_id(
+        self, user_id: int, option_id: int, count: float
+    ) -> List[PortfolioOption]:
         logger.debug(
             'Updating user_options count',
             user_id=user_id,
@@ -52,7 +58,9 @@ class PortfolioOptionService:
             conn.commit()
         return result
 
-    def delete_portfolio_option_by_option_id(self, user_id: int, portfolio_id: int, option_id: int) -> List[PortfolioOption]:
+    def delete_portfolio_option_by_option_id(
+        self, user_id: int, portfolio_id: int, option_id: int
+    ) -> List[PortfolioOption]:
         logger.debug(
             'Deleting user_options',
             user_id=user_id,

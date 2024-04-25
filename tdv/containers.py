@@ -2,6 +2,7 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Singleton
 
 from tdv.domain.external.yahoo_finance_service_proxy import YahooFinanceServiceProxy
+from tdv.domain.internal.company_service import CompanyService
 from tdv.domain.internal.exchange_service import ExchangeService
 from tdv.domain.internal.portfolio_option_service import PortfolioOptionService
 from tdv.domain.internal.portfolio_service import PortfolioService
@@ -43,6 +44,7 @@ class Repos(DeclarativeContainer):
     ticker = Singleton(TickerRepo)
 
 
+
 class Services(DeclarativeContainer):
     exchange = Singleton(ExchangeService, db, Repos.exchange)
     ticker = Singleton(TickerService, db, Repos.ticker, exchange)
@@ -52,6 +54,7 @@ class Services(DeclarativeContainer):
     portfolio = Singleton(PortfolioService, db, Repos.portfolio)
     yahoo_finance = Singleton(YahooFinanceService, db, ticker)
     session = Singleton(SessionService, account)
+    company = Singleton(CompanyService, Repos.comany)
 
 
 class ExternalServices(DeclarativeContainer):

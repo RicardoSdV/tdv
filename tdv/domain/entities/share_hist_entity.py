@@ -7,11 +7,11 @@ class ShareHist(Entity):
     __slots__ = ('id', 'ticker_id', 'insert_time_id', 'price')
 
     def __init__(
-            self,
-            share_hist_id: Optional[int] = None,
-            ticker_id: Optional[int] = None,
-            insert_time_id: Optional[int] = None,
-            price: Optional[float] = None
+        self,
+        share_hist_id: Optional[int] = None,
+        ticker_id: Optional[int] = None,
+        insert_time_id: Optional[int] = None,
+        price: Optional[float] = None,
     ) -> None:
         self.id = share_hist_id
         self.ticker_id = ticker_id

@@ -31,13 +31,6 @@ metadata = MetaData()
 # BigInteger ->  +- 9 000 000 000 000 000 000  (8 bytes)
 # Numeric(precision=24, scale=10) -> 10 000 000 000 000.000 000 000 1
 
-company_table = Table(
-    'company', metadata,
-    Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('name', String(2000), nullable=False),
-    Column('short_name', String(2000), nullable=False),
-)
-
 exchange_table = Table(
     'exchange', metadata,
     Column('id', SmallInteger, primary_key=True, autoincrement=True),
@@ -49,22 +42,24 @@ exchange_table = Table(
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
+company_table = Table(
+    'company', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('name', String(2000), nullable=False),
+    Column('short_name', String(2000), nullable=False),
+)
+
 ticker_table = Table(
     'ticker', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('exchange_id', SmallInteger, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('ticker', String(20), nullable=False, unique=True),
+    Column('company_id', SmallInteger, ForeignKey(company_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('ticker', String(50), nullable=False, unique=True),
     Column('live', Boolean, server_default='false', nullable=False),
     Column('hist', Boolean, server_default='false', nullable=False),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
-
-# exchange_ticker_table = Table(
-#     'exchange_ticker', metadata,
-#     Column('exchange_id', SmallInteger, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False, primary_key=True),
-#     Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False, primary_key=True),
-# )
 
 insert_time_table = Table(
     'insert_time', metadata,
@@ -169,5 +164,3 @@ portfolio_option_table = Table(
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
-
-# fmt: on
