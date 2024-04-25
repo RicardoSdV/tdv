@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity, EntityEnum
-from tdv.domain.types import ExchangeId, TickerId
 
 
 class Tickers(EntityEnum):
@@ -18,8 +17,8 @@ class Ticker(Entity):
 
     def __init__(
         self,
-        ticker_id: Optional[TickerId] = None,
-        exchange_id: Optional[ExchangeId] = None,
+        ticker_id: Optional[int] = None,
+        exchange_id: Optional[int] = None,
         ticker_name: Optional[str] = None,
         live: Optional[bool] = None,
         hist: Optional[bool] = None,

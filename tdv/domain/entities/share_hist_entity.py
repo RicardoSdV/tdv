@@ -1,7 +1,6 @@
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity
-from tdv.domain.types import ShareHistId, TickerId, InsertTimeId
 
 
 class ShareHist(Entity):
@@ -9,9 +8,9 @@ class ShareHist(Entity):
 
     def __init__(
             self,
-            share_hist_id: Optional[ShareHistId] = None,
-            ticker_id: Optional[TickerId] = None,
-            insert_time_id: Optional[InsertTimeId] = None,
+            share_hist_id: Optional[int] = None,
+            ticker_id: Optional[int] = None,
+            insert_time_id: Optional[int] = None,
             price: Optional[float] = None
     ) -> None:
         self.id = share_hist_id

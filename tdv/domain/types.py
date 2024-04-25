@@ -12,25 +12,12 @@ TimeStamp = str
 TimeZone = str
 
 # Integers
-AccountId = int
-CallHistId = int
-ContractSizeId = int
-CompanyId = int
 EntityId = int
 ExchangeId = EntityId
-ExpiryId = int
-InsertTimeId = int
 OptionChainId = int
 OptionId = int
-PortfolioId = int
-PortfolioOptionId = int
-PortfolioShareId = int
-PutHistId = int
 Second = int
-ShareHistId = int
-StrikeId = int
 TickerId = int
-UserId = int
 
 
 # Custom types

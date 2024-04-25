@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity
-from tdv.domain.types import ExpiryId, ContractSizeId, TickerId
 
 
 class Expiry(Entity):
@@ -10,9 +9,9 @@ class Expiry(Entity):
 
     def __init__(
             self,
-            expiry_id: Optional[ExpiryId] = None,
-            ticker_id: Optional[TickerId] = None,
-            contract_size_id: Optional[ContractSizeId] = None,
+            expiry_id: Optional[int] = None,
+            ticker_id: Optional[int] = None,
+            contract_size_id: Optional[int] = None,
             expiry_date: Optional[datetime] = None
     ) -> None:
         self.id = expiry_id

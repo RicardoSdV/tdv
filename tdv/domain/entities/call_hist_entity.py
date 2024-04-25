@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity
-from tdv.domain.types import CallHistId, StrikeId, InsertTimeId
 
 
 class CallHist(Entity):
@@ -22,9 +21,9 @@ class CallHist(Entity):
 
     def __init__(
         self,
-        call_hist_id: Optional[CallHistId] = None,
-        strike_id: Optional[StrikeId] = None,
-        insert_time_id: Optional[InsertTimeId] = None,
+        call_hist_id: Optional[int] = None,
+        strike_id: Optional[int] = None,
+        insert_time_id: Optional[int] = None,
         last_trade_date: Optional[datetime] = None,
         last_price: Optional[float] = None,
         bid: Optional[float] = None,

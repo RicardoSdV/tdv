@@ -1,7 +1,6 @@
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity
-from tdv.domain.types import CompanyId
 
 
 class Company(Entity):
@@ -9,7 +8,7 @@ class Company(Entity):
 
     def __init__(
             self,
-            company_id: Optional[CompanyId] = None,
+            company_id: Optional[int] = None,
             name: Optional[str] = None,
             short_name: Optional[str] = None
     ) -> None:

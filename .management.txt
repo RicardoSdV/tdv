@@ -65,5 +65,4 @@ Was done:
         - Create an account
         - Update username
         - Delete an account
-    - Repos and entities created
 =======================================================================================================================

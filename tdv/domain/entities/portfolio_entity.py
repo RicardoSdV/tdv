@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity
-from tdv.domain.types import PortfolioId, AccountId
 
 
 class Portfolio(Entity):
@@ -16,8 +15,8 @@ class Portfolio(Entity):
 
     def __init__(
         self,
-        portfolio_id: Optional[PortfolioId] = None,
-        account_id: Optional[AccountId] = None,
+        portfolio_id: Optional[int] = None,
+        account_id: Optional[int] = None,
         cash: Optional[float] = None,
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None,

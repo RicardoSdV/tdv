@@ -1,7 +1,6 @@
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity
-from tdv.domain.types import StrikeId, ExpiryId
 
 
 class Strike(Entity):
@@ -9,8 +8,8 @@ class Strike(Entity):
 
     def __init__(
             self,
-            strike_id: Optional[StrikeId] = None,
-            expiry_id: Optional[ExpiryId] = None,
+            strike_id: Optional[int] = None,
+            expiry_id: Optional[int] = None,
             strike_price: Optional[float] = None
     ) -> None:
         self.id = strike_id
