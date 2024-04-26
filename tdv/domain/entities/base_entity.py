@@ -1,7 +1,7 @@
 from enum import Enum
-from typing import Any, Optional, List, Dict, Tuple, TypeVar, Generic, Protocol
+from typing import Any, List, Dict, Tuple, TypeVar, Protocol
 
-from tdv.domain.types import EntityId, AttrName, Insertable, KwArgs, Args
+from tdv.domain.types import Insertable, KwArgs, Args
 
 
 class EntityEnum(Enum):
@@ -25,7 +25,16 @@ class EntityProtocol(Protocol):
 
 
 class Entity:
-    """Base entity class, repo operation requires that __slots__ have the exact same name as table columns"""
+    """
+    All entities should inherit from this, the base entity.
+
+    One entity object represents a row of one of the tables of the database.
+
+    Entities are responsible for data validation.
+
+    Entities must have __slots__ with the exact same names as the column names they represent in DB tables.
+    This is because the BaseRepo uses them to perform its default queries.
+    """
 
     __slots__: Tuple[str, ...] = ()
 
@@ -40,11 +49,11 @@ class Entity:
             return self.id == other.id
         return False
 
-    def to_dict(self) -> Dict[AttrName, Insertable]:
+    def to_dict(self) -> Dict[str, Insertable]:
         return {name: value for name in self.__slots__ if (value := getattr(self, name)) is not None}
 
     def to_list(self) -> List[Insertable]:
         return [attr for attr in (getattr(self, attr_name) for attr_name in self.__slots__) if attr is not None]
 
-    def not_none_slots(self) -> List[AttrName]:
+    def not_none_slots(self) -> List[str]:
         return [attr_name for attr_name in self.__slots__ if getattr(self, attr_name) is not None]

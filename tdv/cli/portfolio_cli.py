@@ -17,9 +17,9 @@ def portfolios_group() -> None:
 def create() -> None:
     """Creates portfolio for current user"""
 
-    from tdv.containers import Services
+    from tdv.containers import Service
 
-    result = Services.portfolio().create_portfolio()
+    result = Service.portfolio().create_portfolio()
     logger.info('Portfolio created', result=result)
 
 

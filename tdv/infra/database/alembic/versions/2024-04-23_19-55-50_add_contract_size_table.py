@@ -8,7 +8,6 @@ Create Date: 2024-04-23 19:55:50.333600
 from typing import Sequence, Union
 
 from alembic import op
-import sqlalchemy as sa
 
 from tdv.infra.database.tables import contract_size_table
 

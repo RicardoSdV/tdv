@@ -3,7 +3,6 @@ This base repo is designed to be very easy to use, not efficient. As long as chi
 and def _table properly, and the Entity is well-defined, Insert, Select, Update, Upsert & Delete queries
 should be fully functional out of the box. As to how, look at the available examples.
 """
-from abc import ABC, abstractmethod
 from collections import defaultdict
 from functools import cached_property
 from typing import (
@@ -15,7 +14,6 @@ from typing import (
     TypeVar,
     Generic,
     ClassVar,
-    Callable,
 )
 
 from sqlalchemy import (
@@ -37,7 +35,6 @@ from sqlalchemy import (
 from tdv.domain.entities.base_entity import Entity
 from tdv.domain.types import (
     Insertable,
-    AttrName,
     NoReturnQuery,
     WhereAbleQuery,
     Insertabless,
@@ -57,9 +54,7 @@ class BaseSerializer:
         return {name: element for name, element in zip(self._Entity.__slots__, row)}
 
     @staticmethod
-    def _entities_to_params_dicts(
-        entities: Iterable[EntityT],
-    ) -> List[Dict[AttrName, Insertable]]:
+    def _entities_to_params_dicts(entities: Iterable[EntityT]) -> List[Dict[str, Insertable]]:
         """Turns domain/entities into param dicts of not None params"""
         return [entity.to_dict() for entity in entities]
 
@@ -68,7 +63,7 @@ class BaseSerializer:
         return [entity.to_list() for entity in entities]
 
     @staticmethod
-    def _entities_to_filters(entities: Iterable[EntityT]) -> Dict[AttrName, List]:
+    def _entities_to_filters(entities: Iterable[EntityT]) -> Dict[str, List]:
         filters = defaultdict(list)
         for entity in entities:
             for attr_name in entity.__slots__:
@@ -108,7 +103,7 @@ class BaseQueryBuilder:
     def _update_query(self) -> Update:
         return self._table.update()
 
-    def _any_by_attrs_condition(self, attrs: Insertabless, not_none_slots: List[AttrName]) -> ColumnElement:
+    def _any_by_attrs_condition(self, attrs: Insertabless, not_none_slots: List[str]) -> ColumnElement:
         return and_(tuple_(*[c for c in self._all_columns if c.name in not_none_slots]).in_(attrs))
 
     def _get_by_id_query(self) -> Select:
@@ -152,12 +147,7 @@ class BaseRepo(BaseQueryBuilder, BaseSerializer, Generic[Insertable]):
 
         return entities
 
-    def update(
-        self,
-        conn: Connection,
-        entities: List[EntityT],
-        params: Dict[AttrName, Insertable],
-    ) -> List[EntityT]:
+    def update(self, conn: Connection, entities: List[EntityT], params: Dict[str, Insertable]) -> List[EntityT]:
         query: Update = self._update_query()
         query = self._turn_to_returning_all_query(query)
 
@@ -171,7 +161,6 @@ class BaseRepo(BaseQueryBuilder, BaseSerializer, Generic[Insertable]):
         return entities
 
     def upsert(self, conn: Connection, entities: List[EntityT]) -> List[EntityT]:
-        # TODO
         raise NotImplementedError('Upsert not implemented')
 
     def delete(self, conn: Connection, entities: List[EntityT]) -> List[EntityT]:

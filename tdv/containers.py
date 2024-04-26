@@ -27,35 +27,42 @@ from tdv.infra.repos.account_repo import AccountRepo
 from tdv.infra.repos.portfolio_share_repo import PortfolioShareRepo
 
 
-class Repos(DeclarativeContainer):
-    account = Singleton(AccountRepo)
-    call_hist = Singleton(CallHistRepo)
-    company = Singleton(CompanyRepo)
-    contract_size = Singleton(ContractSizeRepo)
+class Repo(DeclarativeContainer):
+    # Base Cluster
     exchange = Singleton(ExchangeRepo)
-    expiry = Singleton(ExpiryRepo)
+    account = Singleton(AccountRepo)
     insert_time = Singleton(InsertTimeRepo)
-    portfolio_option = Singleton(PortfolioOptionRepo)
-    portfolio = Singleton(PortfolioRepo)
-    portfolio_share = Singleton(PortfolioShareRepo)
-    put_hist = Singleton(PutHistRepo)
-    share_hist = Singleton(ShareHistRepo)
-    strike = Singleton(StrikeRepo)
+    contract_size = Singleton(ContractSizeRepo)
+
+    # Companies Cluster
+    company = Singleton(CompanyRepo)
     ticker = Singleton(TickerRepo)
+    share_hist = Singleton(ShareHistRepo)
+
+    # Options Cluster
+    expiry = Singleton(ExpiryRepo)
+    strike = Singleton(StrikeRepo)
+    call_hist = Singleton(CallHistRepo)
+    put_hist = Singleton(PutHistRepo)
+
+    # Portfolio Cluster
+    portfolio = Singleton(PortfolioRepo)
+    portfolio_option = Singleton(PortfolioOptionRepo)
+    portfolio_share = Singleton(PortfolioShareRepo)
 
 
-
-class Services(DeclarativeContainer):
-    exchange = Singleton(ExchangeService, db, Repos.exchange)
-    ticker = Singleton(TickerService, db, Repos.ticker, exchange)
-    account = Singleton(AccountService, db, Repos.user)
+class Service(DeclarativeContainer):
+    exchange = Singleton(ExchangeService, db, Repo.exchange)
+    company = Singleton(CompanyService, db, Repo.company)
+    ticker = Singleton(TickerService, db, Repo.ticker, exchange, company)
+    account = Singleton(AccountService, db, Repo.account)
     # portfolio_share = Singleton(PortfolioShareService, db, Repos.portfolio_share, ticker, share_type)
-    portfolio_option = Singleton(PortfolioOptionService, db, Repos.portfolio_option)
-    portfolio = Singleton(PortfolioService, db, Repos.portfolio)
+    portfolio_option = Singleton(PortfolioOptionService, db, Repo.portfolio_option)
+    portfolio = Singleton(PortfolioService, db, Repo.portfolio)
     yahoo_finance = Singleton(YahooFinanceService, db, ticker)
     session = Singleton(SessionService, account)
-    company = Singleton(CompanyService, Repos.comany)
+
 
 
 class ExternalServices(DeclarativeContainer):
-    yahoo_finance = Singleton(YahooFinanceServiceProxy, Services.yahoo_finance)
+    yahoo_finance = Singleton(YahooFinanceServiceProxy, Service.yahoo_finance)

@@ -8,7 +8,6 @@ Create Date: 2024-04-23 19:56:08.899109
 from typing import Sequence, Union
 
 from alembic import op
-import sqlalchemy as sa
 
 from tdv.infra.database.tables import expiry_table
 

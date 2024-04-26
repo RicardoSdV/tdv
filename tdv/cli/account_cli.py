@@ -17,9 +17,9 @@ def account_group() -> None:
 def create(username: str, email: str, password: str) -> None:
     """Create an account"""
 
-    from tdv.containers import Services
+    from tdv.containers import Service
 
-    result = Services.account().create_account(username, email, password)
+    result = Service.account().create_account(username, email, password)
     logger.info('Account created', result=result)
 
 
@@ -29,9 +29,9 @@ def create(username: str, email: str, password: str) -> None:
 def get(email: str, password: str) -> None:
     """Get account entity by email and password"""
 
-    from tdv.containers import Services
+    from tdv.containers import Service
 
-    result = Services.account().get_account_by_email_and_password(email, password)
+    result = Service.account().get_account_by_email_and_password(email, password)
     logger.info('Account selected', result=result)
 
 
@@ -42,9 +42,9 @@ def get(email: str, password: str) -> None:
 def update(username: str, email: str, password: str) -> None:
     """Update username by email and password"""
 
-    from tdv.containers import Services
+    from tdv.containers import Service
 
-    result = Services.account().update_username(username, email, password)
+    result = Service.account().update_username(username, email, password)
     logger.info('Accounts updated', result=result)
 
 
@@ -53,9 +53,9 @@ def update(username: str, email: str, password: str) -> None:
 def delete_by_id(account_id: int) -> None:
     """Delete account by ID"""
 
-    from tdv.containers import Services
+    from tdv.containers import Service
 
-    result = Services.account().delete_account_by_id(account_id)
+    result = Service.account().delete_account_by_id(account_id)
     logger.info('Account deleted', result=result)
 
 
@@ -65,7 +65,7 @@ def delete_by_id(account_id: int) -> None:
 def login(username: str, password: str) -> None:
     """login to an account"""
 
-    from tdv.containers import Services
+    from tdv.containers import Service
 
-    result = Services.session().login(username, password)
+    result = Service.session().login(username, password)
     logger.info('Account created', result=result)

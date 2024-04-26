@@ -1,7 +1,6 @@
-from typing import TYPE_CHECKING, List, Dict
+from typing import TYPE_CHECKING, List
 
 from tdv.domain.entities.account_entity import Account
-from tdv.domain.types import UserId
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
@@ -26,7 +25,7 @@ class AccountService:
 
         return users
 
-    def delete_account_by_id(self, user_id: UserId) -> List[Account]:
+    def delete_account_by_id(self, user_id: int) -> List[Account]:
         logger.debug('Deleting user by ID', user_id=user_id)
         users = [Account(user_id=user_id)]
 

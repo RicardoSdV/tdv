@@ -31,9 +31,12 @@ metadata = MetaData()
 # BigInteger ->  +- 9 000 000 000 000 000 000  (8 bytes)
 # Numeric(precision=24, scale=10) -> 10 000 000 000 000.000 000 000 1
 
+
+""" ================================================ Base Cluster ================================================= """
+
 exchange_table = Table(
     'exchange', metadata,
-    Column('id', SmallInteger, primary_key=True, autoincrement=True),
+    Column('id', Integer, primary_key=True, autoincrement=True),
     Column('name', String(20), nullable=False, unique=True),
     Column('currency', String(20), server_default=Currencies.US_DOLLAR.value, nullable=False),
     Column('live', Boolean, server_default='false', nullable=False),
@@ -42,21 +45,12 @@ exchange_table = Table(
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
-company_table = Table(
-    'company', metadata,
-    Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('name', String(2000), nullable=False),
-    Column('short_name', String(2000), nullable=False),
-)
-
-ticker_table = Table(
-    'ticker', metadata,
-    Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('exchange_id', SmallInteger, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('company_id', SmallInteger, ForeignKey(company_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('ticker', String(50), nullable=False, unique=True),
-    Column('live', Boolean, server_default='false', nullable=False),
-    Column('hist', Boolean, server_default='false', nullable=False),
+account_table = Table(
+    'account', metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('username', String(200), nullable=False, unique=True),
+    Column('email', String(200), nullable=False, unique=True),
+    Column('password', String(200), nullable=False),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
@@ -73,12 +67,27 @@ contract_size_table = Table(
     Column('size', Integer, nullable=False),
 )
 
-expiry_table = Table(
-    'expiry', metadata,
-    Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('contract_size_id', Integer, ForeignKey(contract_size_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('expiry_date', DateTime, nullable=False),
+""" =============================================================================================================== """
+
+""" ============================================= Companies Cluster  ============================================== """
+
+company_table = Table(
+    'company', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('long_name', String(2000), nullable=False),
+    Column('short_name', String(2000), nullable=False),
+)
+
+ticker_table = Table(
+    'ticker', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('exchange_id', Integer, ForeignKey(exchange_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('company_id', Integer, ForeignKey(company_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('ticker_name', String(50), nullable=False, unique=True),
+    Column('live', Boolean, server_default='false', nullable=False),
+    Column('hist', Boolean, server_default='false', nullable=False),
+    Column('created_at', DateTime, server_default=func.now(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
 
 share_hist_table = Table(
@@ -89,6 +98,18 @@ share_hist_table = Table(
     Column('price', Numeric(precision=10, scale=2), nullable=False),
 )
 
+""" =============================================================================================================== """
+
+""" ============================================== Options Cluster  =============================================== """
+
+expiry_table = Table(
+    'expiry', metadata,
+    Column('id', BigInteger, primary_key=True, autoincrement=True),
+    Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('contract_size_id', Integer, ForeignKey(contract_size_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('expiry_date', DateTime, nullable=False),
+)
+
 strike_table = Table(
     'strike', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
@@ -96,45 +117,30 @@ strike_table = Table(
     Column('strike_price', Numeric(precision=10, scale=2), nullable=False),
 )
 
-call_hist_table = Table(
-    'call_hist', metadata,
-    Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('strike_id', BigInteger, ForeignKey(strike_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('insert_time_id', BigInteger, ForeignKey(insert_time_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('last_trade_date', DateTime, nullable=False),
-    Column('last_price', Numeric(precision=10, scale=2), nullable=False),
-    Column('bid', Numeric(precision=10, scale=2), nullable=False),
-    Column('ask', Numeric(precision=10, scale=2), nullable=False),
-    Column('change', Numeric(precision=10, scale=2), nullable=False),
-    Column('volume', Integer, nullable=False),
-    Column('open_interest', Integer, nullable=False),
-    Column('implied_volatility', Numeric(precision=22, scale=20), nullable=False),
-)
 
-put_hist_table = Table(
-    'put_hist', metadata,
-    Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('strike_id', BigInteger, ForeignKey(strike_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('insert_time_id', BigInteger, ForeignKey(insert_time_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('last_trade_date', DateTime, nullable=False),
-    Column('last_price', Numeric(precision=10, scale=2), nullable=False),
-    Column('bid', Numeric(precision=10, scale=2), nullable=False),
-    Column('ask', Numeric(precision=10, scale=2), nullable=False),
-    Column('change', Numeric(precision=10, scale=2), nullable=False),
-    Column('volume', Integer, nullable=False),
-    Column('open_interest', Integer, nullable=False),
-    Column('implied_volatility', Numeric(precision=22, scale=20), nullable=False),
-)
+def define_option_columns():
+    return (
+        Column('id', BigInteger, primary_key=True, autoincrement=True),
+        Column('strike_id', BigInteger, ForeignKey(strike_table.c.id, ondelete='RESTRICT'), nullable=False),
+        Column('insert_time_id', BigInteger, ForeignKey(insert_time_table.c.id, ondelete='RESTRICT'), nullable=False),
+        Column('last_trade_date', DateTime, nullable=False),
+        Column('last_price', Numeric(precision=10, scale=2), nullable=False),
+        Column('bid', Numeric(precision=10, scale=2), nullable=False),
+        Column('ask', Numeric(precision=10, scale=2), nullable=False),
+        Column('change', Numeric(precision=10, scale=2), nullable=False),
+        Column('volume', Integer, nullable=False),
+        Column('open_interest', Integer, nullable=False),
+        Column('implied_volatility', Numeric(precision=22, scale=20), nullable=False),
+    )
 
-account_table = Table(
-    'account', metadata,
-    Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('username', String(200), nullable=False, unique=True),
-    Column('email', String(200), nullable=False, unique=True),
-    Column('password', String(200), nullable=False),
-    Column('created_at', DateTime, server_default=func.now(), nullable=False),
-    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
-)
+
+call_hist_table = Table('call_hist', metadata, *define_option_columns())
+
+put_hist_table = Table('put_hist', metadata, *define_option_columns())
+
+""" =============================================================================================================== """
+
+""" ============================================ Portfolio Cluster  =============================================== """
 
 portfolio_table = Table(
     'portfolio', metadata,
@@ -164,3 +170,5 @@ portfolio_option_table = Table(
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),
 )
+
+""" =============================================================================================================== """

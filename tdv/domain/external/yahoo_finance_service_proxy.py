@@ -8,14 +8,14 @@ from yfinance import Ticker
 
 from tdv.constants import MarketEvents
 from tdv.domain.internal.yahoo_finance_service import YahooFinanceService
-from tdv.domain.types import Expiries, OptionChainsYF, Second, Options
+from tdv.domain.types import Expiries, OptionChainsYF, Options
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class YahooFinanceServiceProxy:
-    __update_options_interval: Second = 10
+    __update_options_interval = 10
     __exchange_tickers = {'NYSE': ('TSLA',)}
     force_requests = True
 
