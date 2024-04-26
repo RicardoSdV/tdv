@@ -15,5 +15,5 @@ def turn_to_str(_any: str) -> str:
     return str(_any)
 
 
-def pretty_print(data: Any):
+def pretty_print(data: Any) -> None:
     print(dumps(data, default=turn_to_str, indent=4))

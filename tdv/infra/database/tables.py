@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from sqlalchemy import (
     MetaData,
     Table,
@@ -118,7 +120,7 @@ strike_table = Table(
 )
 
 
-def define_option_columns():
+def define_option_columns() -> Tuple[Column, ...]:
     return (
         Column('id', BigInteger, primary_key=True, autoincrement=True),
         Column('strike_id', BigInteger, ForeignKey(strike_table.c.id, ondelete='RESTRICT'), nullable=False),

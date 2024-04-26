@@ -44,11 +44,13 @@ class ExchangeService:
         for exchange in self.exchanges:
             if exchange.id == exchange_id:
                 return exchange
+        return None
 
     def get_exchange_by_name(self, exchange_name: str) -> Optional[Exchange]:
         for exchange in self.exchanges:
             if exchange.name == exchange_name:
                 return exchange
+        return None
 
     def update_exchange_live(self, exchange_name: str, is_live: bool) -> List[Exchange]:
         logger.debug('Updating exchange live status', exchange_name=exchange_name, is_live=is_live)

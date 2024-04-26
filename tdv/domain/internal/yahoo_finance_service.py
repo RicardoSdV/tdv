@@ -10,24 +10,25 @@ class YahooFinanceService:
         self.ticker_service = ticker_service
 
     def save_option(self, options: Options, expiries: Expiries, ticker_name: str) -> None:
-        with self.db.connect as conn:
-            ticker_id = self.ticker_service.get_ticker_id_by_name(ticker_name, conn)
-
-            for expiry, option in zip(expiries, options):
-                calls, puts, underlying = option
-
-                pretty_print(underlying)
-
-                return
-
-                # option_chain_id = self.option_chains_service.create_option_get_id(
-                #     underlying['regularMarketPrice'], True, expiry, ticker_id, conn
-                # )
-                # self.options_service.create_options(calls, option_chain_id, conn)
-                #
-                # option_chain_id = self.option_chains_service.create_option_get_id(
-                #     underlying['regularMarketPrice'], False, expiry, ticker_id, conn
-                # )
-                # self.options_service.create_options(puts, option_chain_id, conn)
-                #
-                # conn.commit()
+        pass
+        # with self.db.connect as conn:
+        #     ticker_id = self.ticker_service.get_ticker_id_by_name(ticker_name, conn)
+        #
+        #     for expiry, option in zip(expiries, options):
+        #         calls, puts, underlying = option
+        #
+        #         pretty_print(underlying)
+        #
+        #         return
+        #
+        #         # option_chain_id = self.option_chains_service.create_option_get_id(
+        #         #     underlying['regularMarketPrice'], True, expiry, ticker_id, conn
+        #         # )
+        #         # self.options_service.create_options(calls, option_chain_id, conn)
+        #         #
+        #         # option_chain_id = self.option_chains_service.create_option_get_id(
+        #         #     underlying['regularMarketPrice'], False, expiry, ticker_id, conn
+        #         # )
+        #         # self.options_service.create_options(puts, option_chain_id, conn)
+        #         #
+        #         # conn.commit()

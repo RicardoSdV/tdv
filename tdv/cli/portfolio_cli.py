@@ -13,14 +13,14 @@ def portfolios_group() -> None:
     """Portfolio related operations."""
 
 
-@portfolios_group.command()
-def create() -> None:
-    """Creates portfolio for current user"""
-
-    from tdv.containers import Service
-
-    result = Service.portfolio().create_portfolio()
-    logger.info('Portfolio created', result=result)
+# @portfolios_group.command()
+# def create() -> None:
+#     """Creates portfolio for current user"""
+#
+#     from tdv.containers import Service
+#
+#     result = Service.portfolio().create_portfolio()
+#     logger.info('Portfolio created', result=result)
 
 
 # @portfolios_group.command()

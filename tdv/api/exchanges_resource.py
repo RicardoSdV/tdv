@@ -10,12 +10,13 @@ class ExchangesBaseResource(BaseResource):
         self.__exchanges_service = exchange_service
 
     def on_get(self, req: Request, resp: Response) -> None:
-        resp.status = HTTP_200
-        exchanges = self.__exchanges_service.get_exchange_by_name(Exchanges.NEW_YORK.value)
-
-        response = {}
-        for exchange in exchanges:
-            exchange_str = repr(exchange)
-            response[exchange.name] = exchange_str
-
-        resp.media = response
+        print('get')
+        # resp.status = HTTP_200
+        # exchanges = self.__exchanges_service.get_exchange_by_name(Exchanges.NEW_YORK.value)
+        #
+        # response = {}
+        # for exchange in exchanges:
+        #     exchange_str = repr(exchange)
+        #     response[exchange.name] = exchange_str
+        #
+        # resp.media = response
