@@ -6,10 +6,11 @@ from tdv.domain.internal.company_service import CompanyService
 from tdv.domain.internal.exchange_service import ExchangeService
 from tdv.domain.internal.portfolio_option_service import PortfolioOptionService
 from tdv.domain.internal.portfolio_service import PortfolioService
-from tdv.domain.internal.session_service import SessionService
+from tdv.domain.session.session import Session
 from tdv.domain.internal.ticker_service import TickerService
 from tdv.domain.internal.account_service import AccountService
 from tdv.domain.internal.yahoo_finance_service import YahooFinanceService
+from tdv.domain.session.session_manager import SessionManager
 from tdv.infra.database import db
 from tdv.infra.repos.call_hist_repo import CallHistRepo
 from tdv.infra.repos.company_repo import CompanyRepo
@@ -52,6 +53,7 @@ class Repo(DeclarativeContainer):
 
 
 class Service(DeclarativeContainer):
+
     exchange = Singleton(ExchangeService, db, Repo.exchange)
     company = Singleton(CompanyService, db, Repo.company)
     ticker = Singleton(TickerService, db, Repo.ticker, exchange, company)
@@ -60,7 +62,9 @@ class Service(DeclarativeContainer):
     portfolio_option = Singleton(PortfolioOptionService, db, Repo.portfolio_option)
     portfolio = Singleton(PortfolioService, db, Repo.portfolio)
     yahoo_finance = Singleton(YahooFinanceService, db, ticker)
-    session = Singleton(SessionService, account)
+
+    session_manager = Singleton(SessionManager, account)
+
 
 
 

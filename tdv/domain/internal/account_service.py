@@ -1,5 +1,8 @@
 from typing import TYPE_CHECKING, List
 
+from sqlalchemy import Connection
+
+from tdv.constants import LocalAccountInfo
 from tdv.domain.entities.account_entity import Account
 from tdv.logger_setup import LoggerFactory
 
@@ -11,26 +14,31 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class AccountService:
-    def __init__(self, db: 'DB', users_repo: 'AccountRepo') -> None:
+    def __init__(self, db: 'DB', account_repo: 'AccountRepo') -> None:
         self.db = db
-        self.users_repo = users_repo
+        self.account_repo = account_repo
 
     def create_account(self, username: str, email: str, password: str) -> List[Account]:
-        logger.debug('Creating user', username=username, email=email, password=password)
+        logger.debug('Creating account', username=username, email=email, password=password)
         users = [Account(username=username, email=email, password=password)]
 
         with self.db.connect as conn:
-            users = self.users_repo.insert(conn, users)
+            users = self.account_repo.insert(conn, users)
             conn.commit()
 
         return users
+
+    def create_local_account(self, conn: Connection) -> List[Account]:
+        accounts = [Account(username=LocalAccountInfo.username, email=LocalAccountInfo.email, password=LocalAccountInfo.password)]
+        result = self.account_repo.insert(conn, accounts)
+        return result
 
     def delete_account_by_id(self, user_id: int) -> List[Account]:
         logger.debug('Deleting user by ID', user_id=user_id)
         users = [Account(user_id=user_id)]
 
         with self.db.connect as conn:
-            users = self.users_repo.delete(conn, users)
+            users = self.account_repo.delete(conn, users)
             conn.commit()
 
         return users
@@ -40,17 +48,17 @@ class AccountService:
         users = [Account(email=email, password=password)]
 
         with self.db.connect as conn:
-            result = self.users_repo.select(conn, users)
+            result = self.account_repo.select(conn, users)
             conn.commit()
 
         return result
 
     def get_account_by_username_and_password(self, username: str, password: str) -> List[Account]:
-        logger.debug('Selecting user by username and password', email=username, password=password)
-        users = [Account(email=username, password=password)]
+        logger.debug('Selecting user by username and password', username=username, password=password)
+        users = [Account(username=username, password=password)]
 
         with self.db.connect as conn:
-            result = self.users_repo.select(conn, users)
+            result = self.account_repo.select(conn, users)
             conn.commit()
 
         return result
@@ -61,7 +69,7 @@ class AccountService:
         params = {'username': username}
 
         with self.db.connect as conn:
-            result = self.users_repo.update(conn, users, params)
+            result = self.account_repo.update(conn, users, params)
             conn.commit()
 
         return result

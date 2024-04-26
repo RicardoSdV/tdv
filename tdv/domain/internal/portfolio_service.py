@@ -5,7 +5,7 @@ from tdv.domain.entities.portfolio_entity import Portfolio
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
-    from tdv.domain.internal.session_service import SessionService
+    from tdv.domain.session.session import Session
     from tdv.infra.database import DB
     from tdv.infra.repos.portfolio_repo import PortfolioRepo
 
@@ -14,7 +14,7 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class PortfolioService:
-    def __init__(self, db: 'DB', portfolio_repo: 'PortfolioRepo', session_service: 'SessionService') -> None:
+    def __init__(self, db: 'DB', portfolio_repo: 'PortfolioRepo', session_service: 'Session') -> None:
         self.db = db
         self.portfolio_repo = portfolio_repo
         self.session_service = session_service

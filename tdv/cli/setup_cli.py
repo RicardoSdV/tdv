@@ -11,7 +11,7 @@ def setup_group() -> None:
 
 @setup_group.command()
 def many() -> None:
-    """Creates all tickers companies & exchanges in constants.TICKERS_BY_EXCHANGES"""
+    """Creates all tickers companies, exchanges & local account"""
 
     from tdv.containers import Service
     from tdv.infra.database import db
@@ -20,6 +20,9 @@ def many() -> None:
         exchanges = Service.exchange().create_all_exchanges(conn)
         companies = Service.company().create_all_companies(conn)
         tickers = Service.ticker().create_all_tickers(exchanges, companies, conn)
+
+        accounts = Service.account().create_local_account(conn)
+
         conn.commit()
 
-    logger.info('Exchanges, companies & tickers created', exchanges=exchanges, companies=companies, tickers=tickers)
+    logger.info('Created:', exchanges=exchanges, companies=companies, tickers=tickers, accounts=accounts)

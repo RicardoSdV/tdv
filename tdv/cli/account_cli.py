@@ -67,5 +67,5 @@ def login(username: str, password: str) -> None:
 
     from tdv.containers import Service
 
-    result = Service.session().login(username, password)
-    logger.info('Account created', result=result)
+    session_id = Service.session_manager().create_session(username, password)
+    logger.info('Account login', session_id=session_id)

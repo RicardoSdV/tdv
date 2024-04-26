@@ -1,4 +1,5 @@
 import os
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Dict, Tuple
@@ -53,3 +54,10 @@ TICKERS_BY_COMPANY_EXCHANGE: Dict[Exchanges, Dict[Companies.LongNames, Tuple[Tic
         Companies.LongNames.TESLA: (Tickers.TSLA,),
     }
 }
+
+
+@dataclass
+class LocalAccountInfo:
+    username = 'local_user'
+    email = 'local@local.local'
+    password = 'password'
