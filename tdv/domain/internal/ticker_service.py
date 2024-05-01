@@ -59,16 +59,14 @@ class TickerService:
                     continue
 
                 for ticker_name in ticker_names:
-                    tickers.append(
-                        Ticker(exchange_id=exchange_id, company_id=company_id, ticker_name=ticker_name.value)
-                    )
+                    tickers.append(Ticker(exchange_id=exchange_id, company_id=company_id, name=ticker_name.value))
 
         logger.debug('Inserting tickers', tickers=tickers)
         result = self.ticker_repo.insert(conn, tickers)
         return result
 
     def get_all_tickers(self) -> List[Ticker]:
-        tickers = [Ticker(ticker_name=name.value) for name in Tickers]
+        tickers = [Ticker(name=name.value) for name in Tickers]
         logger.debug('Getting all tickers', tickers=tickers)
 
         with self.db.connect as conn:
@@ -78,7 +76,7 @@ class TickerService:
 
     def get_ticker_by_name(self, ticker_name: str, conn: Optional[Connection] = None) -> List[Ticker]:
         logger.debug('Getting ticker by name', ticker_name=ticker_name)
-        tickers = [Ticker(ticker_name=ticker_name)]
+        tickers = [Ticker(name=ticker_name)]
 
         if conn is None:
             with self.db.connect as conn:
@@ -91,6 +89,6 @@ class TickerService:
 
     def get_ticker_id_by_name(self, ticker_name: str) -> Optional[int]:
         for ticker in self.tickers:
-            if ticker.ticker_name == ticker_name:
+            if ticker.name == ticker_name:
                 return ticker.id
         return None

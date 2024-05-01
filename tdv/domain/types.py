@@ -4,7 +4,6 @@ from typing import Tuple, Dict, List, Union, Any, Callable, TypeVar
 from pandas import DataFrame
 from sqlalchemy import Insert, Update, Delete
 
-
 # Custom types
 Expiries = Tuple[str, ...]
 Options = List[List[Union[Dict, Any]]]

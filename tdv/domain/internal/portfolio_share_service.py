@@ -1,30 +1,30 @@
-# from typing import Optional, List
-#
-# from tdv.domain.entities.portfolio_share_entity import PortfolioShare
-# from tdv.domain.internal.ticker_service import TickerService
-# from tdv.infra.database import DB
-# from tdv.infra.repos.portfolio_shares_repo import PortfolioSharesRepo
-# from tdv.logger_setup import LoggerFactory
-#
-# logger = LoggerFactory.make_logger(__name__)
-#
-#
+from typing import Dict, Iterable
+
+from sqlalchemy import Connection
+
+from tdv.domain.entities.portfolio_share_entity import PfolShare
+from tdv.infra.database import DB
+from tdv.infra.repos.portfolio_share_repo import PortfolioShareRepo
+from tdv.logger_setup import LoggerFactory
+
+logger = LoggerFactory.make_logger(__name__)
+
+
 class PortfolioShareService:
-    pass
+    def __init__(self, db: 'DB', pfol_share_repo: PortfolioShareRepo) -> None:
+        self.db = db
+        self.pfol_share_repo = pfol_share_repo
+
+    def get_pfol_shares_by_id(self, pfol_ids: Iterable, conn: Connection) -> Dict[int, PfolShare]:
+        logger.debug('Getting portfolio shares', portfolio_ids=pfol_ids)
+
+        pfol_shares = [PfolShare(portfolio_id=pfol_id) for pfol_id in pfol_ids]
+        self.pfol_share_repo.select(conn, pfol_shares)
+        portfolio_shares_by_id = {pfol_share.id: pfol_share for pfol_share in pfol_shares}
+
+        return portfolio_shares_by_id
 
 
-#     def __init__(
-#         self,
-#         db: 'DB',
-#         portfolio_shares_repo: 'PortfolioSharesRepo',
-#         ticker_repo: 'TickerService',
-#         share_type_repo: 'ShareTypeService',
-#     ) -> None:
-#         self.db = db
-#         self.portfolio_shares_repo = portfolio_shares_repo
-#         self.ticker_repo = ticker_repo
-#         self.share_type_repo = share_type_repo
-#
 #     def create(
 #         self,
 #         portfolio_id: int,

@@ -1,0 +1,9 @@
+Private methods:
+    - What to do: Methods that at the moment are only used within the class should be private.
+    - What not to do:
+        - Hesitate to make them protected or public if they need to be used somewhere else.
+        -
+
+
+Protected methods - Methods
+

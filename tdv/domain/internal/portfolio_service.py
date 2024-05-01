@@ -1,4 +1,6 @@
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Dict
+
+from sqlalchemy import Connection
 
 from tdv.domain.entities.portfolio_entity import Portfolio
 
@@ -19,14 +21,21 @@ class PortfolioService:
 
     def create_portfolio(self, account_id: int, portfolio_name: str) -> List[Portfolio]:
         logger.debug('Creating portfolio', account_id=account_id, portfolio_name=portfolio_name)
-        portfolios = [Portfolio(account_id=account_id, portfolio_name=portfolio_name)]
+        portfolios = [Portfolio(account_id=account_id, name=portfolio_name)]
 
         with self.db.connect as conn:
             result = self.portfolio_repo.insert(conn, portfolios)
             conn.commit()
         return result
 
-    #
+    def get_portfolios_by_name__with_account_id(self, account_id: int, conn: Connection) -> Dict[str, Portfolio]:
+        logger.debug('Getting portfolios', account_id=account_id)
+
+        portfolios = self.portfolio_repo.select(conn, [Portfolio(account_id=account_id)])
+        portfolios_by_name = {portfolio.name: portfolio for portfolio in portfolios}
+
+        return portfolios_by_name
+
     # def create_portfolio_shares(self, portfolio_id: int, portfolio_shares_id: int) -> List[Portfolio]:
     #     logger.debug(
     #         'Creating portfolio shares',

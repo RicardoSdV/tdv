@@ -1,0 +1,23 @@
+There's a limited number of chars per line, sometimes it is more descriptive to use them to describe stuff instead of
+writing some obnoxiously long words over and over again when most people can understand the abbreviation.
+
+Abbreviations policy: Only words that are pretty long & have to be written all the time & were their abbreviation is
+at least somewhat readable & were abbreviating them will produce an overall significant char save & were their
+abbreviation is somewhat beautiful shall be abbreviated.
+Note: Some of the less obvious abbreviations are used semi-inconsistently, this is by design, do not rename for
+the sake of consistency, only for the sake of readability.
+
+Canonical example: Repository -> Repo. Understood by anyone, might as well remove the "sitory" from the official word,
+saves an entire 6 chars per mention, is used everywhere & somewhat beautiful
+
+List of the abbreviations currently in use in case anyone is confused or wants to auto-rename:
+tdv == trading_data_visualizer
+repo == repository
+conn == connection
+pfol == portfolio
+infra == infrastructure
+hist == history
+yf == yahoo_finance
+
+
+P.D. Some abbreviations are so commonly used didn't even bother to mention like CLI, DB etc.

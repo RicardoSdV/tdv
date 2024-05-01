@@ -26,9 +26,7 @@ class EntityProtocol(Protocol):
 
 class Entity:
     """
-    All atomic entities should inherit from this, the base entity.
-
-
+    All entities should inherit from this, the base entity.
 
     Entities are responsible for data validation.
 

@@ -58,15 +58,12 @@ class AccountService:
 
         return result
 
-    def get_account_by_username_and_password(self, username: str, password: str) -> List[Account]:
+    def get_or_raise_account_by_username_and_password(self, username: str, password: str, conn: Connection) -> Account:
         logger.debug('Selecting user by username and password', username=username, password=password)
-        users = [Account(username=username, password=password)]
-
-        with self.db.connect as conn:
-            result = self.account_repo.select(conn, users)
-            conn.commit()
-
-        return result
+        accounts = [Account(username=username, password=password)]
+        result = self.account_repo.select(conn, accounts)
+        assert len(accounts) == 1
+        return result[0]
 
     def update_username(self, username: str, email: str, password: str) -> List[Account]:
         logger.debug('Updating username', new_username=username, email=email, password=password)
