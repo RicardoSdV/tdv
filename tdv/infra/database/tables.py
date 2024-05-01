@@ -6,7 +6,6 @@ from sqlalchemy import (
     Column,
     DateTime,
     func,
-    SmallInteger,
     BigInteger,
     String,
     ForeignKey,
@@ -15,7 +14,7 @@ from sqlalchemy import (
     Integer,
 )
 
-from tdv.domain.entities.exchange_entity import Currencies
+from tdv.domain.entities.atomic_entities.exchange_entity import Currencies
 
 # fmt: off
 """
@@ -120,7 +119,7 @@ strike_table = Table(
 )
 
 
-def define_option_columns() -> Tuple[Column, ...]:
+def option_hist_columns() -> Tuple[Column, ...]:
     return (
         Column('id', BigInteger, primary_key=True, autoincrement=True),
         Column('strike_id', BigInteger, ForeignKey(strike_table.c.id, ondelete='RESTRICT'), nullable=False),
@@ -136,9 +135,9 @@ def define_option_columns() -> Tuple[Column, ...]:
     )
 
 
-call_hist_table = Table('call_hist', metadata, *define_option_columns())
+call_hist_table = Table('call_hist', metadata, *option_hist_columns())
 
-put_hist_table = Table('put_hist', metadata, *define_option_columns())
+put_hist_table = Table('put_hist', metadata, *option_hist_columns())
 
 """ =============================================================================================================== """
 
@@ -148,6 +147,7 @@ portfolio_table = Table(
     'portfolio', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('account_id', BigInteger, ForeignKey(account_table.c.id, ondelete='CASCADE'), nullable=True),
+    Column('portfolio_name', String(1000), nullable=False),
     Column('cash', Numeric(precision=18, scale=2), nullable=False, server_default='0.00'),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),

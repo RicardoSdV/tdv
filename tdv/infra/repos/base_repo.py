@@ -1,6 +1,6 @@
 """
 This base repo is designed to be very easy to use, not efficient. As long as child repos override _Entity
-and def _table properly, and the Entity is well-defined, Insert, Select, Update, Upsert & Delete queries
+and def _table properly, and the Entity is well-defined, Insert, Select, Update & Delete queries
 should be fully functional out of the box. As to how, look at the available examples.
 """
 from collections import defaultdict
@@ -32,7 +32,7 @@ from sqlalchemy import (
     Update,
 )
 
-from tdv.domain.entities.base_entity import Entity
+from tdv.domain.entities.atomic_entities.base_entity import Entity
 from tdv.domain.types import (
     Insertable,
     NoReturnQuery,

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List
 from sqlalchemy import Connection
 
 from tdv.constants import LocalAccountInfo
-from tdv.domain.entities.account_entity import Account
+from tdv.domain.entities.atomic_entities.account_entity import Account
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
@@ -30,6 +30,7 @@ class AccountService:
 
     def create_local_account(self, conn: Connection) -> List[Account]:
         accounts = [Account(username=LocalAccountInfo.username, email=LocalAccountInfo.email, password=LocalAccountInfo.password)]
+        logger.debug('Creating local account', account=accounts)
         result = self.account_repo.insert(conn, accounts)
         return result
 

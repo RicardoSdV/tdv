@@ -1,26 +1,42 @@
-from typing import Optional
+from click import group, option
 
-from click import group, option, Choice
 
-from tdv.domain.entities.ticker_entity import Tickers
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
 
 
-@group('portfolio')
-def portfolios_group() -> None:
+@group('pfol')
+def portfolio_group() -> None:
     """Portfolio related operations."""
 
 
-# @portfolios_group.command()
-# def create() -> None:
-#     """Creates portfolio for current user"""
-#
-#     from tdv.containers import Service
-#
-#     result = Service.portfolio().create_portfolio()
-#     logger.info('Portfolio created', result=result)
+@portfolio_group.command('lcreate')
+@option('-n', '--portfolio_name', 'portfolio_name', required=True)
+def create_for_local(portfolio_name: str) -> None:
+    """Creates a portfolio for the local user"""
+
+    """
+    3 use the account id to create a portfolio
+    4 add the portfolio to the session?
+    """
+
+    from tdv.containers import Service
+    from tdv.constants import LocalAccountInfo
+
+    session = Service.session_manager().login(LocalAccountInfo.username, LocalAccountInfo.password)
+    result = Service.portfolio().create_portfolio(session.account.id, portfolio_name)
+
+
+
+
+
+
+    #
+    # session = Service.session_manager.get_session(session_id)
+    #
+    # result = Service.portfolio().create_portfolio()
+    # logger.info('Portfolio created', result=result)
 
 
 # @portfolios_group.command()

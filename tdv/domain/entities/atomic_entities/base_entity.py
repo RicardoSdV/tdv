@@ -26,9 +26,9 @@ class EntityProtocol(Protocol):
 
 class Entity:
     """
-    All entities should inherit from this, the base entity.
+    All atomic entities should inherit from this, the base entity.
 
-    One entity object represents a row of one of the tables of the database.
+
 
     Entities are responsible for data validation.
 

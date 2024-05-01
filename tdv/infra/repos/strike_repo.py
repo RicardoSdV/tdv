@@ -2,7 +2,7 @@ from typing import ClassVar, Type
 
 from sqlalchemy import Table
 
-from tdv.domain.entities.strike_entity import Strike
+from tdv.domain.entities.atomic_entities.strike_entity import Strike
 from tdv.infra.database.tables import strike_table
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 

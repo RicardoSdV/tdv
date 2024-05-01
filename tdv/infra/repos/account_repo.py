@@ -2,7 +2,7 @@ from typing import ClassVar, Type
 
 from sqlalchemy import Table
 
-from tdv.domain.entities.account_entity import Account
+from tdv.domain.entities.atomic_entities.account_entity import Account
 from tdv.infra.database.tables import account_table
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 

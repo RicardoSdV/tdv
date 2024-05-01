@@ -3,9 +3,9 @@ from typing import List, Optional, Tuple
 from sqlalchemy import Connection
 
 from tdv.constants import TICKERS_BY_COMPANY_EXCHANGE
-from tdv.domain.entities.company_entity import Company
-from tdv.domain.entities.exchange_entity import Exchange
-from tdv.domain.entities.ticker_entity import Ticker, Tickers
+from tdv.domain.entities.atomic_entities.company_entity import Company
+from tdv.domain.entities.atomic_entities.exchange_entity import Exchange
+from tdv.domain.entities.atomic_entities.ticker_entity import Ticker, Tickers
 from tdv.domain.internal.company_service import CompanyService
 from tdv.domain.internal.exchange_service import ExchangeService
 from tdv.infra.database import DB

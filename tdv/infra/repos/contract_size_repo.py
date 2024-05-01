@@ -2,7 +2,7 @@ from typing import ClassVar, Type
 
 from sqlalchemy import Table
 
-from tdv.domain.entities.contract_size_entity import ContractSize
+from tdv.domain.entities.atomic_entities.contract_size_entity import ContractSize
 from tdv.infra.database.tables import contract_size_table
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 

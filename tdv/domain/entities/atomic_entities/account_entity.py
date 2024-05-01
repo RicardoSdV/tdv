@@ -1,10 +1,12 @@
+import gc
+import sys
 from datetime import datetime
 from typing import Optional
 
-from tdv.domain.entities.base_entity import Entity
+from tdv.domain.entities.atomic_entities.base_entity import Entity
 
 
-class Account(Entity):
+class Account:
     __slots__ = ('id', 'username', 'email', 'password', 'created_at', 'updated_at')
 
     def __init__(

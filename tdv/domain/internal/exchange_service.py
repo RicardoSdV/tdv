@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, List, Optional, Tuple
 
 from sqlalchemy import Connection
 
-from tdv.domain.entities.exchange_entity import Exchange, Exchanges
+from tdv.domain.entities.atomic_entities.exchange_entity import Exchange, Exchanges
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:

@@ -1,11 +1,10 @@
 from typing import List, TYPE_CHECKING
 
-from tdv.domain.entities.portfolio_entity import Portfolio
+from tdv.domain.entities.atomic_entities.portfolio_entity import Portfolio
 
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
-    from tdv.domain.session.session import Session
     from tdv.infra.database import DB
     from tdv.infra.repos.portfolio_repo import PortfolioRepo
 
@@ -14,21 +13,18 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class PortfolioService:
-    pass
-    # def __init__(self, db: 'DB', portfolio_repo: 'PortfolioRepo', session_service: 'Session') -> None:
-    #     self.db = db
-    #     self.portfolio_repo = portfolio_repo
-    #     self.session_service = session_service
-    #
-    # def create_portfolio(self) -> List[Portfolio]:
-    #     current_user_id = self.session_service.current_session_user_id
-    #
-    #     logger.debug('Creating portfolio', current_user_id=current_user_id)
-    #     portfolios = [Portfolio(user_id=current_user_id)]
-    #     with self.db.connect as conn:
-    #         result = self.portfolio_repo.insert(conn, portfolios)
-    #         conn.commit()
-    #     return result
+    def __init__(self, db: 'DB', portfolio_repo: 'PortfolioRepo') -> None:
+        self.db = db
+        self.portfolio_repo = portfolio_repo
+
+    def create_portfolio(self, account_id: int, portfolio_name: str) -> List[Portfolio]:
+        logger.debug('Creating portfolio', account_id=account_id, portfolio_name=portfolio_name)
+        portfolios = [Portfolio(account_id=account_id, portfolio_name=portfolio_name)]
+
+        with self.db.connect as conn:
+            result = self.portfolio_repo.insert(conn, portfolios)
+            conn.commit()
+        return result
     #
     # def create_portfolio_shares(self, portfolio_id: int, portfolio_shares_id: int) -> List[Portfolio]:
     #     logger.debug(

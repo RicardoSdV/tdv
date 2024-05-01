@@ -2,7 +2,7 @@ from typing import ClassVar, Type
 
 from sqlalchemy import Table
 
-from tdv.domain.entities.portfolio_option_entity import PortfolioOption
+from tdv.domain.entities.atomic_entities.portfolio_option_entity import PortfolioOption
 from tdv.infra.database.tables import portfolio_option_table
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 

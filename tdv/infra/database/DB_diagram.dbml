@@ -1,0 +1,124 @@
+Table company {
+  id Integer [pk, increment]
+  ticker_id SmallInt [not null, ref: < ticker.id]
+  name varchar(2000)
+  short_name varchar(1000)
+}
+
+Table exchange {
+  id SmallInt [pk, increment]
+  name varchar(20) [unique, not null]
+  currency varchar(20) [not null, default: 'USD']
+  live boolean [not null, default: false]
+  hist boolean [not null, default: false]
+  created_at datetime [not null, default: `now()`]
+  updated_at datetime [not null, default: `now()`]
+}
+
+Table ticker {
+  id Integer [pk, increment]
+  ticker varchar(20) [not null]
+  live boolean [not null, default: false]
+  hist boolean [not null, default: false]
+  created_at datetime [not null, default: `now()`]
+  updated_at datetime [not null, default: `now()`]
+}
+
+Table exchange_ticker {
+  exchange_id Int [not null, ref: > exchange.id]
+  ticker_id Int [not null, ref: > ticker.id]
+}
+
+Table insert_time {
+  id BigInteger [pk, increment]
+  time datetime [not null]
+}
+
+Table share_hist{
+  id BigInteger [pk, increment]
+  ticker_id Integer [not null, ref: > ticker.id]
+  insert_time_id BigInteger [not null, ref: > insert_time.id]
+  price decimal(10,2) [not null]
+}
+
+Table contract_size {
+  id Integer [pk, increment]
+  size BigInteger [not null]
+}
+
+Table expiry {
+  id BigInteger [pk, increment]
+  ticker_id Integer [not null, ref: > ticker.id]
+  contract_size_id Integer [not null, ref: > contract_size.id]
+  expiry_date datetime [not null]
+}
+
+Table strike {
+  id BigInteger [pk, increment]
+  expiry_id BigInteger [not null, ref: > expiry.id]
+  strike_price decimal(10,2) [not null]
+}
+
+Table call_hist {
+  id BigInteger [pk, increment]
+  strike_id BigInteger [not null, ref: > strike.id]
+  insert_time_id BigInteger [not null, ref: > insert_time.id]
+  last_trade_date datetime [not null]
+  last_price decimal(10,2) [not null]
+  bid decimal(10,2) [not null]
+  ask decimal(10,2) [not null]
+  change decimal(10,2) [not null]
+  volume Integer [not null]
+  open_interest Integer [not null]
+  implied_volatility decimal(22,20) [not null]
+}
+
+Table put_hist {
+  id BigInteger [pk, increment]
+  strike_id BigInteger [not null, ref: > strike.id]
+  insert_time_id BigInteger [not null, ref: > insert_time.id]
+  last_trade_date datetime [not null]
+  last_price decimal(10,2) [not null]
+  bid decimal(10,2) [not null]
+  ask decimal(10,2) [not null]
+  change decimal(10,2) [not null]
+  volume Integer [not null]
+  open_interest Integer [not null]
+  implied_volatility decimal(22,20) [not null]
+}
+
+Table account {
+  id BigInteger [pk, increment]
+  username varchar(200) [unique, not null]
+  email varchar(200) [unique, not null]
+  password varchar(200) [not null]
+  created_at datetime [not null, default: `now()`]
+  updated_at datetime [not null, default: `now()`]
+}
+
+Table portfolio {
+  id BigInteger [pk, increment]
+  user_id BigInteger [ref: > account.id]
+  cash decimal(18,2) [not null, default: 0.00]
+  created_at datetime [not null, default: `now()`]
+  updated_at datetime [not null, default: `now()`]
+}
+
+Table portfolio_share {
+  id BigInteger [pk, increment]
+  portfolio_id BigInteger [not null, ref: > portfolio.id]
+  ticker_id Integer [not null, ref: > ticker.id]
+  count decimal(24,10) [not null, default: 0.0]
+  created_at datetime [not null, default: `now()`]
+  updated_at datetime [not null, default: `now()`]
+}
+
+Table portfolio_option {
+  id BigInteger [pk, increment]
+  portfolio_id BigInteger [not null, ref: > portfolio.id]
+  strike_id BigInteger [not null, ref: < strike.id]
+  is_call_hist bool [not null]
+  count decimal(24,10) [not null, default: 0.0]
+  created_at datetime [not null, default: `now()`]
+  updated_at datetime [not null, default: `now()`]
+}

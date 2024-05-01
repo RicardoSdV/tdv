@@ -5,7 +5,7 @@ from tdv.logger_setup import LoggerFactory
 logger = LoggerFactory.make_logger(__name__)
 
 
-@group('account')
+@group('acc')
 def account_group() -> None:
     """Account related operations."""
 
@@ -67,5 +67,5 @@ def login(username: str, password: str) -> None:
 
     from tdv.containers import Service
 
-    session_id = Service.session_manager().create_session(username, password)
+    session_id = Service.session_manager().login(username, password)
     logger.info('Account login', session_id=session_id)
