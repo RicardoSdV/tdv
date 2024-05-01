@@ -1,18 +1,11 @@
 from datetime import datetime
 from typing import Optional
 
-from tdv.domain.entities.atomic_entities.base_entity import Entity
+from tdv.domain.entities.base_entity import Entity
 
 
 class Portfolio(Entity):
-    __slots__ = (
-        'id',
-        'account_id',
-        'portfolio_name',
-        'cash',
-        'created_at',
-        'updated_at'
-    )
+    __slots__ = ('id', 'account_id', 'portfolio_name', 'cash', 'created_at', 'updated_at')
 
     def __init__(
         self,

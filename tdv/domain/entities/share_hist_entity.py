@@ -1,6 +1,6 @@
 from typing import Optional
 
-from tdv.domain.entities.atomic_entities.base_entity import Entity
+from tdv.domain.entities.base_entity import Entity
 
 
 class ShareHist(Entity):

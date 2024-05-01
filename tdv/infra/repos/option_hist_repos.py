@@ -2,7 +2,7 @@ from typing import ClassVar, Type
 
 from sqlalchemy import Table
 
-from tdv.domain.entities.atomic_entities.option_hist_entity import OptionHist
+from tdv.domain.entities.option_hist_entity import OptionHist
 from tdv.infra.database.tables import put_hist_table, call_hist_table
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 

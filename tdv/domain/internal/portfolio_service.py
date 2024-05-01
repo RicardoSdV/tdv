@@ -1,6 +1,6 @@
 from typing import List, TYPE_CHECKING
 
-from tdv.domain.entities.atomic_entities.portfolio_entity import Portfolio
+from tdv.domain.entities.portfolio_entity import Portfolio
 
 from tdv.logger_setup import LoggerFactory
 
@@ -25,6 +25,7 @@ class PortfolioService:
             result = self.portfolio_repo.insert(conn, portfolios)
             conn.commit()
         return result
+
     #
     # def create_portfolio_shares(self, portfolio_id: int, portfolio_shares_id: int) -> List[Portfolio]:
     #     logger.debug(

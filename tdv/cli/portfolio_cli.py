@@ -27,11 +27,6 @@ def create_for_local(portfolio_name: str) -> None:
     session = Service.session_manager().login(LocalAccountInfo.username, LocalAccountInfo.password)
     result = Service.portfolio().create_portfolio(session.account.id, portfolio_name)
 
-
-
-
-
-
     #
     # session = Service.session_manager.get_session(session_id)
     #

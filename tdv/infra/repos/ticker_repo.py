@@ -2,7 +2,7 @@ from typing import Type, ClassVar
 
 from sqlalchemy import Table
 
-from tdv.domain.entities.atomic_entities.ticker_entity import Ticker
+from tdv.domain.entities.ticker_entity import Ticker
 from tdv.infra.database.tables import ticker_table
 from tdv.infra.repos.base_repo import BaseRepo, BaseSerializer, BaseQueryBuilder
 

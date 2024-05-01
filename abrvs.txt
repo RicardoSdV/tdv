@@ -1,7 +1,0 @@
-I know, we shouldn't abbreviate but sometimes its just too tempting so if you are confused about them here's a
-non-comprehensive list of abbreviations which might or might not be always used and which could potentially be used
-to inject the proper words at some point:
-
-repo == repository
-pfol == portfolio
-comp == composite

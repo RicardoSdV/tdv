@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from tdv.domain.entities.atomic_entities.base_entity import Entity, EntityEnum
+from tdv.domain.entities.base_entity import Entity, EntityEnum
 
 
 @dataclass

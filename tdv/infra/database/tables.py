@@ -14,7 +14,7 @@ from sqlalchemy import (
     Integer,
 )
 
-from tdv.domain.entities.atomic_entities.exchange_entity import Currencies
+from tdv.domain.entities.exchange_entity import Currencies
 
 # fmt: off
 """

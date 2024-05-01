@@ -2,7 +2,7 @@ from typing import ClassVar, Type
 
 from sqlalchemy import Table
 
-from tdv.domain.entities.atomic_entities.insert_time_entity import InsertTime
+from tdv.domain.entities.insert_time_entity import InsertTime
 from tdv.infra.database.tables import insert_time_table
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 

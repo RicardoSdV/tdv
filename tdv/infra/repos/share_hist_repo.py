@@ -2,7 +2,7 @@ from typing import ClassVar, Type
 
 from sqlalchemy import Table
 
-from tdv.domain.entities.atomic_entities.share_hist_entity import ShareHist
+from tdv.domain.entities.share_hist_entity import ShareHist
 from tdv.infra.database.tables import share_hist_table
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from tdv.domain.entities.atomic_entities.base_entity import Entity, EntityEnum
+from tdv.domain.entities.base_entity import Entity, EntityEnum
 
 
 class Exchanges(EntityEnum):

@@ -9,7 +9,10 @@
 # logger = LoggerFactory.make_logger(__name__)
 #
 #
-# class PortfolioSharesService:
+class PortfolioShareService:
+    pass
+
+
 #     def __init__(
 #         self,
 #         db: 'DB',

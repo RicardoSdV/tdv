@@ -2,7 +2,7 @@ from typing import ClassVar, Type
 
 from sqlalchemy import Table
 
-from tdv.domain.entities.atomic_entities.expiry_entity import Expiry
+from tdv.domain.entities.expiry_entity import Expiry
 from tdv.infra.database.tables import expiry_table
 from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
 

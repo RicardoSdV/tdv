@@ -3,7 +3,7 @@ from typing import List, TYPE_CHECKING, Tuple
 
 from sqlalchemy import Connection
 
-from tdv.domain.entities.atomic_entities.company_entity import Company, Companies
+from tdv.domain.entities.company_entity import Company, Companies
 
 from tdv.logger_setup import LoggerFactory
 

@@ -66,7 +66,5 @@ class Service(DeclarativeContainer):
     session_manager = Singleton(SessionManager, account)
 
 
-
-
 class ExternalServices(DeclarativeContainer):
     yahoo_finance = Singleton(YahooFinanceServiceProxy, Service.yahoo_finance)
