@@ -35,7 +35,9 @@ class PortfolioService:
         portfolios = self.portfolio_repo.select(conn, [Portfolio(account_id=account_id)])
         return portfolios
 
-    def create_many_portfolios(self, account_id: int, names: List[str], cashes: List[float],  conn: Connection) -> List[Portfolio]:
+    def create_many_portfolios(
+        self, account_id: int, names: List[str], cashes: List[float], conn: Connection
+    ) -> List[Portfolio]:
         logger.debug('Creating test portfolio', account_id=account_id, names=names, cashes=cashes)
         portfolios = [Portfolio(account_id=account_id, name=name, cash=cash) for name, cash in zip(names, cashes)]
         result = self.portfolio_repo.insert(conn, portfolios)

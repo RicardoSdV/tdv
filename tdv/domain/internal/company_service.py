@@ -20,10 +20,6 @@ class CompanyService:
         self.db = db
         self.company_repo = company_repo
 
-    @cached_property
-    def companies(self) -> Tuple[Company, ...]:
-        return tuple(self.get_all_companies())
-
     def create_all_companies(self, conn: Connection) -> List[Company]:
         companies = [
             Company(short_name=company_short_name.value, long_name=company_long_name.value)
@@ -33,10 +29,8 @@ class CompanyService:
         result = self.company_repo.insert(conn, companies)
         return result
 
-    def get_all_companies(self) -> List[Company]:
+    def get_all_companies(self, conn: Connection) -> List[Company]:
         companies = [Company(long_name=company_long_name.value) for company_long_name in Companies.LongNames]
         logger.debug('Getting all companies', companies=companies)
-
-        with self.db.connect as conn:
-            result = self.company_repo.select(conn, companies)
+        result = self.company_repo.select(conn, companies)
         return result

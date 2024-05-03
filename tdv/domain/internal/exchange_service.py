@@ -1,9 +1,9 @@
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import Connection
 
 
-from tdv.domain.entities.exchange_entity import Exchange, ExchangeAbrvs
+from tdv.domain.entities.exchange_entity import Exchange, Exchanges
 
 from tdv.logger_setup import LoggerFactory
 
@@ -19,40 +19,20 @@ class ExchangeService:
         self.db = db
         self.exchange_repo = exchange_repo
 
-        self.__exchanges: Tuple[Exchange, ...] = ()
-
-    @property
-    def exchanges(self) -> Tuple[Exchange, ...]:
-        if not self.__exchanges:
-            self.__exchanges = tuple(self.get_all_exchanges())
-
-        return self.__exchanges
-
     def create_all_exchanges(self, conn: Connection) -> List[Exchange]:
-        exchanges = [Exchange(name=name.value) for name in ExchangeAbrvs]
+        exchanges = [
+            Exchange(name=name.value, long_name=long_name.value)
+            for name, long_name in zip(Exchanges.ShortNames, Exchanges.LongNames)
+        ]
         logger.debug('Creating all exchanges', exchanges=exchanges)
         result = self.exchange_repo.insert(conn, exchanges)
         return result
 
-    def get_all_exchanges(self) -> List[Exchange]:
-        exchanges = [Exchange(name=name.value) for name in ExchangeAbrvs]
+    def get_all_exchanges(self, conn: Connection) -> List[Exchange]:
+        exchanges = [Exchange(name=name.value) for name in Exchanges.ShortNames]
         logger.debug('Getting all exchanges', exchanges=exchanges)
-
-        with self.db.connect as conn:
-            result = self.exchange_repo.select(conn, exchanges)
+        result = self.exchange_repo.select(conn, exchanges)
         return result
-
-    def get_exchange_by_id(self, exchange_id: int) -> Optional[Exchange]:
-        for exchange in self.exchanges:
-            if exchange.id == exchange_id:
-                return exchange
-        return None
-
-    def get_exchange_by_name(self, exchange_name: str) -> Optional[Exchange]:
-        for exchange in self.exchanges:
-            if exchange.name == exchange_name:
-                return exchange
-        return None
 
     def update_exchange_live(self, exchange_name: str, is_live: bool) -> List[Exchange]:
         logger.debug('Updating exchange live status', exchange_name=exchange_name, is_live=is_live)
@@ -61,5 +41,4 @@ class ExchangeService:
         with self.db.connect as conn:
             result = self.exchange_repo.update(conn, exchanges, params)
             conn.commit()
-        self.__exchanges = ()
         return result

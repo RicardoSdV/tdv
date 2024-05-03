@@ -1,15 +1,17 @@
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity, EntityEnum
 
 
-class ExchangeAbrvs(EntityEnum):
-    NEW_YORK = 'NYSE'
+@dataclass
+class Exchanges:
+    class ShortNames(EntityEnum):
+        NEW_YORK = 'NYSE'
 
-
-class ExchangeNames(EntityEnum):
-    NEW_YORK = 'New York Stock Exchange'
+    class LongNames(EntityEnum):
+        NEW_YORK = 'New York Stock Exchange'
 
 
 class Currencies(EntityEnum):
@@ -17,13 +19,13 @@ class Currencies(EntityEnum):
 
 
 class Exchange(Entity):
-    __slots__ = ('id', 'name', 'abrv_name', 'currency', 'live', 'hist', 'created_at', 'updated_at')
+    __slots__ = ('id', 'long_name', 'name', 'currency', 'live', 'hist', 'created_at', 'updated_at')
 
     def __init__(
         self,
         exchange_id: Optional[int] = None,
         name: Optional[str] = None,
-        abrv_name: Optional[str] = None,
+        long_name: Optional[str] = None,
         currency: Optional[str] = None,
         live: Optional[bool] = None,
         hist: Optional[bool] = None,
@@ -31,8 +33,8 @@ class Exchange(Entity):
         updated_at: Optional[datetime] = None,
     ) -> None:
         self.id = exchange_id
-        self.name = None if name is None else ExchangeNames.validate_value(name)
-        self.abrv_name = None if abrv_name is None else ExchangeAbrvs.validate_value(abrv_name)
+        self.name = None if name is None else Exchanges.ShortNames.validate_value(name)
+        self.long_name = None if long_name is None else Exchanges.LongNames.validate_value(long_name)
         self.currency = None if currency is None else Currencies.validate_value(currency)
         self.live = live
         self.hist = hist

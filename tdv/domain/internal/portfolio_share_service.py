@@ -21,9 +21,14 @@ class PortfolioShareService:
         result = self.pfol_share_repo.select(conn, pfol_shares)
         return result
 
-    def create_many_portfolio_shares(self, portfolio_id: List[int], ticker_id: int, count: List[float], conn: Connection) -> List[PortfolioShare]:
+    def create_many_portfolio_shares(
+        self, portfolio_id: List[int], ticker_id: int, count: List[float], conn: Connection
+    ) -> List[PortfolioShare]:
         logger.debug('Creating test portfolio shares', portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
-        shares = [PortfolioShare(portfolio_id=portfolio_id, ticker_id=ticker_id, count=count) for portfolio_id, count in zip(portfolio_id, count)]
+        shares = [
+            PortfolioShare(portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
+            for portfolio_id, count in zip(portfolio_id, count)
+        ]
         result = self.pfol_share_repo.insert(conn, shares)
         return result
 

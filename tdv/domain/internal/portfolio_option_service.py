@@ -34,7 +34,6 @@ class PortfolioOptionService:
     def create_many_portfolio_options(self, portfolio_ids: List[int], options, conn) -> List[PortfolioOption]:
         pass
 
-
     # def create_portfolio_options(
     #     self, portfolio_id: int, option_id: int, count: Optional[float]
     # ) -> List[PortfolioOption]:

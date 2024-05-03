@@ -67,6 +67,7 @@ contract_size_table = Table(
     'contract_size', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('size', Integer, nullable=False),
+    Column('name', String(50), nullable=False)
 )
 
 """ =============================================================================================================== """

@@ -21,8 +21,8 @@ table = call_hist_table
 
 
 def upgrade() -> None:
-    op.create_table(table.name, *[column for column in table.columns])
+    op.create_table(table.long_name, *[column for column in table.columns])
 
 
 def downgrade() -> None:
-    op.drop_table(table.name)
+    op.drop_table(table.long_name)

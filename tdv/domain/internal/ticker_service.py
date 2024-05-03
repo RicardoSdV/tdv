@@ -34,7 +34,7 @@ class TickerService:
         for exchange_name, company_ticker_names in TICKERS_BY_COMPANY_EXCHANGE.items():
             exchange_id = None
             for exchange in exchanges:
-                if exchange.name == exchange_name.value:
+                if exchange.long_name == exchange_name.value:
                     exchange_id = exchange.id
                     break
             if exchange_id is None:
@@ -77,6 +77,6 @@ class TickerService:
 
     def get_ticker_id_by_name(self, ticker_name: str) -> Optional[int]:
         for ticker in self.tickers:
-            if ticker.name == ticker_name:
+            if ticker.long_name == ticker_name:
                 return ticker.id
         return None

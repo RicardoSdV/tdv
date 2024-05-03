@@ -1,0 +1,2 @@
+class ShareHistService:
+    pass

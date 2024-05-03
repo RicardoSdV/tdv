@@ -1,24 +1,23 @@
-from typing import TYPE_CHECKING, Dict, List, Iterable, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, Tuple
 
 from sqlalchemy import Connection
 
 from tdv.domain.entities.account_entity import Account
-from tdv.domain.entities.base_entity import Entity
 from tdv.domain.entities.company_entity import Company
 from tdv.domain.entities.contract_size_entity import ContractSize
 from tdv.domain.entities.call_hist_entity import CallHist
 from tdv.domain.entities.exchange_entity import Exchange
 from tdv.domain.entities.portfolio_entity import Portfolio
-from tdv.domain.entities.portfolio_option_entity import PortfolioOption
 from tdv.domain.entities.portfolio_share_entity import PortfolioShare
 from tdv.domain.entities.put_hist_entity import PutHist
 from tdv.domain.entities.share_hist_entity import ShareHist
 from tdv.domain.entities.ticker_entity import Ticker
 
 from tdv.domain.session.session import Session
-from tdv.infra.database import DB
+from tdv.domain.types import PfolOptionEssentials, IDs
 
 if TYPE_CHECKING:
+    from tdv.infra.database import DB
     from tdv.domain.internal.account_service import AccountService
     from tdv.domain.internal.company_service import CompanyService
     from tdv.domain.internal.contract_size_service import ContractSizeService
@@ -74,24 +73,28 @@ class SessionManager:
         with db.connect as conn:
 
             # Shared cached entities, those used by all sessions
-            self.exchanges: Dict[str, Exchange] = {}
-            self.tickers_by_name, self.tickers_by_id = self.__get_all_tickers_by_name_and_id(conn)
-            self.companies: Dict[int, Company] = {}
-            self.last_share_hists: Dict[int, ShareHist] = {}
-            self.last_call_hists: Dict[int, CallHist] = {}
-            self.last_put_hists: Dict[int, PutHist] = {}
-            self.contract_sizes: Dict[int, ContractSize] = {}
+            self.exchanges = self.__get_all_exchanges_by_id(conn)
+            self.tickers_by_id = self.__get_all_tickers_by_id(conn)
+            self.companies = self.__get_all_companies_by_id(conn)
+            self.contract_sizes = self.__get_all_contract_sizes_by_id(conn)
+
+            self.last_share_hists_by_id: Dict[int, ShareHist] = {}
+            self.last_call_hists_by_id: Dict[int, CallHist] = {}
+            self.last_put_hists_by_id: Dict[int, PutHist] = {}
 
             conn.commit()
 
-
-    def login(self, name: str, password: str) -> Optional[int]:
+    def login(self, name: str, password: str) -> Session:
         """
         - Get Account from DB
         - Generate session_id for this account
         - Get all account related data from DB
         - Instantiate session with all the above
+        - Update self.sessions with the new session
         """
+
+        # TODO: Check that the account is not already logged in
+        # TODO: Validate password
 
         with self.db.connect as conn:
 
@@ -102,66 +105,83 @@ class SessionManager:
             pfols_by_name, pfol_ids = self.__get_pfols_by_name_and_pfol_ids(account.id, conn)
 
             pfol_shares_by_ticker, pfol_share_ids = self.__get_pfol_shares_and_ids(pfol_ids, conn)
-            pfol_options_by_ticker, pfol_option_ids = self.__get_pfol_options_and_ids(pfol_ids, conn)
-
-            strike_ids = [option.strike_id for option in portfolio_options.values()]
-            strikes = self.strike_service.get_strikes_by_ids(strike_ids, conn)
-
-            expiry_ids = [strike.expiry_id for strike in strikes.values()]
-            expiries = self.expiry_service.get_expiries_by_id(expiry_ids, conn)
-
-            put_hist = self.option_hist_service.get_last_put_hists_by_strike_ids
-            call_hist = self.option_hist_service
+            pfol_option_essentials = self.__get_pfol_options_expiries_and_strikes(pfol_ids, conn)
+            pfol_options_by_ticker, strikes_by_id, expiries_by_id = pfol_option_essentials
 
             session = Session(
-                account,
-                session_id,
-                pfols_by_name,
-                portfolio_shares_by_id,
-                portfolio_options,
-                strikes,
-                expiries,
-                put_hist,
-                call_hist,
+                account=account,
+                session_id=session_id,
+                pfols_by_name=pfols_by_name,
+                pfol_shares_by_ticker=pfol_shares_by_ticker,
+                pfol_options_by_ticker=pfol_options_by_ticker,
+                strikes_by_id=strikes_by_id,
+                expiries_by_id=expiries_by_id,
             )
 
-        # Get session data
-
-        session = Session(accounts[0])
         self.sessions[session.id] = session
-        return session.id
+        return session
 
-    def __get_all_tickers_by_name_and_id(self, conn: Connection) -> Tuple[Dict[str, Ticker], Dict[int, Ticker]]:
+    """ Getting shared Entities """
+
+    def __get_all_exchanges_by_id(self, conn: Connection) -> Dict[int, Exchange]:
+        exchanges = self.exchange_service.get_all_exchanges(conn)
+        exchanges_by_id = {exchange.id: exchange for exchange in exchanges}
+        return exchanges_by_id
+
+    def __get_all_tickers_by_id(self, conn: Connection) -> Dict[int, Ticker]:
         tickers = self.ticker_service.get_all_tickers(conn)
-        tickers_by_name = {ticker.name: ticker for ticker in tickers}
         tickers_by_id = {ticker.id: ticker for ticker in tickers}
-        return tickers_by_name, tickers_by_id
+        return tickers_by_id
 
+    def __get_all_companies_by_id(self, conn: Connection) -> Dict[int, Company]:
+        companies = self.company_service.get_all_companies(conn)
+        companies_by_id = {exchange.id: exchange for exchange in companies}
+        return companies_by_id
 
-    def __get_pfols_by_name_and_pfol_ids(self, account_id: int, conn: Connection) -> Tuple[Dict[str, Portfolio], List[int]]:
+    def __get_all_contract_sizes_by_id(self, conn: Connection) -> Dict[int:ContractSize]:
+        contract_sizes = self.contract_size_service.get_all_contract_sizes(conn)
+        contract_sizes_by_id = {contract_size.id: contract_size for contract_size in contract_sizes}
+        return contract_sizes_by_id
+
+    """ Getting session Entities """
+
+    def __get_pfols_by_name_and_pfol_ids(self, account_id: int, conn: Connection) -> Tuple[Dict[str, Portfolio], IDs]:
         portfolios = self.portfolio_service.get_portfolios_with_account_id(account_id, conn)
         pfols_by_name = {pfol.name: pfol for pfol in portfolios if pfol.name is not None}
         pfol_ids = [pfol.id for pfol in portfolios if pfol.id is not None]
         return pfols_by_name, pfol_ids
 
-    def __get_pfol_shares_and_ids(self, pfol_ids: List[int], conn: Connection) -> Tuple[Dict[str, PortfolioShare], List[int]]:
+    def __get_pfol_shares_and_ids(self, pfol_ids: IDs, conn: Connection) -> Dict[str, PortfolioShare]:
         portfolio_shares = self.pfol_share_service.get_portfolio_shares(pfol_ids, conn)
 
-        pfol_shares_by_ticker = {'placeholder':}
+        pfol_shares_by_ticker = {}
+        for pfol_share in portfolio_shares:
+            ticker_id = pfol_share.ticker_id
+            ticker = self.tickers_by_id[ticker_id]
+            pfol_shares_by_ticker[ticker.name] = pfol_share
 
-    def __get_pfol_options_and_ids(self, pfol_ids: List[int], conn: Connection) -> Tuple[Dict[str, PortfolioOption], List[int]]:
+        return pfol_shares_by_ticker
+
+    def __get_pfol_options_expiries_and_strikes(self, pfol_ids: IDs, conn: Connection) -> PfolOptionEssentials:
         portfolio_options = self.pfol_option_service.get_portfolio_options(pfol_ids, conn)
 
+        strikes = self.strike_service.get_strikes((pfol_option.strike_id for pfol_option in portfolio_options), conn)
+        expiries = self.expiry_service.get_expiries((strike.expiry_id for strike in strikes), conn)
 
+        pfol_options_by_ticker = {}
+        for pfol_option, expiry in zip(portfolio_options, expiries):
+            ticker_id = expiry.ticker_id
+            ticker = self.tickers_by_id[ticker_id]
+            pfol_options_by_ticker[ticker.name] = pfol_option
 
+        strikes_by_id = {strike.id: strike for strike in strikes}
+        expiries_by_id = {expiry.id: expiry for expiry in expiries}
+
+        return pfol_options_by_ticker, strikes_by_id, expiries_by_id
 
     @staticmethod
     def __generate_session_id(account: Account) -> int:
         return hash(account.id)
-
-    @staticmethod
-    def __get_entities_ids(entities: Iterable[Entity]) -> List[int]:
-        pass
 
     def get_session_by_session_id(self, session_id: int) -> Account:
         pass
