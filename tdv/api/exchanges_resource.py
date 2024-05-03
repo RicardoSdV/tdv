@@ -11,7 +11,7 @@ class ExchangesBaseResource(BaseResource):
     def on_get(self, req: Request, resp: Response) -> None:
         print('get')
         # resp.status = HTTP_200
-        # exchanges = self.__exchanges_service.get_exchange_by_name(Exchanges.NEW_YORK.value)
+        # exchanges = self.__exchanges_service.get_exchange_by_name(ExchangeAbrvs.NEW_YORK.value)
         #
         # response = {}
         # for exchange in exchanges:

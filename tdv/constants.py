@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, Tuple
 
 from tdv.domain.entities.company_entity import Companies
-from tdv.domain.entities.exchange_entity import Exchanges
+from tdv.domain.entities.exchange_entity import ExchangeAbrvs
 from tdv.domain.entities.ticker_entity import Tickers
 
 # Paths (all absolute)
@@ -49,8 +49,8 @@ class MarketEvents(Enum):
 
 
 # Defines the relationship between exchanges, tickers & companies for fast insertion
-TICKERS_BY_COMPANY_EXCHANGE: Dict[Exchanges, Dict[Companies.LongNames, Tuple[Tickers, ...]]] = {
-    Exchanges.NEW_YORK: {
+TICKERS_BY_COMPANY_EXCHANGE: Dict[ExchangeAbrvs, Dict[Companies.LongNames, Tuple[Tickers, ...]]] = {
+    ExchangeAbrvs.NEW_YORK: {
         Companies.LongNames.TESLA: (Tickers.TSLA,),
     }
 }

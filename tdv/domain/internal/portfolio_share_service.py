@@ -1,4 +1,4 @@
-from typing import Iterable, List
+from typing import List
 
 from sqlalchemy import Connection
 
@@ -19,6 +19,12 @@ class PortfolioShareService:
         logger.debug('Getting portfolio shares', portfolio_ids=pfol_ids)
         pfol_shares = [PortfolioShare(portfolio_id=pfol_id) for pfol_id in pfol_ids]
         result = self.pfol_share_repo.select(conn, pfol_shares)
+        return result
+
+    def create_many_portfolio_shares(self, portfolio_id: List[int], ticker_id: int, count: List[float], conn: Connection) -> List[PortfolioShare]:
+        logger.debug('Creating test portfolio shares', portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
+        shares = [PortfolioShare(portfolio_id=portfolio_id, ticker_id=ticker_id, count=count) for portfolio_id, count in zip(portfolio_id, count)]
+        result = self.pfol_share_repo.insert(conn, shares)
         return result
 
 

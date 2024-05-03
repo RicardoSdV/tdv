@@ -1,9 +1,14 @@
-from typing import TYPE_CHECKING, Dict, List, Iterable, Sequence
+from typing import TYPE_CHECKING
 
 from psycopg import Connection
 
-from tdv.domain.entities.portfolio_entity import Portfolio
 from tdv.domain.entities.portfolio_option_entity import PortfolioOption
+
+from typing import List
+
+from tdv.infra.database import DB
+from tdv.infra.repos.portfolio_option_repo import PortfolioOptionRepo
+
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
@@ -25,6 +30,10 @@ class PortfolioOptionService:
         result = self.pfol_option_repo.select(conn, portfolio_options)
 
         return result
+
+    def create_many_portfolio_options(self, portfolio_ids: List[int], options, conn) -> List[PortfolioOption]:
+        pass
+
 
     # def create_portfolio_options(
     #     self, portfolio_id: int, option_id: int, count: Optional[float]
