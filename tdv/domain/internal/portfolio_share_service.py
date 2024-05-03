@@ -2,15 +2,32 @@
 #
 # from tdv.domain.entities.portfolio_share_entity import PortfolioShare
 # from tdv.domain.internal.ticker_service import TickerService
-# from tdv.infra.database import DB
-# from tdv.infra.repos.portfolio_shares_repo import PortfolioSharesRepo
-# from tdv.logger_setup import LoggerFactory
-#
-# logger = LoggerFactory.make_logger(__name__)
-#
-#
+from typing import List
+
+from sqlalchemy import Connection
+
+from tdv.domain.entities.portfolio_share_entity import PortfolioShare
+from tdv.infra.database import DB
+from tdv.infra.repos.portfolio_share_repo import PortfolioShareRepo
+from tdv.logger_setup import LoggerFactory
+
+logger = LoggerFactory.make_logger(__name__)
+
+
 class PortfolioShareService:
-    pass
+    def __init__(
+        self,
+        db: 'DB',
+        portfolio_shares_repo: 'PortfolioShareRepo',
+    ) -> None:
+        self.db = db
+        self.portfolio_shares_repo = portfolio_shares_repo
+
+    def create_many_portfolio_shares(self, portfolio_id: List[int], ticker_id: int, count: List[float], conn: Connection) -> List[PortfolioShare]:
+        logger.debug('Creating test portfolio shares', portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
+        shares = [PortfolioShare(portfolio_id=portfolio_id, ticker_id=ticker_id, count=count) for portfolio_id, count in zip(portfolio_id, count)]
+        result = self.portfolio_shares_repo.insert(conn, shares)
+        return result
 
 
 #     def __init__(

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, List, Optional, Tuple
 
 from sqlalchemy import Connection
 
-from tdv.domain.entities.exchange_entity import Exchange, Exchanges
+from tdv.domain.entities.exchange_entity import Exchange, ExchangeAbrvs
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
@@ -27,13 +27,13 @@ class ExchangeService:
         return self.__exchanges
 
     def create_all_exchanges(self, conn: Connection) -> List[Exchange]:
-        exchanges = [Exchange(name=name.value) for name in Exchanges]
+        exchanges = [Exchange(name=name.value) for name in ExchangeAbrvs]
         logger.debug('Creating all exchanges', exchanges=exchanges)
         result = self.exchange_repo.insert(conn, exchanges)
         return result
 
     def get_all_exchanges(self) -> List[Exchange]:
-        exchanges = [Exchange(name=name.value) for name in Exchanges]
+        exchanges = [Exchange(name=name.value) for name in ExchangeAbrvs]
         logger.debug('Getting all exchanges', exchanges=exchanges)
 
         with self.db.connect as conn:

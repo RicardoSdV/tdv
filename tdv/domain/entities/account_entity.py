@@ -1,8 +1,10 @@
 from datetime import datetime
 from typing import Optional
 
+from tdv.domain.entities.base_entity import Entity
 
-class Account:
+
+class Account(Entity):
     __slots__ = ('id', 'username', 'email', 'password', 'created_at', 'updated_at')
 
     def __init__(

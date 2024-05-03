@@ -1,10 +1,26 @@
+from typing import List
+
+from tdv.infra.database import DB
+from tdv.infra.repos.portfolio_option_repo import PortfolioOptionRepo
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class PortfolioOptionService:
-    pass
+    def __init__(self,
+                 db: 'DB',
+                 portfolio_option_repo: 'PortfolioOptionRepo'
+                 ) -> None:
+        self.db = db
+        self.portfolio_option_repo = portfolio_option_repo
+
+    def create_many_portfolio_options(self, portfolio_ids: List[int], options: List[Dict()], conn) -> List[PortfolioOption]:
+        pass
+        # logger.debug('')
+        # return result
+
+
     # def __init__(self, db: 'DB', portfolio_options_repo: 'PortfolioOptionRepo') -> None:
     #     self.db = db
     #     self.portfolio_options_repo = portfolio_options_repo
