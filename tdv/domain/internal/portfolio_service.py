@@ -28,13 +28,10 @@ class PortfolioService:
             conn.commit()
         return result
 
-    def get_portfolios_by_name__with_account_id(self, account_id: int, conn: Connection) -> Dict[str, Portfolio]:
+    def get_portfolios_with_account_id(self, account_id: int, conn: Connection) -> List[Portfolio]:
         logger.debug('Getting portfolios', account_id=account_id)
-
         portfolios = self.portfolio_repo.select(conn, [Portfolio(account_id=account_id)])
-        portfolios_by_name = {portfolio.name: portfolio for portfolio in portfolios}
-
-        return portfolios_by_name
+        return portfolios
 
     # def create_portfolio_shares(self, portfolio_id: int, portfolio_shares_id: int) -> List[Portfolio]:
     #     logger.debug(

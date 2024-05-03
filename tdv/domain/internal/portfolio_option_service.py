@@ -1,14 +1,31 @@
+from typing import TYPE_CHECKING, Dict, List, Iterable, Sequence
+
+from psycopg import Connection
+
+from tdv.domain.entities.portfolio_entity import Portfolio
+from tdv.domain.entities.portfolio_option_entity import PortfolioOption
 from tdv.logger_setup import LoggerFactory
+
+if TYPE_CHECKING:
+    from tdv.infra.database import DB
+    from tdv.infra.repos.portfolio_option_repo import PortfolioOptionRepo
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class PortfolioOptionService:
-    pass
-    # def __init__(self, db: 'DB', portfolio_options_repo: 'PortfolioOptionRepo') -> None:
-    #     self.db = db
-    #     self.portfolio_options_repo = portfolio_options_repo
-    #
+    def __init__(self, db: 'DB', portfolio_option_repo: 'PortfolioOptionRepo') -> None:
+        self.db = db
+        self.pfol_option_repo = portfolio_option_repo
+
+    def get_portfolio_options(self, portfolio_ids: List[int], conn: Connection) -> List[PortfolioOption]:
+        logger.debug('Getting portfolio options', portfolio_ids=portfolio_ids)
+
+        portfolio_options = [PortfolioOption(portfolio_id=pfol_id) for pfol_id in portfolio_ids]
+        result = self.pfol_option_repo.select(conn, portfolio_options)
+
+        return result
+
     # def create_portfolio_options(
     #     self, portfolio_id: int, option_id: int, count: Optional[float]
     # ) -> List[PortfolioOption]:

@@ -1,8 +1,8 @@
-from typing import Dict, Iterable
+from typing import Iterable, List
 
 from sqlalchemy import Connection
 
-from tdv.domain.entities.portfolio_share_entity import PfolShare
+from tdv.domain.entities.portfolio_share_entity import PortfolioShare
 from tdv.infra.database import DB
 from tdv.infra.repos.portfolio_share_repo import PortfolioShareRepo
 from tdv.logger_setup import LoggerFactory
@@ -15,14 +15,11 @@ class PortfolioShareService:
         self.db = db
         self.pfol_share_repo = pfol_share_repo
 
-    def get_pfol_shares_by_id(self, pfol_ids: Iterable, conn: Connection) -> Dict[int, PfolShare]:
+    def get_portfolio_shares(self, pfol_ids: List[int], conn: Connection) -> List[PortfolioShare]:
         logger.debug('Getting portfolio shares', portfolio_ids=pfol_ids)
-
-        pfol_shares = [PfolShare(portfolio_id=pfol_id) for pfol_id in pfol_ids]
-        self.pfol_share_repo.select(conn, pfol_shares)
-        portfolio_shares_by_id = {pfol_share.id: pfol_share for pfol_share in pfol_shares}
-
-        return portfolio_shares_by_id
+        pfol_shares = [PortfolioShare(portfolio_id=pfol_id) for pfol_id in pfol_ids]
+        result = self.pfol_share_repo.select(conn, pfol_shares)
+        return result
 
 
 #     def create(

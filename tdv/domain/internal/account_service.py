@@ -58,10 +58,9 @@ class AccountService:
 
         return result
 
-    def get_or_raise_account_by_username_and_password(self, username: str, password: str, conn: Connection) -> Account:
-        logger.debug('Selecting user by username and password', username=username, password=password)
-        accounts = [Account(username=username, password=password)]
-        result = self.account_repo.select(conn, accounts)
+    def get_or_raise_account_with_name(self, name: str, conn: Connection) -> Account:
+        logger.debug('Getting Account', name=name)
+        result = self.account_repo.select(conn, [Account(name=name)])
         assert len(accounts) == 1
         return result[0]
 

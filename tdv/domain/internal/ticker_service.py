@@ -28,15 +28,6 @@ class TickerService:
         self.exchange_service = exchange_service
         self.company_service = company_service
 
-        self.__tickers: Tuple[Ticker, ...] = ()
-
-    @property
-    def tickers(self) -> Tuple[Ticker, ...]:
-        if not self.__tickers:
-            self.__tickers = tuple(self.get_all_tickers())
-
-        return self.__tickers
-
     def create_all_tickers(self, exchanges: List[Exchange], companies: List[Company], conn: Connection) -> List[Ticker]:
 
         tickers = []
@@ -65,13 +56,10 @@ class TickerService:
         result = self.ticker_repo.insert(conn, tickers)
         return result
 
-    def get_all_tickers(self) -> List[Ticker]:
+    def get_all_tickers(self, conn: Connection) -> List[Ticker]:
         tickers = [Ticker(name=name.value) for name in Tickers]
         logger.debug('Getting all tickers', tickers=tickers)
-
-        with self.db.connect as conn:
-            result = self.ticker_repo.insert(conn, tickers)
-            conn.commit()
+        result = self.ticker_repo.insert(conn, tickers)
         return result
 
     def get_ticker_by_name(self, ticker_name: str, conn: Optional[Connection] = None) -> List[Ticker]:

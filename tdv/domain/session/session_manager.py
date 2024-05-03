@@ -1,10 +1,18 @@
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict, List, Iterable, Optional, Tuple
+
+from sqlalchemy import Connection
 
 from tdv.domain.entities.account_entity import Account
+from tdv.domain.entities.base_entity import Entity
 from tdv.domain.entities.company_entity import Company
 from tdv.domain.entities.contract_size_entity import ContractSize
 from tdv.domain.entities.call_hist_entity import CallHist
+from tdv.domain.entities.exchange_entity import Exchange
+from tdv.domain.entities.portfolio_entity import Portfolio
+from tdv.domain.entities.portfolio_option_entity import PortfolioOption
+from tdv.domain.entities.portfolio_share_entity import PortfolioShare
 from tdv.domain.entities.put_hist_entity import PutHist
+from tdv.domain.entities.share_hist_entity import ShareHist
 from tdv.domain.entities.ticker_entity import Ticker
 
 from tdv.domain.session.session import Session
@@ -36,7 +44,7 @@ class SessionManager:
         call_hist_service: 'CallHistService',
         put_hist_service: 'PutHistService',
         contract_size_service: 'ContractSizeService',
-        pfol_service: 'PortfolioService',
+        portfolio_service: 'PortfolioService',
         pfol_share_service: 'PortfolioShareService',
         pfol_option_service: 'PortfolioOptionService',
         strike_service: 'StrikeService',
@@ -44,6 +52,8 @@ class SessionManager:
     ) -> None:
 
         self.sessions: Dict[int, Session] = {}
+
+        self.db = db
 
         # Manager Services
         self.account_service = account_service
@@ -55,25 +65,27 @@ class SessionManager:
 
         # Session Services
         self.contract_size_service = contract_size_service
-        self.pfol_service = pfol_service
+        self.portfolio_service = portfolio_service
         self.pfol_share_service = pfol_share_service
         self.pfol_option_service = pfol_option_service
         self.strike_service = strike_service
         self.expiry_service = expiry_service
 
-        self.db = db
+        with db.connect as conn:
 
-        # Cached entities
-        with self.db.connect as conn:
-            self.companies: Dict[int, Company] = self.company_service.get_all_companies(conn)
-            self.tickers: Dict[int, Ticker] = self.ticker_service.get_all_tickers(conn)
-            self.contract_sizes: Dict[int, ContractSize] = self.contact_size_service.get_all_contract_sizes(conn)
+            # Shared cached entities, those used by all sessions
+            self.exchanges: Dict[str, Exchange] = {}
+            self.tickers_by_name, self.tickers_by_id = self.__get_all_tickers_by_name_and_id(conn)
+            self.companies: Dict[int, Company] = {}
+            self.last_share_hists: Dict[int, ShareHist] = {}
+            self.last_call_hists: Dict[int, CallHist] = {}
+            self.last_put_hists: Dict[int, PutHist] = {}
+            self.contract_sizes: Dict[int, ContractSize] = {}
+
             conn.commit()
 
-        self.last_call_hists: Dict[int, CallHist] = self.call_hist_service.get_last_call_hists()
-        self.last_put_hists: Dict[int, PutHist] = self.put_hist_service.get_last_call_hists()
 
-    def login(self, username: str, password: str) -> str:
+    def login(self, name: str, password: str) -> Optional[int]:
         """
         - Get Account from DB
         - Generate session_id for this account
@@ -82,17 +94,15 @@ class SessionManager:
         """
 
         with self.db.connect as conn:
-            account = self.account_service.get_or_raise_account_by_username_and_password(username, password, conn)
+
+            account = self.account_service.get_or_raise_account_with_name(name, conn)
 
             session_id = self.__generate_session_id(account)
 
-            portfolios = self.pfol_service.get_portfolios_by_name__with_account_id(account.id, conn)
+            pfols_by_name, pfol_ids = self.__get_pfols_by_name_and_pfol_ids(account.id, conn)
 
-            portfolio_ids = portfolios.keys()
-            pfol_shares_by_id = self.pfol_share_service.get_pfol_shares_by_id(
-                portfolio_ids, conn
-            )
-            portfolio_options = self.pfol_option_service.get_pfol_options_by_id__with_pfol_ids(portfolio_ids, conn)
+            pfol_shares_by_ticker, pfol_share_ids = self.__get_pfol_shares_and_ids(pfol_ids, conn)
+            pfol_options_by_ticker, pfol_option_ids = self.__get_pfol_options_and_ids(pfol_ids, conn)
 
             strike_ids = [option.strike_id for option in portfolio_options.values()]
             strikes = self.strike_service.get_strikes_by_ids(strike_ids, conn)
@@ -106,7 +116,7 @@ class SessionManager:
             session = Session(
                 account,
                 session_id,
-                portfolios,
+                pfols_by_name,
                 portfolio_shares_by_id,
                 portfolio_options,
                 strikes,
@@ -121,9 +131,37 @@ class SessionManager:
         self.sessions[session.id] = session
         return session.id
 
+    def __get_all_tickers_by_name_and_id(self, conn: Connection) -> Tuple[Dict[str, Ticker], Dict[int, Ticker]]:
+        tickers = self.ticker_service.get_all_tickers(conn)
+        tickers_by_name = {ticker.name: ticker for ticker in tickers}
+        tickers_by_id = {ticker.id: ticker for ticker in tickers}
+        return tickers_by_name, tickers_by_id
+
+
+    def __get_pfols_by_name_and_pfol_ids(self, account_id: int, conn: Connection) -> Tuple[Dict[str, Portfolio], List[int]]:
+        portfolios = self.portfolio_service.get_portfolios_with_account_id(account_id, conn)
+        pfols_by_name = {pfol.name: pfol for pfol in portfolios if pfol.name is not None}
+        pfol_ids = [pfol.id for pfol in portfolios if pfol.id is not None]
+        return pfols_by_name, pfol_ids
+
+    def __get_pfol_shares_and_ids(self, pfol_ids: List[int], conn: Connection) -> Tuple[Dict[str, PortfolioShare], List[int]]:
+        portfolio_shares = self.pfol_share_service.get_portfolio_shares(pfol_ids, conn)
+
+        pfol_shares_by_ticker = {'placeholder':}
+
+    def __get_pfol_options_and_ids(self, pfol_ids: List[int], conn: Connection) -> Tuple[Dict[str, PortfolioOption], List[int]]:
+        portfolio_options = self.pfol_option_service.get_portfolio_options(pfol_ids, conn)
+
+
+
+
     @staticmethod
     def __generate_session_id(account: Account) -> int:
         return hash(account.id)
+
+    @staticmethod
+    def __get_entities_ids(entities: Iterable[Entity]) -> List[int]:
+        pass
 
     def get_session_by_session_id(self, session_id: int) -> Account:
         pass

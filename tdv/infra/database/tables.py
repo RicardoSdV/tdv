@@ -38,7 +38,8 @@ metadata = MetaData()
 exchange_table = Table(
     'exchange', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('name', String(20), nullable=False, unique=True),
+    Column('name', String(150), nullable=False, unique=True),
+    Column('abrv_name', String(20), nullable=False, unique=True),
     Column('currency', String(20), server_default=Currencies.US_DOLLAR.value, nullable=False),
     Column('live', Boolean, server_default='false', nullable=False),
     Column('hist', Boolean, server_default='false', nullable=False),
@@ -168,6 +169,7 @@ portfolio_option_table = Table(
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('portfolio_id', BigInteger, ForeignKey(portfolio_table.c.id, ondelete='CASCADE'), nullable=False),
     Column('strike_id', BigInteger, ForeignKey(strike_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('is_call', Boolean, nullable=False),
     Column('count', Numeric(precision=24, scale=10), nullable=False, server_default='0.0'),  # -ve = sell to open
     Column('created_at', DateTime, server_default=func.now(), nullable=False),
     Column('updated_at', DateTime, server_default=func.now(), nullable=False),

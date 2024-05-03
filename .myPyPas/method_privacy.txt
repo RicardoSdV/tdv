@@ -2,8 +2,16 @@ Private methods:
     - What to do: Methods that at the moment are only used within the class should be private.
     - What not to do:
         - Hesitate to make them protected or public if they need to be used somewhere else.
-        -
+        - Make a private method and then make a public method with the sole purpose of calling the private method,
+        this includes properties
 
 
-Protected methods - Methods
+Protected methods:
+    - What to do: Methods whose purpose is to be used in the inheritance tree of the class they are defined in, or
+    the inside the class itself should be protected.
+
+
+Public methods:
+    - Methods that are currently used outside the class they are defined in should be public. They could also be also
+    used within the inheritance tree, or within
 
