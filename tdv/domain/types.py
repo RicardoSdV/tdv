@@ -24,5 +24,3 @@ UpdateParams = Dict[str, Insertable]
 Handler = Callable[..., None]
 Args = Tuple[Any, ...]
 KwArgs = Dict[str, Any]
-
-

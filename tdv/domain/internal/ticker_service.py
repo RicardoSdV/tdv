@@ -58,7 +58,7 @@ class TickerService:
     def get_all_tickers(self, conn: Connection) -> List[Ticker]:
         tickers = [Ticker(name=name.value) for name in Tickers]
         logger.debug('Getting all tickers', tickers=tickers)
-        result = self.ticker_repo.insert(conn, tickers)
+        result = self.ticker_repo.select(conn, tickers)
         return result
 
     def get_ticker_by_name(self, ticker_name: str, conn: Optional[Connection] = None) -> List[Ticker]:

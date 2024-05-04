@@ -19,11 +19,14 @@ def many() -> None:
     from tdv.infra.database import db
 
     with db.connect as conn:
+
         exchanges = Service.exchange().create_all_exchanges(conn)
         companies = Service.company().create_all_companies(conn)
         tickers = Service.ticker().create_all_tickers(exchanges, companies, conn)
         contract_sizes = Service.contract_size().create_all_contract_sizes(conn)
         accounts = Service.account().create_local_account(conn)
+
+        conn.commit()
 
     logger.info(
         'Created:',

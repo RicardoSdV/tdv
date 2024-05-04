@@ -6,7 +6,7 @@ from pandas_market_calendars import get_calendar
 from schedule import Scheduler
 import yfinance as yf
 
-from tdv.constants import MarketEvents
+from tdv.constants import MarketEvents, UPDATE_OPTIONS_INTERVAL
 from tdv.domain.types import Expiries, OptionChainsYF, Options
 from tdv.logger_setup import LoggerFactory
 
@@ -18,7 +18,6 @@ if TYPE_CHECKING:
 
 
 class YahooFinanceServiceProxy:
-    __update_options_interval = 10
     force_requests = True
 
     def __init__(self, yahoo_finance_service: 'YahooFinanceService', cache_service: 'CacheService') -> None:
@@ -29,6 +28,7 @@ class YahooFinanceServiceProxy:
         self.__schedulers_by_exchange_name = {
             exchange.name: Scheduler() for exchange in self.cache_service.exchanges_by_id.values()
         }
+
         self.__calendars_by_exchange_name = {
             exchange.name: get_calendar(exchange.name) for exchange in self.cache_service.exchanges_by_id.values()
         }
@@ -68,10 +68,10 @@ class YahooFinanceServiceProxy:
                 )
                 self.__schedule_market_events(scheduler, next_open, self.__on_market_open, exchange)
 
-    @classmethod
-    def __schedule_periodic_requests(cls, scheduler: Scheduler, method: Callable, exchange: str) -> None:
+    @staticmethod
+    def __schedule_periodic_requests(scheduler: Scheduler, method: Callable, exchange: str) -> None:
         logger.debug('Starting periodic requests', exchange=exchange)
-        scheduler.every(cls.__update_options_interval).seconds.do(method, exchange)
+        scheduler.every(UPDATE_OPTIONS_INTERVAL).seconds.do(method, exchange)
 
     @staticmethod
     def __schedule_market_events(scheduler: Scheduler, when: datetime, method: Callable, exchange: str) -> None:
@@ -102,12 +102,12 @@ class YahooFinanceServiceProxy:
         )
         return next_time
 
-    def __update_options(self, exchange: str) -> None:
-        logger.debug('Updating options', exchange=exchange)
+    def __update_options(self, exchange_name: str) -> None:
+        logger.debug('Updating options', exchange=exchange_name)
 
         exchange_id = None
         for exchange in self.cache_service.exchanges_by_id.values():
-            if exchange.name == exchange:
+            if exchange.name == exchange_name:
                 exchange_id = exchange.id
 
         if exchange_id is not None:

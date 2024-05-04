@@ -35,12 +35,12 @@ class CacheService:
         self.db = db
 
         # Services
-        self.company_service = company_service
-        self.exchange_service = exchange_service
-        self.ticker_service = ticker_service
-        self.call_hist_service = call_hist_service
-        self.put_hist_service = put_hist_service
-        self.contract_size_service = contract_size_service
+        self.__company_service = company_service
+        self.__exchange_service = exchange_service
+        self.__ticker_service = ticker_service
+        self.__call_hist_service = call_hist_service
+        self.__put_hist_service = put_hist_service
+        self.__contract_size_service = contract_size_service
 
         # Cached entities
         self.__exchanges_by_id: Optional[Dict[int, Exchange]] = None
@@ -57,7 +57,7 @@ class CacheService:
     def exchanges_by_id(self) -> Dict[int, Exchange]:
         if self.__exchanges_by_id is None:
             with self.db.connect as conn:
-                exchanges = self.exchange_service.get_all_exchanges(conn)
+                exchanges = self.__exchange_service.get_all_exchanges(conn)
                 self.__exchanges_by_id = {exchange.id: exchange for exchange in exchanges}
         return self.__exchanges_by_id
 
@@ -65,7 +65,7 @@ class CacheService:
     def tickers_by_id(self) -> Dict[int, Ticker]:
         if self.__tickers_by_id is None:
             with self.db.connect as conn:
-                tickers = self.ticker_service.get_all_tickers(conn)
+                tickers = self.__ticker_service.get_all_tickers(conn)
                 self.__tickers_by_id = {ticker.id: ticker for ticker in tickers}
         return self.__tickers_by_id
 
@@ -73,7 +73,7 @@ class CacheService:
     def companies_by_id(self) -> Dict[int, Company]:
         if self.__companies_by_id is None:
             with self.db.connect as conn:
-                companies = self.company_service.get_all_companies(conn)
+                companies = self.__company_service.get_all_companies(conn)
                 self.__companies_by_id = {exchange.id: exchange for exchange in companies}
         return self.__companies_by_id
 
@@ -81,6 +81,6 @@ class CacheService:
     def contract_sizes_by_name(self) -> Dict[int, ContractSize]:
         if self.__contract_sizes_by_size is None:
             with self.db.connect as conn:
-                contract_sizes = self.contract_size_service.get_all_contract_sizes(conn)
+                contract_sizes = self.__contract_size_service.get_all_contract_sizes(conn)
                 self.__contract_sizes_by_id = {contract_size.size: contract_size for contract_size in contract_sizes}
         return self.__contract_sizes_by_id
