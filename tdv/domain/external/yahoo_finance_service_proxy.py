@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Callable
+from typing import Callable, TYPE_CHECKING
 
 from pandas import DataFrame
 from pandas_market_calendars import get_calendar
@@ -7,19 +7,21 @@ from schedule import Scheduler
 import yfinance as yf
 
 from tdv.constants import MarketEvents
-from tdv.domain.internal.cache_service import CacheService
-from tdv.domain.internal.yahoo_finance_service import YahooFinanceService
 from tdv.domain.types import Expiries, OptionChainsYF, Options
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
+
+if TYPE_CHECKING:
+    from tdv.domain.internal.cache_service import CacheService
+    from tdv.domain.internal.yahoo_finance_service import YahooFinanceService
 
 
 class YahooFinanceServiceProxy:
     __update_options_interval = 10
     force_requests = True
 
-    def __init__(self, yahoo_finance_service: 'YahooFinanceService', cache_service: CacheService) -> None:
+    def __init__(self, yahoo_finance_service: 'YahooFinanceService', cache_service: 'CacheService') -> None:
         self.cache_service = cache_service
 
         self.yahoo_finance_service = yahoo_finance_service

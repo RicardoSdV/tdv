@@ -2,11 +2,13 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Singleton
 
 from tdv.domain.external.yahoo_finance_service_proxy import YahooFinanceServiceProxy
+from tdv.domain.internal.cache_service import CacheService
 from tdv.domain.internal.call_hist_service import CallHistService
 from tdv.domain.internal.company_service import CompanyService
 from tdv.domain.internal.contract_size_service import ContractSizeService
 from tdv.domain.internal.exchange_service import ExchangeService
 from tdv.domain.internal.expiry_service import ExpiryService
+from tdv.domain.internal.insert_time_service import InsertTimeService
 from tdv.domain.internal.portfolio_option_service import PortfolioOptionService
 from tdv.domain.internal.portfolio_service import PortfolioService
 from tdv.domain.internal.portfolio_share_service import PortfolioShareService
@@ -79,6 +81,7 @@ class Service(DeclarativeContainer):
     strike = Singleton(StrikeService, db, Repo.strike)
     call_hist = Singleton(CallHistService, db, Repo.call_hist)
     put_hist = Singleton(PutHistService, db, Repo.put_hist)
+    insert_time = Singleton(InsertTimeService, db, Repo.insert_time)
 
     # Portfolio Cluster
     portfolio = Singleton(PortfolioService, db, Repo.portfolio)
@@ -86,9 +89,11 @@ class Service(DeclarativeContainer):
     portfolio_share = Singleton(PortfolioShareService, db, Repo.portfolio_share)
 
     """ Composer Services """
-    yahoo_finance = Singleton(YahooFinanceService, db, ticker)
+    cache = Singleton(CacheService, db, company, exchange, ticker, call_hist, put_hist, contract_size)
+    yahoo_finance = Singleton(YahooFinanceService, db, ticker, insert_time, expiry)
     session_manager = Singleton(SessionManager, account)
 
 
+
 class ExternalServices(DeclarativeContainer):
-    yahoo_finance = Singleton(YahooFinanceServiceProxy, Service.yahoo_finance)
+    yahoo_finance = Singleton(YahooFinanceServiceProxy, Service.yahoo_finance, Service.cache)

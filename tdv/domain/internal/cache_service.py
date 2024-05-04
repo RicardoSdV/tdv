@@ -24,7 +24,7 @@ class CacheService:
 
     def __init__(
         self,
-        db: DB,
+        db: 'DB',
         company_service: 'CompanyService',
         exchange_service: 'ExchangeService',
         ticker_service: 'TickerService',

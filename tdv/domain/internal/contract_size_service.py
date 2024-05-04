@@ -2,7 +2,8 @@ from typing import TYPE_CHECKING, List
 
 from sqlalchemy import Connection
 
-from tdv.domain.entities.contract_size_entity import ContractSize, ContractSizes
+from tdv.constants import ContractSizes
+from tdv.domain.entities.contract_size_entity import ContractSize
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
@@ -13,7 +14,7 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class ContractSizeService:
-    def __init__(self, db: DB, contract_size_repo: ContractSizeRepo) -> None:
+    def __init__(self, db: 'DB', contract_size_repo: 'ContractSizeRepo') -> None:
         self.db = db
         self.contract_size_repo = contract_size_repo
 

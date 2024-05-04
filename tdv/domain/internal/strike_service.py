@@ -13,7 +13,7 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class StrikeService:
-    def __init__(self, db: DB, strike_repo: StrikeRepo) -> None:
+    def __init__(self, db: 'DB', strike_repo: 'StrikeRepo') -> None:
         self.db = db
         self.strike_repo = strike_repo
 

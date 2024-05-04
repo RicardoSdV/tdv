@@ -11,21 +11,21 @@ def portfolio_group() -> None:
     """Portfolio related operations."""
 
 
-@portfolio_group.command('lcreate')
-@option('-n', '--portfolio_name', 'portfolio_name', required=True)
-def create_for_local(portfolio_name: str) -> None:
-    """Creates a portfolio for the local user"""
-
-    """
-    3 use the account id to create a portfolio
-    4 add the portfolio to the session?
-    """
-
-    from tdv.containers import Service
-    from tdv.constants import LocalAccountInfo
-
-    session = Service.session_manager().login(LocalAccountInfo.username, LocalAccountInfo.password)
-    result = Service.portfolio().create_portfolio(session.account.id, portfolio_name)
+# @portfolio_group.command('lcreate')
+# @option('-n', '--portfolio_name', 'portfolio_name', required=True)
+# def create_for_local(portfolio_name: str) -> None:
+#     """Creates a portfolio for the local user"""
+#
+#     """
+#     3 use the account id to create a portfolio
+#     4 add the portfolio to the session?
+#     """
+#
+#     from tdv.containers import Service
+#     from tdv.constants import LocalAccountInfo
+#
+#     session = Service.session_manager().login(LocalAccountInfo.username, LocalAccountInfo.password)
+#     result = Service.portfolio().create_portfolio(session.account.id, portfolio_name)
 
     #
     # session = Service.session_manager.get_session(session_id)

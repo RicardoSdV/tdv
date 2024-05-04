@@ -3,11 +3,14 @@ from typing import TYPE_CHECKING, Dict, Tuple
 from sqlalchemy import Connection
 
 from tdv.domain.entities.account_entity import Account
+from tdv.domain.entities.expiry_entity import Expiry
 from tdv.domain.entities.portfolio_entity import Portfolio
+from tdv.domain.entities.portfolio_option_entity import PortfolioOption
 from tdv.domain.entities.portfolio_share_entity import PortfolioShare
+from tdv.domain.entities.strike_entity import Strike
 
 from tdv.domain.session.session import Session
-from tdv.domain.types import PfolOptionEssentials, IDs
+from tdv.domain.types import IDs, TickerName, StrikeID, ExpiryID
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
@@ -20,10 +23,16 @@ if TYPE_CHECKING:
     from tdv.domain.internal.strike_service import StrikeService
 
 
+PfolOptionsByTickerName = Dict[TickerName, PortfolioOption]
+StrikeByID = Dict[StrikeID, Strike]
+ExpiryByID = Dict[ExpiryID, Expiry]
+PfolOptionEssentials = Tuple[PfolOptionsByTickerName, StrikeByID, ExpiryByID]
+
+
 class SessionManager:
     def __init__(
         self,
-        db: DB,
+        db: 'DB',
         cache_service: 'CacheService',
         account_service: 'AccountService',
         portfolio_service: 'PortfolioService',

@@ -1,16 +1,15 @@
-from datetime import datetime
-from typing import TYPE_CHECKING, Tuple, Iterable
+from typing import TYPE_CHECKING, Iterable
 
-from tdv.domain.entities.insert_time_entity import InsertTime
 from tdv.domain.entities.ticker_entity import Ticker
-from tdv.domain.internal.expiry_service import ExpiryService
 
-from tdv.domain.types import Options, Expiries
+
+from tdv.domain.types import Options
 
 from tdv.utils import pretty_print
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
+    from tdv.domain.internal.expiry_service import ExpiryService
     from tdv.domain.internal.insert_time_service import InsertTimeService
     from tdv.domain.internal.ticker_service import TickerService
 
@@ -18,10 +17,10 @@ if TYPE_CHECKING:
 class YahooFinanceService:
     def __init__(
         self,
-        db: DB,
-        ticker_service: TickerService,
-        insert_time_service: InsertTimeService,
-        expiry_service: ExpiryService,
+        db: 'DB',
+        ticker_service: 'TickerService',
+        insert_time_service: 'InsertTimeService',
+        expiry_service: 'ExpiryService',
     ) -> None:
         self.db = db
         self.ticker_service = ticker_service

@@ -4,10 +4,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Dict, Tuple, Any, List
 
-from tdv.domain.entities.company_entity import Companies
-from tdv.domain.entities.exchange_entity import Exchanges
-from tdv.domain.entities.ticker_entity import Tickers
-
 # Paths (all absolute)
 SOURCE_DIR_PATH = Path(__file__).resolve().parent
 ROOT_DIR_PATH = SOURCE_DIR_PATH.parent

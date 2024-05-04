@@ -14,7 +14,7 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class ExpiryService:
-    def __init__(self, db: DB, expiry_repo: ExpiryRepo) -> None:
+    def __init__(self, db: 'DB', expiry_repo: 'ExpiryRepo') -> None:
         self.db = db
         self.expiry_repo = expiry_repo
 

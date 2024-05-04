@@ -16,7 +16,7 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class InsertTimeService:
-    def __init__(self, db: DB, insert_time_repo: InsertTimeRepo) -> None:
+    def __init__(self, db: 'DB', insert_time_repo: 'InsertTimeRepo') -> None:
         self.db = db
         self.insert_time_repo = insert_time_repo
 

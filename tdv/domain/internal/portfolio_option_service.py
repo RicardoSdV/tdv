@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from psycopg import Connection
+from sqlalchemy import Connection
 
 from tdv.domain.entities.portfolio_option_entity import PortfolioOption
 
