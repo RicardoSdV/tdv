@@ -90,7 +90,7 @@ class Service(DeclarativeContainer):
 
     """ Composer Services """
     cache = Singleton(CacheService, db, company, exchange, ticker, call_hist, put_hist, contract_size)
-    yahoo_finance = Singleton(YahooFinanceService, db, ticker, insert_time, expiry)
+    yahoo_finance = Singleton(YahooFinanceService, db, ticker, insert_time, expiry, strike)
     session_manager = Singleton(SessionManager, account)
 
 

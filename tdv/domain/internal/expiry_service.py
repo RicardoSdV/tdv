@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import List, TYPE_CHECKING, Generator
-
 from sqlalchemy import Connection
 
 from tdv.domain.entities.expiry_entity import Expiry
@@ -43,4 +42,3 @@ class ExpiryService:
         expiries = [Expiry(date=date, ticker_id=ticker_id)]
         result = self.expiry_repo.select(conn, expiries)
         return result
-

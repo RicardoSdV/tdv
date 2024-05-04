@@ -1,17 +1,16 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING, Iterable, Sequence
 
 from tdv.domain.entities.ticker_entity import Ticker
-
 from tdv.domain.types import Options
 from tdv.logger_setup import LoggerFactory
-
 from tdv.utils import pretty_print
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
     from tdv.domain.internal.cache_service import CacheService
     from tdv.domain.internal.expiry_service import ExpiryService
+    from tdv.domain.internal.strike_service import StrikeService
     from tdv.domain.internal.insert_time_service import InsertTimeService
     from tdv.domain.internal.ticker_service import TickerService
 
@@ -26,17 +25,18 @@ class YahooFinanceService:
         ticker_service: 'TickerService',
         insert_time_service: 'InsertTimeService',
         expiry_service: 'ExpiryService',
+        strike_service: 'StrikeService',
     ) -> None:
         self.db = db
         self.__cache_service = cache_service
         self.__ticker_service = ticker_service
         self.__insert_time_service = insert_time_service
         self.__expiry_service = expiry_service
+        self.__strike_service = strike_service
 
     @staticmethod
     def __str_to_datetime(date_string: str) -> datetime:
         return datetime.strptime(date_string, '%Y-%m-%d')
-
 
     def save_options(self, options: Options, expiry_date_strs: Iterable[str], ticker: Ticker) -> None:
 
@@ -49,10 +49,15 @@ class YahooFinanceService:
 
                 expiry = self.__expiry_service.get_else_create_expiry(expiry_date, ticker.id, conn)
 
+                strike_prices: Sequence[float] = call['lastPrice'].values()
+                contract_size_names: Iterable[str] = call['contractSize'].values()
+                strikes = self.__strike_service.get_else_create_strikes(
+                    expiry.id, strike_prices, contract_size_names, conn
+                )
+
                 for call in calls:
 
                     for (
-                        strike,
                         last_trade_date,
                         last_price,
                         bid,
@@ -61,27 +66,16 @@ class YahooFinanceService:
                         volume,
                         open_interest,
                         implied_volatility,
-                        contract_size_name,
                     ) in zip(
                         call['lastTradeDate'].values(),
-                        call['lastPrice'].values(),
                         call['bid'].values(),
                         call['ask'].values(),
                         call['change'].values(),
                         call['volume'].values(),
                         call['openInterest'].values(),
                         call['impliedVolatility'].values(),
-                        call['contractSize'].values(),
                     ):
-
-                        contract_size = self.__cache_service.contract_sizes_by_name.get(contract_size_name)
-                        if contract_size is None:
-                            logger.error('Unsupported contract size', contract_size_name=contract_size_name)
-                            return
-
-                        # expiry = self.__expiry_service.
-
-                pretty_print(underlying)
+                        pretty_print(underlying)
 
                 share_price = underlying['regularMarketPrice']
 
