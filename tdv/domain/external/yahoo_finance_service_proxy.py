@@ -4,9 +4,10 @@ from typing import Callable
 from pandas import DataFrame
 from pandas_market_calendars import get_calendar
 from schedule import Scheduler
-from yfinance import Ticker
+import yfinance as yf
 
 from tdv.constants import MarketEvents
+from tdv.domain.internal.cache_service import CacheService
 from tdv.domain.internal.yahoo_finance_service import YahooFinanceService
 from tdv.domain.types import Expiries, OptionChainsYF, Options
 from tdv.logger_setup import LoggerFactory
@@ -16,24 +17,25 @@ logger = LoggerFactory.make_logger(__name__)
 
 class YahooFinanceServiceProxy:
     __update_options_interval = 10
-    __exchange_tickers = {'NYSE': ('TSLA',)}
     force_requests = True
 
-    def __init__(self, yahoo_finance_service: 'YahooFinanceService') -> None:
+    def __init__(self, yahoo_finance_service: 'YahooFinanceService', cache_service: CacheService) -> None:
+        self.cache_service = cache_service
+
         self.yahoo_finance_service = yahoo_finance_service
 
-        self.__schedulers = {name: Scheduler() for name in self.__exchange_tickers.keys()}
-        self.__calendars = {name: get_calendar(name) for name in self.__exchange_tickers.keys()}
+        self.__schedulers_by_exchange_name = {exchange.name: Scheduler() for exchange in self.cache_service.exchanges_by_id.values()}
+        self.__calendars_by_exchange_name = {exchange.name: get_calendar(exchange.name) for exchange in self.cache_service.exchanges_by_id.values()}
 
         self.__init_scheduling()
 
     def run_pending(self) -> None:
-        for scheduler in self.__schedulers.values():
+        for scheduler in self.__schedulers_by_exchange_name.values():
             scheduler.run_pending()
 
     def __init_scheduling(self) -> None:
         logger.debug('Initializing scheduling')
-        for exchange, scheduler in self.__schedulers.items():
+        for exchange, scheduler in self.__schedulers_by_exchange_name.items():
 
             if self.force_requests:
                 logger.debug('Force scheduling indefinitely', exchange=exchange)
@@ -78,12 +80,12 @@ class YahooFinanceServiceProxy:
     def __on_market_close(self, _: Scheduler, next_open: datetime, exchange: str) -> None:
         logger.debug('Market close event', exchange=exchange, next_open=next_open)
         new_scheduler = Scheduler()
-        self.__schedulers[exchange] = new_scheduler
+        self.__schedulers_by_exchange_name[exchange] = new_scheduler
         self.__schedule_market_events(new_scheduler, next_open, self.__on_market_open, exchange)
 
     def __get_next_market_time(self, exchange: str, market_event: MarketEvents) -> datetime:
         now = datetime.utcnow()
-        calendar = self.__calendars[exchange]
+        calendar = self.__calendars_by_exchange_name[exchange]
         schedule = calendar.schedule(start_date=now, end_date=now + timedelta(days=10))
         next_time = getattr(schedule, market_event.value)[0].to_pydatetime()
         logger.debug(
@@ -97,25 +99,35 @@ class YahooFinanceServiceProxy:
     def __update_options(self, exchange: str) -> None:
         logger.debug('Updating options', exchange=exchange)
 
-        for ticker_name in self.__exchange_tickers[exchange]:
-            expiries: Expiries = self.__request_expirations(ticker_name)
+        exchange_id = None
+        for exchange in self.cache_service.exchanges_by_id.values():
+            if exchange.name == exchange:
+                exchange_id = exchange.id
 
-            tesla_ticker = Ticker(ticker_name)
-            tesla_option_chains: OptionChainsYF = self.__request_options(tesla_ticker, expiries)
+        if exchange_id is not None:
+            for ticker in self.cache_service.tickers_by_id.values():
+                if ticker.exchange_id == exchange_id:
 
-            serialized_option_chains = self.serialize_yf_option_chains(tesla_option_chains)
+                    expiries: Expiries = self.__request_expirations(ticker.name)
 
-            self.yahoo_finance_service.save_option(serialized_option_chains, expiries, ticker_name)
+                    tesla_ticker = yf.Ticker(ticker.name)
+                    tesla_option_chains: OptionChainsYF = self.__request_options(tesla_ticker, expiries)
+
+                    serialized_option_chains = self.serialize_yf_option_chains(tesla_option_chains)
+
+                    self.yahoo_finance_service.save_options(serialized_option_chains, expiries, ticker)
+
+                    return
 
     @staticmethod
-    def __request_options(ticker: Ticker, expirations: Expiries) -> OptionChainsYF:
+    def __request_options(ticker: yf.Ticker, expirations: Expiries) -> OptionChainsYF:
         logger.debug('Requesting options', ticker=ticker)
         return [ticker.option_chain(exp) for exp in expirations]
 
     @staticmethod
     def __request_expirations(ticker_name: str) -> Expiries:
         logger.debug('Expirations requested', ticker_name=ticker_name)
-        expirations = Ticker(ticker_name).options
+        expirations = yf.Ticker(ticker_name).options
         return expirations
 
     @staticmethod
