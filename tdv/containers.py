@@ -61,7 +61,7 @@ class Repo(DeclarativeContainer):
 
 
 class Service(DeclarativeContainer):
-    """ All services live here Services """
+    """All services live here Services"""
 
     """ Base Services """
     # Base Cluster

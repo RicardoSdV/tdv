@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 logger = LoggerFactory.make_logger(__name__)
 
+
 class InsertTimeService:
     def __init__(self, db: DB, insert_time_repo: InsertTimeRepo) -> None:
         self.db = db
@@ -25,4 +26,3 @@ class InsertTimeService:
         insert_times = self.insert_time_repo.insert(conn, [insert_time])
         assert len(insert_times) == 1
         return insert_times[0]
-

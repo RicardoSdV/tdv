@@ -24,8 +24,12 @@ class YahooFinanceServiceProxy:
 
         self.yahoo_finance_service = yahoo_finance_service
 
-        self.__schedulers_by_exchange_name = {exchange.name: Scheduler() for exchange in self.cache_service.exchanges_by_id.values()}
-        self.__calendars_by_exchange_name = {exchange.name: get_calendar(exchange.name) for exchange in self.cache_service.exchanges_by_id.values()}
+        self.__schedulers_by_exchange_name = {
+            exchange.name: Scheduler() for exchange in self.cache_service.exchanges_by_id.values()
+        }
+        self.__calendars_by_exchange_name = {
+            exchange.name: get_calendar(exchange.name) for exchange in self.cache_service.exchanges_by_id.values()
+        }
 
         self.__init_scheduling()
 

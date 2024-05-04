@@ -7,9 +7,6 @@ def str_timestamp_of_now() -> str:
     return datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 
 
-
-
-
 def turn_to_str(_any: str) -> str:
     return str(_any)
 

@@ -24,26 +24,35 @@ class ExpiryService:
         result = self.expiry_repo.select(conn, expiries)
         return result
 
-    def get_expiries_with_date(self, expiry_dates: Iterable[str], conn: Connection) -> List[Expiry]:
-        logger.debug('Getting expiries', expiry_dates=expiry_dates)
-        expiries = [Expiry(expiry_date=self.__str_to_datetime(date)) for date in expiry_dates]
-        result = self.expiry_repo.select(conn, expiries)
+    def get_else_create_many_expiries(
+        self, expiry_date_strs: Iterable[str], ticker_id: int, contract_size_id: int, conn: Connection
+    ) -> List[Expiry]:
+        expiry_dates = [self.__str_to_datetime(date) for date in expiry_date_strs]
+
+        selected_expiries = self.__get_expiries_with_date(expiry_dates, conn)
+        selected_dates = [expiry.date for expiry in selected_expiries]
+
+        missing_dates = list(set(expiry_dates) - set(selected_dates))
+        created_expiries = self.__create_many_expiries(missing_dates, ticker_id, contract_size_id, conn)
+
+        logger.debug(
+            'get_else_create_many_expiries', selected_expiries=selected_expiries, created_expiries=created_expiries
+        )
+
+        return selected_expiries + created_expiries
+
+    def __create_many_expiries(
+        self, expiry_dates: Iterable[datetime], ticker_id: int, contract_size_id: int, conn: Connection
+    ) -> List[Expiry]:
+        logger.debug('Creating expiries', expiry_dates=expiry_dates)
+        expiries = [Expiry(ticker_id=ticker_id, contract_size_id=contract_size_id, date=date) for date in expiry_dates]
+        result = self.expiry_repo.insert(conn, expiries)
         return result
 
-    def get_else_create_many_expiries(self, expiry_dates: Iterable[str], ticker_id: int, conn: Connection) -> List[Expiry]:
-        """
-        Case 1 - Expiries dont exist in DB, they are inserted
-        Case 2 - Expiries exist in DB, they are selected
-        Case 3 - Some expiries exist in DB, some dont, those that exist are created those that dont are inserted
-        """
-
-        expiries = self.
-
-
-    def __create_many_expiries(self, expiry_dates: Iterable[str], ticker_id: int, conn: Connection) -> List[Expiry]:
-        logger.debug('Creating expiries', expiry_dates=expiry_dates)
-        expiries = [Expiry(ticker_id=ticker_id, expiry_date=self.__str_to_datetime(date)) for date in expiry_dates]
-        result = self.expiry_repo.insert(conn, expiries)
+    def __get_expiries_with_date(self, expiry_dates: Iterable[datetime], conn: Connection) -> List[Expiry]:
+        logger.debug('Getting expiries', expiry_dates=expiry_dates)
+        expiries = [Expiry(date=date) for date in expiry_dates]
+        result = self.expiry_repo.select(conn, expiries)
         return result
 
     @staticmethod

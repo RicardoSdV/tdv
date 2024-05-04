@@ -1,11 +1,8 @@
 from datetime import datetime
 from typing import Optional
 
-from tdv.domain.entities.base_entity import Entity, EntityEnum
-
-
-class Tickers(EntityEnum):
-    TSLA = 'TSLA'
+from tdv.constants import Tickers
+from tdv.domain.entities.base_entity import Entity
 
 
 class Ticker(Entity):

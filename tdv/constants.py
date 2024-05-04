@@ -2,10 +2,10 @@ import os
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Any, List
 
 from tdv.domain.entities.company_entity import Companies
-from tdv.domain.entities.exchange_entity import ExchangeAbrvs, Exchanges
+from tdv.domain.entities.exchange_entity import Exchanges
 from tdv.domain.entities.ticker_entity import Tickers
 
 # Paths (all absolute)
@@ -29,6 +29,14 @@ CLI_ROOT_FUNC_NAME = 'cli_root'
 MAIN_LOOP_SLEEP_TIME = 1
 
 
+@dataclass
+class LocalAccountInfo:
+    username = 'local_user'
+    email = 'local@local.local'
+    password = 'password'
+    session_id = 'local_session_id'
+
+
 class DbInfo(Enum):
     USER = os.environ.get('USER')
     NAME = 'tdvdb'
@@ -48,17 +56,52 @@ class MarketEvents(Enum):
     CLOSE = 'market_close'
 
 
+class EntityEnum(Enum):
+    """Simplify enum handling by inheriting from this class"""
+
+    @classmethod
+    def validate_value(cls, value: Any) -> Any:
+        assert value in cls._value2member_map_
+        return value
+
+    @classmethod
+    def to_list(cls) -> List[Any]:
+        return [member.value for member in cls]
+
+
+@dataclass
+class Companies:
+    class ShortNames(EntityEnum):
+        TESLA = 'Tesla'
+
+    class LongNames(EntityEnum):
+        TESLA = 'Tesla Inc.'
+
+
+class ContractSizes(EntityEnum):
+    REGULAR = 100
+
+
+@dataclass
+class Exchanges:
+    class ShortNames(EntityEnum):
+        NEW_YORK = 'NYSE'
+
+    class LongNames(EntityEnum):
+        NEW_YORK = 'New York Stock Exchange'
+
+
+class Currencies(EntityEnum):
+    US_DOLLAR = 'USD'
+
+
+class Tickers(EntityEnum):
+    TSLA = 'TSLA'
+
+
 # Defines the relationship between exchanges, tickers & companies for fast insertion
 TICKERS_BY_COMPANY_EXCHANGE: Dict[Exchanges.ShortNames, Dict[Companies.LongNames, Tuple[Tickers, ...]]] = {
     Exchanges.ShortNames.NEW_YORK: {
         Companies.LongNames.TESLA: (Tickers.TSLA,),
     }
 }
-
-
-@dataclass
-class LocalAccountInfo:
-    username = 'local_user'
-    email = 'local@local.local'
-    password = 'password'
-    session_id = 'local_session_id'

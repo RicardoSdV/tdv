@@ -1,21 +1,8 @@
-from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from tdv.domain.entities.base_entity import Entity, EntityEnum
-
-
-@dataclass
-class Exchanges:
-    class ShortNames(EntityEnum):
-        NEW_YORK = 'NYSE'
-
-    class LongNames(EntityEnum):
-        NEW_YORK = 'New York Stock Exchange'
-
-
-class Currencies(EntityEnum):
-    US_DOLLAR = 'USD'
+from tdv.constants import Exchanges, Currencies
+from tdv.domain.entities.base_entity import Entity
 
 
 class Exchange(Entity):

@@ -18,10 +18,7 @@ class ContractSizeService:
         self.contract_size_repo = contract_size_repo
 
     def create_all_contract_sizes(self, conn: Connection) -> List[ContractSize]:
-        contract_sizes = [
-            ContractSize(size=size.value, name=name)
-            for name, size in ContractSizes.__members__.items()
-        ]
+        contract_sizes = [ContractSize(size=size.value, name=name) for name, size in ContractSizes.__members__.items()]
         logger.debug('Creating all ContractSizes', contract_sizes=contract_sizes)
         result = self.contract_size_repo.insert(conn, contract_sizes)
         return result
@@ -31,4 +28,3 @@ class ContractSizeService:
         logger.debug('Getting all ContractSizes', contract_sizes=contract_sizes)
         result = self.contract_size_repo.select(conn, contract_sizes)
         return result
-

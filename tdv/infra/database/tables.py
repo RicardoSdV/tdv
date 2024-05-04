@@ -110,7 +110,7 @@ expiry_table = Table(
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('contract_size_id', Integer, ForeignKey(contract_size_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('expiry_date', DateTime, nullable=False),
+    Column('expiry', DateTime, nullable=False),
 )
 
 strike_table = Table(

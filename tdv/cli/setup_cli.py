@@ -51,5 +51,11 @@ def many() -> None:
         conn.commit()
 
     logger.info(
-        'Created:', exchanges=exchanges, companies=companies, tickers=tickers, accounts=accounts, portfolios=portfolios, contract_sizes=contract_sizes
+        'Created:',
+        exchanges=exchanges,
+        companies=companies,
+        tickers=tickers,
+        accounts=accounts,
+        portfolios=portfolios,
+        contract_sizes=contract_sizes,
     )

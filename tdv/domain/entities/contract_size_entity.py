@@ -1,10 +1,6 @@
 from typing import Optional
 
-from tdv.domain.entities.base_entity import Entity, EntityEnum
-
-
-class ContractSizes(EntityEnum):
-    REGULAR = 100
+from tdv.domain.entities.base_entity import Entity
 
 
 class ContractSize(Entity):

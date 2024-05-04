@@ -1,16 +1,7 @@
-from dataclasses import dataclass
 from typing import Optional
 
-from tdv.domain.entities.base_entity import Entity, EntityEnum
-
-
-@dataclass
-class Companies:
-    class ShortNames(EntityEnum):
-        TESLA = 'Tesla'
-
-    class LongNames(EntityEnum):
-        TESLA = 'Tesla Inc.'
+from tdv.constants import Companies
+from tdv.domain.entities.base_entity import Entity
 
 
 class Company(Entity):

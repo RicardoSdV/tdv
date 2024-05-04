@@ -20,17 +20,17 @@ if TYPE_CHECKING:
 
 
 class CacheService:
-    """ For caching entities & more that are used in many places """
+    """For caching entities & more that are used in many places"""
 
     def __init__(
-            self,
-            db: DB,
-            company_service: 'CompanyService',
-            exchange_service: 'ExchangeService',
-            ticker_service: 'TickerService',
-            call_hist_service: 'CallHistService',
-            put_hist_service: 'PutHistService',
-            contract_size_service: 'ContractSizeService',
+        self,
+        db: DB,
+        company_service: 'CompanyService',
+        exchange_service: 'ExchangeService',
+        ticker_service: 'TickerService',
+        call_hist_service: 'CallHistService',
+        put_hist_service: 'PutHistService',
+        contract_size_service: 'ContractSizeService',
     ) -> None:
         self.db = db
 
@@ -46,7 +46,7 @@ class CacheService:
         self.__exchanges_by_id: Optional[Dict[int, Exchange]] = None
         self.__tickers_by_id: Optional[Dict[int, Ticker]] = None
         self.__companies_by_id: Optional[Dict[int, Company]] = None
-        self.__contract_sizes_by_id: Optional[Dict[int, ContractSize]] = None
+        self.__contract_sizes_by_size: Optional[Dict[int, ContractSize]] = None
 
         self.last_insert_time_by_ticker_id: Dict[int, InsertTime] = {}
         self.last_share_hists_by_ticker_id: Dict[int, ShareHist] = {}
@@ -78,9 +78,9 @@ class CacheService:
         return self.__companies_by_id
 
     @property
-    def contract_sizes_by_id(self) -> Dict[int, ContractSize]:
-        if self.__contract_sizes_by_id is None:
+    def contract_sizes_by_name(self) -> Dict[int, ContractSize]:
+        if self.__contract_sizes_by_size is None:
             with self.db.connect as conn:
                 contract_sizes = self.contract_size_service.get_all_contract_sizes(conn)
-                self.__contract_sizes_by_id = {contract_size.id: contract_size for contract_size in contract_sizes}
+                self.__contract_sizes_by_id = {contract_size.size: contract_size for contract_size in contract_sizes}
         return self.__contract_sizes_by_id

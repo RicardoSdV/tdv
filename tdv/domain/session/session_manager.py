@@ -22,15 +22,15 @@ if TYPE_CHECKING:
 
 class SessionManager:
     def __init__(
-            self,
-            db: DB,
-            cache_service: 'CacheService',
-            account_service: 'AccountService',
-            portfolio_service: 'PortfolioService',
-            pfol_share_service: 'PortfolioShareService',
-            pfol_option_service: 'PortfolioOptionService',
-            strike_service: 'StrikeService',
-            expiry_service: 'ExpiryService',
+        self,
+        db: DB,
+        cache_service: 'CacheService',
+        account_service: 'AccountService',
+        portfolio_service: 'PortfolioService',
+        pfol_share_service: 'PortfolioShareService',
+        pfol_option_service: 'PortfolioOptionService',
+        strike_service: 'StrikeService',
+        expiry_service: 'ExpiryService',
     ) -> None:
 
         self.db = db

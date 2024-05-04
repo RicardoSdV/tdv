@@ -1,20 +1,6 @@
-from enum import Enum
 from typing import Any, List, Dict, Tuple, TypeVar, Protocol
 
 from tdv.domain.types import Insertable, KwArgs, Args
-
-
-class EntityEnum(Enum):
-    """Simplify enum handling by inheriting from this class"""
-
-    @classmethod
-    def validate_value(cls, value: Any) -> Any:
-        assert value in cls._value2member_map_
-        return value
-
-    @classmethod
-    def to_list(cls) -> List[Any]:
-        return [member.value for member in cls]
 
 
 T = TypeVar('T', bound='EntityProtocol')
