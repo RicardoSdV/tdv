@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import TYPE_CHECKING, Iterable
 
 from tdv.domain.entities.ticker_entity import Ticker
@@ -32,12 +33,21 @@ class YahooFinanceService:
         self.__insert_time_service = insert_time_service
         self.__expiry_service = expiry_service
 
-    def save_options(self, options: Options, expiries: Iterable[str], ticker: Ticker) -> None:
+    @staticmethod
+    def __str_to_datetime(date_string: str) -> datetime:
+        return datetime.strptime(date_string, '%Y-%m-%d')
+
+
+    def save_options(self, options: Options, expiry_date_strs: Iterable[str], ticker: Ticker) -> None:
+
+        expiry_dates = [self.__str_to_datetime(date_str) for date_str in expiry_date_strs]
 
         with self.db.connect as conn:
 
-            for expiry, option in zip(expiries, options):
+            for expiry_date, option in zip(expiry_dates, options):
                 calls, puts, underlying = option
+
+                expiry = self.__expiry_service.get_else_create_expiry(expiry_date, ticker.id, conn)
 
                 for call in calls:
 
