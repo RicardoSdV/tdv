@@ -109,7 +109,6 @@ expiry_table = Table(
     'expiry', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('contract_size_id', Integer, ForeignKey(contract_size_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('expiry', DateTime, nullable=False),
 )
 
@@ -117,6 +116,7 @@ strike_table = Table(
     'strike', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('expiry_id', BigInteger, ForeignKey(expiry_table.c.id, ondelete='RESTRICT'), nullable=False),
+    Column('contract_size_id', Integer, ForeignKey(contract_size_table.c.id, ondelete='RESTRICT'), nullable=False),
     Column('strike_price', Numeric(precision=10, scale=2), nullable=False),
 )
 

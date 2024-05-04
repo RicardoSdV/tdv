@@ -24,7 +24,7 @@ class ExpiryService:
         result = self.expiry_repo.select(conn, expiries)
         return result
 
-    def get_else_create_many_expiries(
+    def get_else_create_expiries(
         self, expiry_date_strs: Iterable[str], ticker_id: int, contract_size_id: int, conn: Connection
     ) -> List[Expiry]:
         expiry_dates = [self.__str_to_datetime(date) for date in expiry_date_strs]

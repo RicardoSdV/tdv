@@ -32,7 +32,7 @@ class CacheService:
         put_hist_service: 'PutHistService',
         contract_size_service: 'ContractSizeService',
     ) -> None:
-        self.db = db
+        self.__db = db
 
         # Services
         self.__company_service = company_service
@@ -46,7 +46,7 @@ class CacheService:
         self.__exchanges_by_id: Optional[Dict[int, Exchange]] = None
         self.__tickers_by_id: Optional[Dict[int, Ticker]] = None
         self.__companies_by_id: Optional[Dict[int, Company]] = None
-        self.__contract_sizes_by_size: Optional[Dict[int, ContractSize]] = None
+        self.__contract_sizes_by_name: Optional[Dict[str, ContractSize]] = None
 
         self.last_insert_time_by_ticker_id: Dict[int, InsertTime] = {}
         self.last_share_hists_by_ticker_id: Dict[int, ShareHist] = {}
@@ -56,7 +56,7 @@ class CacheService:
     @property
     def exchanges_by_id(self) -> Dict[int, Exchange]:
         if self.__exchanges_by_id is None:
-            with self.db.connect as conn:
+            with self.__db.connect as conn:
                 exchanges = self.__exchange_service.get_all_exchanges(conn)
                 self.__exchanges_by_id = {exchange.id: exchange for exchange in exchanges}
         return self.__exchanges_by_id
@@ -64,7 +64,7 @@ class CacheService:
     @property
     def tickers_by_id(self) -> Dict[int, Ticker]:
         if self.__tickers_by_id is None:
-            with self.db.connect as conn:
+            with self.__db.connect as conn:
                 tickers = self.__ticker_service.get_all_tickers(conn)
                 self.__tickers_by_id = {ticker.id: ticker for ticker in tickers}
         return self.__tickers_by_id
@@ -72,15 +72,15 @@ class CacheService:
     @property
     def companies_by_id(self) -> Dict[int, Company]:
         if self.__companies_by_id is None:
-            with self.db.connect as conn:
+            with self.__db.connect as conn:
                 companies = self.__company_service.get_all_companies(conn)
                 self.__companies_by_id = {exchange.id: exchange for exchange in companies}
         return self.__companies_by_id
 
     @property
-    def contract_sizes_by_name(self) -> Dict[int, ContractSize]:
-        if self.__contract_sizes_by_size is None:
-            with self.db.connect as conn:
+    def contract_sizes_by_name(self) -> Dict[str, ContractSize]:
+        if self.__contract_sizes_by_name is None:
+            with self.__db.connect as conn:
                 contract_sizes = self.__contract_size_service.get_all_contract_sizes(conn)
-                self.__contract_sizes_by_id = {contract_size.size: contract_size for contract_size in contract_sizes}
-        return self.__contract_sizes_by_id
+                self.__contract_sizes_by_name = {contract_size.size: contract_size for contract_size in contract_sizes}
+        return self.__contract_sizes_by_name
