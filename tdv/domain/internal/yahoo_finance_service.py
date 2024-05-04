@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Iterable
 
-from tdv.constants import ContractSizes
 from tdv.domain.entities.ticker_entity import Ticker
 
 from tdv.domain.types import Options
@@ -16,6 +15,7 @@ if TYPE_CHECKING:
     from tdv.domain.internal.ticker_service import TickerService
 
 logger = LoggerFactory.make_logger(__name__)
+
 
 class YahooFinanceService:
     def __init__(
@@ -41,7 +41,18 @@ class YahooFinanceService:
 
                 for call in calls:
 
-                    for (strike, last_trade_date, last_price, bid, ask, change, volume, open_interest, implied_volatility, contract_size_name,) in zip(
+                    for (
+                        strike,
+                        last_trade_date,
+                        last_price,
+                        bid,
+                        ask,
+                        change,
+                        volume,
+                        open_interest,
+                        implied_volatility,
+                        contract_size_name,
+                    ) in zip(
                         call['lastTradeDate'].values(),
                         call['lastPrice'].values(),
                         call['bid'].values(),
@@ -59,8 +70,6 @@ class YahooFinanceService:
                             return
 
                         # expiry = self.__expiry_service.
-
-
 
                 pretty_print(underlying)
 

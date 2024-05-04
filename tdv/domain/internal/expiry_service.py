@@ -25,7 +25,7 @@ class ExpiryService:
         return result
 
     def get_else_create_expiries(
-        self, expiry_date_strs: Iterable[str], ticker_id: int, contract_size_id: int, conn: Connection
+        self, expiry_date_strs: Iterable[str], ticker_id: int, conn: Connection
     ) -> List[Expiry]:
         expiry_dates = [self.__str_to_datetime(date) for date in expiry_date_strs]
 
@@ -33,7 +33,7 @@ class ExpiryService:
         selected_dates = [expiry.date for expiry in selected_expiries]
 
         missing_dates = list(set(expiry_dates) - set(selected_dates))
-        created_expiries = self.__create_many_expiries(missing_dates, ticker_id, contract_size_id, conn)
+        created_expiries = self.__create_many_expiries(missing_dates, ticker_id, conn)
 
         logger.debug(
             'get_else_create_many_expiries', selected_expiries=selected_expiries, created_expiries=created_expiries
@@ -42,10 +42,10 @@ class ExpiryService:
         return selected_expiries + created_expiries
 
     def __create_many_expiries(
-        self, expiry_dates: Iterable[datetime], ticker_id: int, contract_size_id: int, conn: Connection
+        self, expiry_dates: Iterable[datetime], ticker_id: int, conn: Connection
     ) -> List[Expiry]:
         logger.debug('Creating expiries', expiry_dates=expiry_dates)
-        expiries = [Expiry(ticker_id=ticker_id, contract_size_id=contract_size_id, date=date) for date in expiry_dates]
+        expiries = [Expiry(ticker_id=ticker_id, date=date) for date in expiry_dates]
         result = self.expiry_repo.insert(conn, expiries)
         return result
 
