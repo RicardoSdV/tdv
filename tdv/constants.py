@@ -57,9 +57,8 @@ class EntityEnum(Enum):
     """Simplify enum handling by inheriting from this class"""
 
     @classmethod
-    def validate_value(cls, value: Any) -> Any:
+    def validate_value(cls, value: Any) -> None:
         assert value in cls._value2member_map_
-        return value
 
     @classmethod
     def to_list(cls) -> List[Any]:

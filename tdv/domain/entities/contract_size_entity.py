@@ -1,15 +1,12 @@
+from dataclasses import dataclass
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity
 
 
+@dataclass(slots=True)
 class ContractSize(Entity):
-    __slots__ = ('id', 'size', 'name')
-
-    def __init__(
-        self, contract_size_id: Optional[int] = None, size: Optional[int] = None, name: Optional[str] = None
-    ) -> None:
-        # TODO: Validate sizes and names
-        self.id = contract_size_id
-        self.size = size
-        self.name = name
+    # TODO: Validate sizes and names
+    id: Optional[int] = None
+    size: Optional[int] = None
+    name: Optional[str] = None

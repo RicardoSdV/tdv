@@ -1,19 +1,13 @@
+from dataclasses import dataclass
 from typing import Optional
 
 from tdv.domain.entities.base_entity import Entity
 
 
+@dataclass(slots=True)
 class Strike(Entity):
-    __slots__ = ('id', 'expiry_id', 'contract_size_id', 'strike_price')
+    id: Optional[int] = None
+    expiry_id: Optional[int] = None
+    contract_size_id: Optional[int] = None
+    strike_price: Optional[float] = None
 
-    def __init__(
-        self,
-        strike_id: Optional[int] = None,
-        expiry_id: Optional[int] = None,
-        contract_size_id: Optional[int] = None,
-        strike_price: Optional[float] = None,
-    ) -> None:
-        self.id = strike_id
-        self.expiry_id = expiry_id
-        self.contract_size_id = contract_size_id
-        self.strike_price = strike_price
