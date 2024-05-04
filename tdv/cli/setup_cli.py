@@ -18,17 +18,32 @@ def many() -> None:
     from tdv.containers import Service
     from tdv.infra.database import db
 
-    account_id = 1
-    ticker_id = 1
-
     with db.connect as conn:
         exchanges = Service.exchange().create_all_exchanges(conn)
         companies = Service.company().create_all_companies(conn)
         tickers = Service.ticker().create_all_tickers(exchanges, companies, conn)
-        contract_sizes = Service.contract_size.create_all_contract_sizes(conn)
-
+        contract_sizes = Service.contract_size().create_all_contract_sizes(conn)
         accounts = Service.account().create_local_account(conn)
 
+    logger.info(
+        'Created:',
+        exchanges=exchanges,
+        companies=companies,
+        tickers=tickers,
+        accounts=accounts,
+        contract_sizes=contract_sizes,
+    )
+
+
+def portfolios():
+
+    from tdv.containers import Service
+    from tdv.infra.database import db
+
+    account_id = 1
+    ticker_id = 1
+
+    with db.connect as conn:
         # portfolio
         names = []
         cashes = []
@@ -49,13 +64,3 @@ def many() -> None:
         Service.portfolio_option().create_many_portfolio_options(portfolio_ids, options, conn)
 
         conn.commit()
-
-    logger.info(
-        'Created:',
-        exchanges=exchanges,
-        companies=companies,
-        tickers=tickers,
-        accounts=accounts,
-        portfolios=portfolios,
-        contract_sizes=contract_sizes,
-    )

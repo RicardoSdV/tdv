@@ -29,12 +29,11 @@ class TickerService:
         self.company_service = company_service
 
     def create_all_tickers(self, exchanges: List[Exchange], companies: List[Company], conn: Connection) -> List[Ticker]:
-
         tickers = []
         for exchange_name, company_ticker_names in TICKERS_BY_COMPANY_EXCHANGE.items():
             exchange_id = None
             for exchange in exchanges:
-                if exchange.long_name == exchange_name.value:
+                if exchange.name == exchange_name.value:
                     exchange_id = exchange.id
                     break
             if exchange_id is None:

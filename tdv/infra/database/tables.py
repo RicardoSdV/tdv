@@ -38,8 +38,8 @@ metadata = MetaData()
 exchange_table = Table(
     'exchange', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('name', String(150), nullable=False, unique=True),
-    Column('abrv_name', String(20), nullable=False, unique=True),
+    Column('name', String(20), nullable=False, unique=True),
+    Column('long_name', String(150), nullable=False, unique=True),
     Column('currency', String(20), server_default=Currencies.US_DOLLAR.value, nullable=False),
     Column('live', Boolean, server_default='false', nullable=False),
     Column('hist', Boolean, server_default='false', nullable=False),
