@@ -8,7 +8,7 @@ from tdv.domain.entities.base_entity import Entity
 @dataclass(slots=True)
 class Account(Entity):
     id: Optional[int] = None
-    username: Optional[str] = None
+    name: Optional[str] = None
     email: Optional[str] = None
     password: Optional[str] = None
     created_at: Optional[datetime] = None

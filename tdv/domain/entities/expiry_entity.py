@@ -10,4 +10,3 @@ class Expiry(Entity):
     id: Optional[int] = None
     ticker_id: Optional[int] = None
     date: Optional[datetime] = None
-

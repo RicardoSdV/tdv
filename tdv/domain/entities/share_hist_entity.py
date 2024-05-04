@@ -10,4 +10,3 @@ class ShareHist(Entity):
     ticker_id: Optional[int] = None
     insert_time_id: Optional[int] = None
     price: Optional[float] = None
-

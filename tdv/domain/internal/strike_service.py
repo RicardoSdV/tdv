@@ -19,6 +19,6 @@ class StrikeService:
 
     def get_strikes(self, strike_ids: Iterator[int], conn: Connection) -> List[Strike]:
         logger.debug('Getting strikes', strike_ids=strike_ids)
-        strikes = [Strike(strike_id=_id) for _id in strike_ids]
+        strikes = [Strike(id=_id) for _id in strike_ids]
         result = self.strike_repo.select(conn, strikes)
         return result

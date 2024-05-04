@@ -18,4 +18,3 @@ class PutHist(Entity):
     volume: Optional[int] = None
     open_interest: Optional[int] = None
     implied_volatility: Optional[float] = None
-

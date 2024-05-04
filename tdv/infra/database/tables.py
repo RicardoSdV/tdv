@@ -50,7 +50,7 @@ exchange_table = Table(
 account_table = Table(
     'account', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('username', String(200), nullable=False, unique=True),
+    Column('name', String(200), nullable=False, unique=True),
     Column('email', String(200), nullable=False, unique=True),
     Column('password', String(200), nullable=False),
     Column('created_at', DateTime, server_default=func.now(), nullable=False),

@@ -10,4 +10,3 @@ class Strike(Entity):
     expiry_id: Optional[int] = None
     contract_size_id: Optional[int] = None
     strike_price: Optional[float] = None
-

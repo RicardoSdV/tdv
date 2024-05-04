@@ -20,7 +20,7 @@ class AccountService:
 
     def create_account(self, username: str, email: str, password: str) -> List[Account]:
         logger.debug('Creating account', username=username, email=email, password=password)
-        users = [Account(username=username, email=email, password=password)]
+        users = [Account(name=username, email=email, password=password)]
 
         with self.db.connect as conn:
             users = self.account_repo.insert(conn, users)
@@ -30,9 +30,7 @@ class AccountService:
 
     def create_local_account(self, conn: Connection) -> List[Account]:
         accounts = [
-            Account(
-                username=LocalAccountInfo.username, email=LocalAccountInfo.email, password=LocalAccountInfo.password
-            )
+            Account(name=LocalAccountInfo.username, email=LocalAccountInfo.email, password=LocalAccountInfo.password)
         ]
         logger.debug('Creating local account', account=accounts)
         result = self.account_repo.insert(conn, accounts)
@@ -40,7 +38,7 @@ class AccountService:
 
     def delete_account_by_id(self, user_id: int) -> List[Account]:
         logger.debug('Deleting user by ID', user_id=user_id)
-        users = [Account(user_id=user_id)]
+        users = [Account(id=user_id)]
 
         with self.db.connect as conn:
             users = self.account_repo.delete(conn, users)
@@ -60,9 +58,9 @@ class AccountService:
 
     def get_or_raise_account_with_name(self, name: str, conn: Connection) -> Account:
         logger.debug('Getting Account', name=name)
-        result = self.account_repo.select(conn, [Account(name=name)])
+        accounts = self.account_repo.select(conn, [Account(name=name)])
         assert len(accounts) == 1
-        return result[0]
+        return accounts[0]
 
     def update_username(self, username: str, email: str, password: str) -> List[Account]:
         logger.debug('Updating username', new_username=username, email=email, password=password)

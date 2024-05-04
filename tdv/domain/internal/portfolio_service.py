@@ -1,6 +1,5 @@
-from typing import List, TYPE_CHECKING, Dict
+from typing import List, TYPE_CHECKING
 
-from sqlalchemy import Connection
 
 from sqlalchemy import Connection
 

@@ -14,4 +14,3 @@ class PortfolioOption(Entity):
     count: Optional[float] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-

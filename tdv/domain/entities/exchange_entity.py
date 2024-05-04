@@ -25,4 +25,3 @@ class Exchange(Entity):
             Exchanges.LongNames.validate_value(self.long_name)
         if self.currency is not None:
             Currencies.validate_value(self.currency)
-

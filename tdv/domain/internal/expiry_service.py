@@ -20,7 +20,7 @@ class ExpiryService:
 
     def get_expiries_with_id(self, expiry_ids: Iterator[int], conn: Connection) -> List[Expiry]:
         logger.debug('Getting expiries', expiry_ids=expiry_ids)
-        expiries = [Expiry(expiry_id=_id) for _id in expiry_ids]
+        expiries = [Expiry(id=_id) for _id in expiry_ids]
         result = self.expiry_repo.select(conn, expiries)
         return result
 

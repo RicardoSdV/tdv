@@ -77,9 +77,3 @@ class TickerService:
             result = self.ticker_repo.select(conn, tickers)
 
         return result
-
-    def get_ticker_id_by_name(self, ticker_name: str) -> Optional[int]:
-        for ticker in self.tickers:
-            if ticker.long_name == ticker_name:
-                return ticker.id
-        return None

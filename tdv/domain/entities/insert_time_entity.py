@@ -9,4 +9,3 @@ from tdv.domain.entities.base_entity import Entity
 class InsertTime(Entity):
     id: Optional[int] = None
     time: Optional[datetime] = None
-
