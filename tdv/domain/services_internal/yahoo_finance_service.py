@@ -59,16 +59,19 @@ class YahooFinanceService:
 
                 expiry = self.__expiry_service.get_else_create_expiry(expiry_date, ticker.id, conn)
 
-                for call in calls:
-                    strike_prices: List[float] = list(call['lastPrice'].values())
-                    contract_sizes = self.__get_contract_sizes_with_name(call['contractSize'].values())
 
-                    strikes = self.__strike_service.get_else_create_strikes(
-                        expiry.id, strike_prices, contract_sizes, conn
-                    )
+                strike_prices: List[float] = list(calls['lastPrice'].values())
+                contract_sizes = self.__get_contract_sizes_with_name(calls['contractSize'].values())
 
-                    print('contract_sizes', contract_sizes)
-                    print('strikes', strikes)
+                print('contract_sizes', contract_sizes)
+
+                strikes = self.__strike_service.get_else_create_strikes(
+                    expiry.id, strike_prices, contract_sizes, conn
+                )
+
+                print('strikes', strikes)
+
+            conn.commit()
 
                 # for call in calls:
                 #

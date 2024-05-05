@@ -14,7 +14,7 @@ expiry_table = Table(
     'expiry', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
     Column('ticker_id', Integer, ForeignKey(ticker_table.c.id, ondelete='RESTRICT'), nullable=False),
-    Column('expiry', DateTime, nullable=False),
+    Column('date', DateTime, nullable=False),
 )
 
 strike_table = Table(

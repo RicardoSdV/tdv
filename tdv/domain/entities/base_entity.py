@@ -40,4 +40,5 @@ class Entity:
         return [attr for attr in (getattr(self, attr_name) for attr_name in self.__slots__) if attr is not None]
 
     def not_none_slots(self) -> List[str]:
+        print('not_none_slots')
         return [attr_name for attr_name in self.__slots__ if getattr(self, attr_name) is not None]

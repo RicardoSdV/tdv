@@ -82,5 +82,5 @@ class CacheService:
         if self.__contract_sizes_by_name is None:
             with self.__db.connect as conn:
                 contract_sizes = self.__contract_size_service.get_all_contract_sizes(conn)
-                self.__contract_sizes_by_name = {contract_size.size: contract_size for contract_size in contract_sizes}
+                self.__contract_sizes_by_name = {contract_size.name: contract_size for contract_size in contract_sizes}
         return self.__contract_sizes_by_name
