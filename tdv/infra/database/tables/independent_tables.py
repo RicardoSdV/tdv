@@ -38,7 +38,7 @@ account_table = Table(
 insert_time_table = Table(
     'insert_time', metadata,
     Column('id', BigInteger, primary_key=True, autoincrement=True),
-    Column('time', DateTime, nullable=False),
+    Column('time', DateTime, nullable=False),  # TODO: Ensure this is UTC by making it the server default
 )
 
 contract_size_table = Table(

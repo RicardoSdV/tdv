@@ -14,8 +14,6 @@ if TYPE_CHECKING:
     from tdv.domain.services_internal.independent_services.company_service import CompanyService
     from tdv.domain.services_internal.independent_services.contract_size_service import ContractSizeService
     from tdv.domain.services_internal.independent_services.exchange_service import ExchangeService
-    from tdv.domain.services_internal.option_services.call_hist_service import CallHistService
-    from tdv.domain.services_internal.option_services.put_hist_service import PutHistService
     from tdv.domain.services_internal.ticker_services.ticker_service import TickerService
 
 
@@ -28,8 +26,6 @@ class CacheService:
         company_service: 'CompanyService',
         exchange_service: 'ExchangeService',
         ticker_service: 'TickerService',
-        call_hist_service: 'CallHistService',
-        put_hist_service: 'PutHistService',
         contract_size_service: 'ContractSizeService',
     ) -> None:
         self.__db = db
@@ -38,8 +34,6 @@ class CacheService:
         self.__company_service = company_service
         self.__exchange_service = exchange_service
         self.__ticker_service = ticker_service
-        self.__call_hist_service = call_hist_service
-        self.__put_hist_service = put_hist_service
         self.__contract_size_service = contract_size_service
 
         # Cached entities

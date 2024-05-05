@@ -8,9 +8,8 @@ from tdv.domain.services_internal.independent_services.company_service import Co
 from tdv.domain.services_internal.independent_services.contract_size_service import ContractSizeService
 from tdv.domain.services_internal.independent_services.exchange_service import ExchangeService
 from tdv.domain.services_internal.independent_services.insert_time_service import InsertTimeService
-from tdv.domain.services_internal.option_services.call_hist_service import CallHistService
 from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
-from tdv.domain.services_internal.option_services.put_hist_service import PutHistService
+from tdv.domain.services_internal.option_services.option_hist_service import OptionHistService
 from tdv.domain.services_internal.option_services.strike_service import StrikeService
 from tdv.domain.services_internal.portfolio_services.portfolio_option_service import PortfolioOptionService
 from tdv.domain.services_internal.portfolio_services.portfolio_service import PortfolioService
@@ -66,19 +65,18 @@ class Service(DeclarativeContainer):
     # Base Cluster
     exchange = Singleton(ExchangeService, db, Repo.exchange)
     account = Singleton(AccountService, db, Repo.account)
-    contract_size = Singleton(ContractSizeService, db, Repo.contract_size)
+    contract_size = Singleton(ContractSizeService, Repo.contract_size)
 
     # Companies Cluster
-    company = Singleton(CompanyService, db, Repo.company)
+    company = Singleton(CompanyService, Repo.company)
     ticker = Singleton(TickerService, db, Repo.ticker, exchange, company)
-    share_hist = Singleton(ShareHistService, db, Repo.share_hist)
+    share_hist = Singleton(ShareHistService, Repo.share_hist)
 
     # Options Cluster
-    expiry = Singleton(ExpiryService, db, Repo.expiry)
-    strike = Singleton(StrikeService, db, Repo.strike)
-    call_hist = Singleton(CallHistService, db, Repo.call_hist)
-    put_hist = Singleton(PutHistService, db, Repo.put_hist)
-    insert_time = Singleton(InsertTimeService, db, Repo.insert_time)
+    expiry = Singleton(ExpiryService, Repo.expiry)
+    strike = Singleton(StrikeService, Repo.strike)
+    option_hist = Singleton(OptionHistService, Repo.call_hist, Repo.put_hist)
+    insert_time = Singleton(InsertTimeService, Repo.insert_time)
 
     # Portfolio Cluster
     portfolio = Singleton(PortfolioService, db, Repo.portfolio)
@@ -86,8 +84,8 @@ class Service(DeclarativeContainer):
     portfolio_share = Singleton(PortfolioShareService, db, Repo.portfolio_share)
 
     # Higher level Custer
-    cache = Singleton(CacheService, db, company, exchange, ticker, call_hist, put_hist, contract_size)
-    yahoo_finance = Singleton(YahooFinanceService, db, cache, ticker, insert_time, expiry, strike)
+    cache = Singleton(CacheService, db, company, exchange, ticker, contract_size)
+    yahoo_finance = Singleton(YahooFinanceService, db, cache, ticker, expiry, strike, insert_time, share_hist, option_hist)
     session_manager = Singleton(SessionManager, account)
 
 

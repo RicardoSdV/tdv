@@ -3,18 +3,17 @@ from typing import List, TYPE_CHECKING, Generator
 from sqlalchemy import Connection
 
 from tdv.domain.entities.option_entities.expiry_entity import Expiry
+from tdv.domain.entities.ticker_entities.ticker_entity import Ticker
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
-    from tdv.infra.database import DB
     from tdv.infra.repos.option_repos.expiry_repo import ExpiryRepo
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class ExpiryService:
-    def __init__(self, db: 'DB', expiry_repo: 'ExpiryRepo') -> None:
-        self.db = db
+    def __init__(self, expiry_repo: 'ExpiryRepo') -> None:
         self.expiry_repo = expiry_repo
 
     def get_expiries_with_id(self, expiry_ids: Generator[int, None, None], conn: Connection) -> List[Expiry]:
@@ -23,8 +22,8 @@ class ExpiryService:
         result = self.expiry_repo.select(conn, expiries)
         return result
 
-    def get_else_create_expiry(self, expiry_date: datetime, ticker_id: int, conn: Connection) -> Expiry:
-        expiry = [Expiry(date=expiry_date, ticker_id=ticker_id)]
+    def get_else_create_expiry(self, expiry_date: datetime, ticker: Ticker, conn: Connection) -> Expiry:
+        expiry = [Expiry(date=expiry_date, ticker_id=ticker.id)]
 
         logger.debug('Getting expiry', expiry=expiry)
         selected_expiries = self.expiry_repo.select(conn, expiry)

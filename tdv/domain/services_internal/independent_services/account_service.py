@@ -15,14 +15,14 @@ logger = LoggerFactory.make_logger(__name__)
 
 class AccountService:
     def __init__(self, db: 'DB', account_repo: 'AccountRepo') -> None:
-        self.db = db
+        self.__db = db
         self.account_repo = account_repo
 
     def create_account(self, username: str, email: str, password: str) -> List[Account]:
         logger.debug('Creating account', username=username, email=email, password=password)
         users = [Account(name=username, email=email, password=password)]
 
-        with self.db.connect as conn:
+        with self.__db.connect as conn:
             users = self.account_repo.insert(conn, users)
             conn.commit()
 
@@ -40,7 +40,7 @@ class AccountService:
         logger.debug('Deleting user by ID', user_id=user_id)
         users = [Account(id=user_id)]
 
-        with self.db.connect as conn:
+        with self.__db.connect as conn:
             users = self.account_repo.delete(conn, users)
             conn.commit()
 
@@ -50,7 +50,7 @@ class AccountService:
         logger.debug('Selecting user by email and password', email=email, password=password)
         users = [Account(email=email, password=password)]
 
-        with self.db.connect as conn:
+        with self.__db.connect as conn:
             result = self.account_repo.select(conn, users)
             conn.commit()
 
@@ -67,7 +67,7 @@ class AccountService:
         users = [Account(email=email, password=password)]
         params = {'username': username}
 
-        with self.db.connect as conn:
+        with self.__db.connect as conn:
             result = self.account_repo.update(conn, users, params)
             conn.commit()
 

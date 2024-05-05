@@ -5,7 +5,6 @@ from tdv.domain.entities.independent_entities.contract_size_entity import Contra
 from tdv.domain.entities.ticker_entities.ticker_entity import Ticker
 from tdv.domain.types import Options
 from tdv.logger_setup import LoggerFactory
-from tdv.utils import pretty_print
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
@@ -14,6 +13,8 @@ if TYPE_CHECKING:
     from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
     from tdv.domain.services_internal.option_services.strike_service import StrikeService
     from tdv.domain.services_internal.ticker_services.ticker_service import TickerService
+    from tdv.domain.services_internal.option_services.option_hist_service import OptionHistService
+    from tdv.domain.services_internal.ticker_services.share_hist_service import ShareHistService
 
 logger = LoggerFactory.make_logger(__name__)
 
@@ -24,16 +25,22 @@ class YahooFinanceService:
         db: 'DB',
         cache_service: 'CacheService',
         ticker_service: 'TickerService',
-        insert_time_service: 'InsertTimeService',
         expiry_service: 'ExpiryService',
         strike_service: 'StrikeService',
+        insert_time_service: 'InsertTimeService',
+        share_hist_service: 'ShareHistService',
+        option_hist_service: 'OptionHistService',
     ) -> None:
-        self.db = db
+        self.__db = db
         self.__cache_service = cache_service
+
         self.__ticker_service = ticker_service
-        self.__insert_time_service = insert_time_service
         self.__expiry_service = expiry_service
         self.__strike_service = strike_service
+
+        self.__insert_time_service = insert_time_service
+        self.__share_hist_service = share_hist_service
+        self.__option_hist_service = option_hist_service
 
     @staticmethod
     def __str_to_datetime(date_string: str) -> datetime:
@@ -52,130 +59,22 @@ class YahooFinanceService:
 
         expiry_dates = [self.__str_to_datetime(date_str) for date_str in expiry_date_strs]
 
-        with self.db.connect as conn:
+        with self.__db.connect as conn:
 
-            for expiry_date, option in zip(expiry_dates, options):
-                calls, puts, underlying = option
+            for expiry_date, option_and_underlying_data in zip(expiry_dates, options):
+                calls, puts, underlying = option_and_underlying_data
 
-                expiry = self.__expiry_service.get_else_create_expiry(expiry_date, ticker.id, conn)
+                expiry = self.__expiry_service.get_else_create_expiry(expiry_date, ticker, conn)
 
-
-                strike_prices: List[float] = list(calls['lastPrice'].values())
                 contract_sizes = self.__get_contract_sizes_with_name(calls['contractSize'].values())
+                strike_prices: List[float] = list(calls['strike'].values())
+                strikes = self.__strike_service.get_else_create_strikes(expiry.id, strike_prices, contract_sizes, conn)
 
-                print('contract_sizes', contract_sizes)
-
-                strikes = self.__strike_service.get_else_create_strikes(
-                    expiry.id, strike_prices, contract_sizes, conn
+                insert_time = self.__insert_time_service.create_insert_time__utcnow(conn)
+                share_hists = self.__share_hist_service.create_share_hist(
+                    ticker, insert_time, underlying['regularMarketPrice'], conn
                 )
 
-                print('strikes', strikes)
+                call_hists, put_hists = self.__option_hist_service.create_option_hists(insert_time, strikes, calls, puts, conn)
 
             conn.commit()
-
-                # for call in calls:
-                #
-                #     for (
-                #         last_trade_date,
-                #         last_price,
-                #         bid,
-                #         ask,
-                #         change,
-                #         volume,
-                #         open_interest,
-                #         implied_volatility,
-                #     ) in zip(
-                #         call['lastTradeDate'].values(),
-                #         call['bid'].values(),
-                #         call['ask'].values(),
-                #         call['change'].values(),
-                #         call['volume'].values(),
-                #         call['openInterest'].values(),
-                #         call['impliedVolatility'].values(),
-                #     ):
-                #         pretty_print(underlying)
-                #
-                # share_price = underlying['regularMarketPrice']
-
-            # insert_time: InsertTime = self.insert_time_service.create_insert_time(conn)
-            #
-            #
-
-            #
-            # self.expiry_service.get_else_create_many_expiries(expiries, ticker.id,  conn)
-
-        # with self.db.connect as conn:
-        #     ticker_id = self.ticker_service.get_ticker_id_by_name(ticker_name, conn)
-        #
-        #     for expiry, option in zip(expiries, options):
-        #         calls, puts, underlying = option
-        #
-        #         pretty_print(underlying)
-        #
-        #         return
-        #
-        #         # option_chain_id = self.option_chains_service.create_option_get_id(
-        #         #     underlying['regularMarketPrice'], True, expiry, ticker_id, conn
-        #         # )
-        #         # self.options_service.create_options(calls, option_chain_id, conn)
-        #         #
-        #         # option_chain_id = self.option_chains_service.create_option_get_id(
-        #         #     underlying['regularMarketPrice'], False, expiry, ticker_id, conn
-        #         # )
-        #         # self.options_service.create_options(puts, option_chain_id, conn)
-        #         #
-        #         # conn.commit()
-
-        #     def create_option_get_id(
-        #         self,
-        #         strike: float,
-        #         underlying_price: int,
-        #         is_call: bool,
-        #         expiry: str,
-        #         ticker_id: int,
-        #         conn: Connection,
-        #     ) -> int:
-        #
-        #         option_chains = [
-        #             Option(
-        #                 ticker_id=ticker_id,
-        #                 strike=strike,
-        #                 underlying_price=underlying_price,
-        #                 is_call=is_call,
-        #                 expiry=str_to_datetime(expiry),
-        #             )
-        #         ]
-        #
-        #         option_chains = self.option_repo.insert(conn, option_chains)
-        #         return option_chains[0].id
-
-        # def create_options(self, options: Dict, option_chain_id: int, conn: Connection) -> None:
-        #     option_entities = []
-
-        #     for (strike, last_trade_date, last_price, bid, ask, change, volume, open_interest, implied_volatility, size,) in zip(
-        #         options['lastTradeDate'].values(),
-        #         options['lastPrice'].values(),
-        #         options['bid'].values(),
-        #         options['ask'].values(),
-        #         options['change'].values(),
-        #         options['volume'].values(),
-        #         options['openInterest'].values(),
-        #         options['impliedVolatility'].values(),
-        #         options['contractSize'].values(),
-        #     ):
-        #         option_entities.append(
-        #             OptionHistory(
-        #                 option_id=option_chain_id,
-        #                 last_trade_date=last_trade_date,
-        #                 last_price=last_price,
-        #                 bid=bid,
-        #                 ask=ask,
-        #                 change=change,
-        #                 volume=0 if math.isnan(volume) else int(volume),
-        #                 open_interest=open_interest,
-        #                 implied_volatility=implied_volatility,
-        #                 size=getattr(ContractSizes, size).value,
-        #             )
-        #         )
-        #
-        #     self.options_repo.insert(conn, option_entities)

@@ -7,15 +7,13 @@ from tdv.domain.entities.option_entities.strike_entity import Strike
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
-    from tdv.infra.database import DB
     from tdv.infra.repos.option_repos.strike_repo import StrikeRepo
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class StrikeService:
-    def __init__(self, db: 'DB', strike_repo: 'StrikeRepo') -> None:
-        self.__db = db
+    def __init__(self, strike_repo: 'StrikeRepo') -> None:
         self.__strike_repo = strike_repo
 
     def get_strikes(self, strike_ids: Generator[int, None, None], conn: Connection) -> List[Strike]:

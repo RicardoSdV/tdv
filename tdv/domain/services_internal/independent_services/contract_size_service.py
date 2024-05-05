@@ -7,15 +7,13 @@ from tdv.domain.entities.independent_entities.contract_size_entity import Contra
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
-    from tdv.infra.database import DB
     from tdv.infra.repos.independent_repos.contract_size_repo import ContractSizeRepo
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class ContractSizeService:
-    def __init__(self, db: 'DB', contract_size_repo: 'ContractSizeRepo') -> None:
-        self.db = db
+    def __init__(self, contract_size_repo: 'ContractSizeRepo') -> None:
         self.contract_size_repo = contract_size_repo
 
     def create_all_contract_sizes(self, conn: Connection) -> List[ContractSize]:

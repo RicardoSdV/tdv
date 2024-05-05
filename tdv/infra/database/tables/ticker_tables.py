@@ -1,4 +1,3 @@
-""" Ticker related tables """
 from sqlalchemy import Table, Column, Integer, String, Boolean, DateTime, func, ForeignKey, BigInteger, Numeric
 
 from tdv.infra.database.tables import metadata

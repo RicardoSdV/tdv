@@ -1,5 +1,3 @@
-""" Options related cluster """
-
 from typing import Tuple
 
 from sqlalchemy import Table, Column, BigInteger, Integer, DateTime, ForeignKey, Numeric
@@ -31,7 +29,7 @@ def option_hist_columns() -> Tuple[Column, ...]:
         Column('id', BigInteger, primary_key=True, autoincrement=True),
         Column('strike_id', BigInteger, ForeignKey(strike_table.c.id, ondelete='RESTRICT'), nullable=False),
         Column('insert_time_id', BigInteger, ForeignKey(insert_time_table.c.id, ondelete='RESTRICT'), nullable=False),
-        Column('last_trade_date', DateTime, nullable=False),
+        Column('last_trade_date', DateTime, nullable=False),  # TODO: Find out if this is UTC and if not, change to UTC
         Column('last_price', Numeric(precision=10, scale=2), nullable=False),
         Column('bid', Numeric(precision=10, scale=2), nullable=False),
         Column('ask', Numeric(precision=10, scale=2), nullable=False),
