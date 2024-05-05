@@ -4,6 +4,7 @@ from sqlalchemy import Connection
 
 from typing import List
 
+from tdv.domain.entities.option_entities.strike_entity import Strike
 from tdv.domain.entities.portfolio_entities.portfolio_option_entity import PortfolioOption
 from tdv.logger_setup import LoggerFactory
 
@@ -27,7 +28,7 @@ class PortfolioOptionService:
 
         return result
 
-    def create_many_portfolio_options(self, portfolio_ids: List[int], options, conn) -> List[PortfolioOption]:
+    def create_many_portfolio_options(self, strike: Strike, conn) -> List[PortfolioOption]:
         pass
 
     # def create_portfolio_options(

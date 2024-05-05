@@ -1,6 +1,6 @@
 from click import group
 
-from tdv.domain.testing.test_data.portfolio_data import local_user_portfolio_data
+from local_user_data.portfolio_data import local_user_portfolio_data
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
@@ -24,7 +24,8 @@ def many() -> None:
         companies = Service.company().create_all_companies(conn)
         tickers = Service.ticker().create_all_tickers(exchanges, companies, conn)
         contract_sizes = Service.contract_size().create_all_contract_sizes(conn)
-        accounts = Service.account().create_local_account(conn)
+        local_account = Service.account().create_local_account(conn)[0]
+        portfolios = Service.portfolio().create_all_local_user_portfolios(local_account, conn)
 
         conn.commit()
 
@@ -33,37 +34,6 @@ def many() -> None:
         exchanges=exchanges,
         companies=companies,
         tickers=tickers,
-        accounts=accounts,
+        accounts=local_account,
         contract_sizes=contract_sizes,
     )
-
-
-def portfolios():
-
-    from tdv.containers import Service
-    from tdv.infra.database import db
-
-    account_id = 1
-    ticker_id = 1
-
-    with db.connect as conn:
-        # portfolio
-        names = []
-        cashes = []
-        counts = []
-        options = []
-        for name, data in local_user_portfolio_data.items():
-            names.append(name)
-            cashes.append(data['cash'])
-            counts.append(data['shares'])
-            options.append(data['options'])
-        portfolios = Service.portfolio().create_many_portfolios(account_id, names, cashes, conn)
-
-        # portfolio shares
-        portfolio_ids = [portfolio.id for portfolio in portfolios]
-        Service.portfolio_share().create_many_portfolio_shares(portfolio_ids, ticker_id, counts, conn)
-
-        # portfolio options
-        Service.portfolio_option().create_many_portfolio_options(portfolio_ids, options, conn)
-
-        conn.commit()

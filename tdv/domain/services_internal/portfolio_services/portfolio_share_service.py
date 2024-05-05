@@ -3,6 +3,7 @@ from typing import List, TYPE_CHECKING
 from sqlalchemy import Connection
 
 from tdv.domain.entities.portfolio_entities.portfolio_share_entity import PortfolioShare
+from tdv.domain.entities.ticker_entities.ticker_entity import Ticker
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
@@ -16,6 +17,12 @@ class PortfolioShareService:
     def __init__(self, db: 'DB', pfol_share_repo: 'PortfolioShareRepo') -> None:
         self.db = db
         self.pfol_share_repo = pfol_share_repo
+
+    def create_portfolio_share(self, ticker: Ticker, count: int, conn: Connection) -> PortfolioShare:
+        pfol_share = PortfolioShare(ticker_id=ticker.id, count=count)
+        result = self.pfol_share_repo.insert(pfol_share, conn)
+        return result[0]
+
 
     def get_portfolio_shares(self, pfol_ids: List[int], conn: Connection) -> List[PortfolioShare]:
         logger.debug('Getting portfolio shares', portfolio_ids=pfol_ids)

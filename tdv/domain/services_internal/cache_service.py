@@ -42,10 +42,10 @@ class CacheService:
         self.__companies_by_id: Optional[Dict[int, Company]] = None
         self.__contract_sizes_by_name: Optional[Dict[str, ContractSize]] = None
 
-        self.last_insert_time_by_ticker_id: Dict[int, InsertTime] = {}
+        self.last_insert_time_by_id: Dict[int, InsertTime] = {}
         self.last_share_hists_by_ticker_id: Dict[int, ShareHist] = {}
-        self.last_call_hists_by_ticker_id: Dict[int, CallHist] = {}
-        self.last_put_hists_by_ticker_id: Dict[int, PutHist] = {}
+        self.last_call_hists_by_id: Dict[int, CallHist] = {}
+        self.last_put_hists_by_id: Dict[int, PutHist] = {}
 
     @property
     def exchanges_by_id(self) -> Dict[int, Exchange]:

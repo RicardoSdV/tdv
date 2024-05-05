@@ -77,4 +77,6 @@ class YahooFinanceService:
 
                 call_hists, put_hists = self.__option_hist_service.create_option_hists(insert_time, strikes, calls, puts, conn)
 
+                self.__cache_service.last_share_hists_by_ticker_id = {}
+
             conn.commit()
