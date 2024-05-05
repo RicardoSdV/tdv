@@ -3,7 +3,9 @@ from typing import List, TYPE_CHECKING
 
 from sqlalchemy import Connection
 
+from tdv.constants import LocalAccountInfo
 from tdv.domain.entities.portfolio_entity import Portfolio
+from tdv.domain.internal.account_service import AccountService
 
 from tdv.logger_setup import LoggerFactory
 
@@ -34,11 +36,9 @@ class PortfolioService:
         portfolios = self.portfolio_repo.select(conn, [Portfolio(account_id=account_id)])
         return portfolios
 
-    def create_many_portfolios(
-        self, account_id: int, names: List[str], cashes: List[float], conn: Connection
-    ) -> List[Portfolio]:
-        logger.debug('Creating test portfolio', account_id=account_id, names=names, cashes=cashes)
-        portfolios = [Portfolio(account_id=account_id, name=name, cash=cash) for name, cash in zip(names, cashes)]
+    def create_local_portfolios(self, account_id: int, pfol_names: List[str], cashes: List[float], conn: Connection) -> List[Portfolio]:
+        logger.debug('Creating local portfolios', account_id=account_id, names=pfol_names, cashes=cashes)
+        portfolios = [Portfolio(account_id=account_id, name=name, cash=cash) for name, cash in zip(pfol_names, cashes)]
         result = self.portfolio_repo.insert(conn, portfolios)
         return result
 

@@ -56,6 +56,14 @@ class AccountService:
 
         return result
 
+    def get_account_id(self, user: str) -> int:
+        logger.debug('Getting account_id', user=user)
+        users = [Account(name=user)]
+        with self.db.connect as conn:
+            result = self.account_repo.select(conn, users)
+        assert len(result) == 1
+        return result[0].id
+
     def get_or_raise_account_with_name(self, name: str, conn: Connection) -> Account:
         logger.debug('Getting Account', name=name)
         accounts = self.account_repo.select(conn, [Account(name=name)])

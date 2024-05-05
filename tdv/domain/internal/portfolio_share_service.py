@@ -2,7 +2,9 @@ from typing import List
 
 from sqlalchemy import Connection
 
+from tdv.constants import Tickers
 from tdv.domain.entities.portfolio_share_entity import PortfolioShare
+from tdv.domain.internal.ticker_service import TickerService
 from tdv.infra.database import DB
 from tdv.infra.repos.portfolio_share_repo import PortfolioShareRepo
 from tdv.logger_setup import LoggerFactory
@@ -21,10 +23,10 @@ class PortfolioShareService:
         result = self.pfol_share_repo.select(conn, pfol_shares)
         return result
 
-    def create_many_portfolio_shares(
+    def create_local_portfolio_shares(
         self, portfolio_id: List[int], ticker_id: int, count: List[float], conn: Connection
     ) -> List[PortfolioShare]:
-        logger.debug('Creating test portfolio shares', portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
+        logger.debug('Creating local portfolio shares', portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
         shares = [
             PortfolioShare(portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
             for portfolio_id, count in zip(portfolio_id, count)

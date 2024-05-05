@@ -1,5 +1,6 @@
 from click import group
 
+from tdv.constants import Tickers
 from tdv.domain.testing.test_data.portfolio_data import local_user_portfolio_data
 from tdv.logger_setup import LoggerFactory
 
@@ -25,6 +26,21 @@ def many() -> None:
         tickers = Service.ticker().create_all_tickers(exchanges, companies, conn)
         contract_sizes = Service.contract_size().create_all_contract_sizes(conn)
         accounts = Service.account().create_local_account(conn)
+        account_id = accounts[0].id
+        pfol_names = []
+        cashes = []
+        share_counts = []
+        options = []
+        for name, data in local_user_portfolio_data.items():
+            pfol_names.append(name)
+            cashes.append(data['cash'])
+            share_counts.append(data['shares'])
+            options.append(data['options'])
+        pfols = Service.portfolio().create_local_portfolios(account_id, pfol_names, cashes, conn)
+        pfol_ids = [portfolio.id for portfolio in pfols]
+        tsla_ticker_id = [ticker.id for ticker in tickers if ticker.name == Tickers.TESLA.value]
+        Service.portfolio_share().create_local_portfolio_shares(pfol_ids, tsla_ticker_id[0], share_counts, conn)
+        # Service.portfolio_option().create_many_portfolio_options(pfol_ids, options, conn)
 
         conn.commit()
 
@@ -36,34 +52,3 @@ def many() -> None:
         accounts=accounts,
         contract_sizes=contract_sizes,
     )
-
-
-def portfolios():
-
-    from tdv.containers import Service
-    from tdv.infra.database import db
-
-    account_id = 1
-    ticker_id = 1
-
-    with db.connect as conn:
-        # portfolio
-        names = []
-        cashes = []
-        counts = []
-        options = []
-        for name, data in local_user_portfolio_data.items():
-            names.append(name)
-            cashes.append(data['cash'])
-            counts.append(data['shares'])
-            options.append(data['options'])
-        portfolios = Service.portfolio().create_many_portfolios(account_id, names, cashes, conn)
-
-        # portfolio shares
-        portfolio_ids = [portfolio.id for portfolio in portfolios]
-        Service.portfolio_share().create_many_portfolio_shares(portfolio_ids, ticker_id, counts, conn)
-
-        # portfolio options
-        Service.portfolio_option().create_many_portfolio_options(portfolio_ids, options, conn)
-
-        conn.commit()
