@@ -1,23 +1,22 @@
-from typing import List, TYPE_CHECKING, Iterable, Generator
+from typing import List, TYPE_CHECKING, Generator
 
 from sqlalchemy import Connection
 
+from tdv.domain.entities.independent_entities.contract_size_entity import ContractSize
 from tdv.domain.entities.option_entities.strike_entity import Strike
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
-    from tdv.domain.services_internal.cache_service import CacheService
     from tdv.infra.repos.option_repos.strike_repo import StrikeRepo
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class StrikeService:
-    def __init__(self, db: 'DB', strike_repo: 'StrikeRepo', cache_service: 'CacheService') -> None:
+    def __init__(self, db: 'DB', strike_repo: 'StrikeRepo') -> None:
         self.__db = db
         self.__strike_repo = strike_repo
-        self.__cache_service = cache_service
 
     def get_strikes(self, strike_ids: Generator[int, None, None], conn: Connection) -> List[Strike]:
         logger.debug('Getting strikes', strike_ids=strike_ids)
@@ -26,17 +25,10 @@ class StrikeService:
         return result
 
     def get_else_create_strikes(
-        self, expiry_id: int, strike_prices: List[float], contract_size_names: Iterable[str], conn: Connection
+        self, expiry_id: int, strike_prices: List[float], contract_sizes: List[ContractSize], conn: Connection
     ) -> List[Strike]:
-
-        contract_sizes = []
-        for contract_size_name in contract_size_names:
-            contract_size = self.__cache_service.contract_sizes_by_name.get(contract_size_name)
-            if contract_size is None:
-                logger.error('Unsupported contract size', contract_size_name=contract_size_name)
-            contract_sizes.append(contract_size)
-
         logger.debug('Getting strikes', strike_prices=strike_prices)
+
         strikes_for_selecting = [
             Strike(expiry_id=expiry_id, contract_size_id=size.id, price=price)
             for size, price in zip(contract_sizes, strike_prices)

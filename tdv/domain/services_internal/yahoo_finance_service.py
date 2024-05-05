@@ -1,6 +1,7 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Iterable, Sequence, List
+from typing import TYPE_CHECKING, Iterable, List
 
+from tdv.domain.entities.independent_entities.contract_size_entity import ContractSize
 from tdv.domain.entities.ticker_entities.ticker_entity import Ticker
 from tdv.domain.types import Options
 from tdv.logger_setup import LoggerFactory
@@ -38,6 +39,15 @@ class YahooFinanceService:
     def __str_to_datetime(date_string: str) -> datetime:
         return datetime.strptime(date_string, '%Y-%m-%d')
 
+    def __get_contract_sizes_with_name(self, contract_size_names: Iterable[str]) -> List[ContractSize]:
+        contract_sizes = []
+        for contract_size_name in contract_size_names:
+            contract_size = self.__cache_service.contract_sizes_by_name.get(contract_size_name)
+            if contract_size is None:
+                logger.error('Unsupported contract size', contract_size_name=contract_size_name)
+            contract_sizes.append(contract_size)
+        return contract_sizes
+
     def save_options(self, options: Options, expiry_date_strs: Iterable[str], ticker: Ticker) -> None:
 
         expiry_dates = [self.__str_to_datetime(date_str) for date_str in expiry_date_strs]
@@ -51,10 +61,14 @@ class YahooFinanceService:
 
                 for call in calls:
                     strike_prices: List[float] = list(call['lastPrice'].values())
-                    contract_size_names: Iterable[str] = call['contractSize'].values()
+                    contract_sizes = self.__get_contract_sizes_with_name(call['contractSize'].values())
+
                     strikes = self.__strike_service.get_else_create_strikes(
-                        expiry.id, strike_prices, contract_size_names, conn
+                        expiry.id, strike_prices, contract_sizes, conn
                     )
+
+                    print('contract_sizes', contract_sizes)
+                    print('strikes', strikes)
 
                 # for call in calls:
                 #

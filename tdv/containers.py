@@ -87,7 +87,7 @@ class Service(DeclarativeContainer):
 
     # Higher level Custer
     cache = Singleton(CacheService, db, company, exchange, ticker, call_hist, put_hist, contract_size)
-    yahoo_finance = Singleton(YahooFinanceService, db, ticker, insert_time, expiry, strike)
+    yahoo_finance = Singleton(YahooFinanceService, db, cache, ticker, insert_time, expiry, strike)
     session_manager = Singleton(SessionManager, account)
 
 
