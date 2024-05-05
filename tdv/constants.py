@@ -67,23 +67,27 @@ class EntityEnum(Enum):
 
 @dataclass
 class Companies:
-    class ShortNames(EntityEnum):
+    class AbrvNames(EntityEnum):
         TESLA = 'Tesla'
 
-    class LongNames(EntityEnum):
+    class Names(EntityEnum):
         TESLA = 'Tesla Inc.'
 
 
-class ContractSizes(EntityEnum):
-    REGULAR = 100
+class ContractSizes:
+    class Sizes(EntityEnum):
+        REGULAR = 100
+
+    class Names (EntityEnum):
+        REGULAR = 'Regular'
 
 
 @dataclass
 class Exchanges:
-    class ShortNames(EntityEnum):
+    class AbrvNames(EntityEnum):
         NEW_YORK = 'NYSE'
 
-    class LongNames(EntityEnum):
+    class Names(EntityEnum):
         NEW_YORK = 'New York Stock Exchange'
 
 
@@ -92,12 +96,12 @@ class Currencies(EntityEnum):
 
 
 class Tickers(EntityEnum):
-    TSLA = 'TSLA'
+    TESLA = 'TSLA'
 
 
 # Defines the relationship between exchanges, tickers & companies for fast insertion
-TICKERS_BY_COMPANY_EXCHANGE: Dict[Exchanges.ShortNames, Dict[Companies.LongNames, Tuple[Tickers, ...]]] = {
-    Exchanges.ShortNames.NEW_YORK: {
-        Companies.LongNames.TESLA: (Tickers.TSLA,),
+TICKERS_BY_COMPANY_EXCHANGE: Dict[Exchanges.AbrvNames, Dict[Companies.Names, Tuple[Tickers, ...]]] = {
+    Exchanges.AbrvNames.NEW_YORK: {
+        Companies.Names.TESLA: (Tickers.TESLA,),
     }
 }

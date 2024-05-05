@@ -22,15 +22,15 @@ class CompanyService:
 
     def create_all_companies(self, conn: Connection) -> List[Company]:
         companies = [
-            Company(short_name=company_short_name.value, long_name=company_long_name.value)
-            for company_short_name, company_long_name in zip(Companies.ShortNames, Companies.LongNames)
+            Company(abrv_name=abrv_name.value, name=name.value)
+            for abrv_name, name in zip(Companies.AbrvNames, Companies.Names)
         ]
         logger.debug('Creating all companies', companies=companies)
         result = self.company_repo.insert(conn, companies)
         return result
 
     def get_all_companies(self, conn: Connection) -> List[Company]:
-        companies = [Company(long_name=company_long_name.value) for company_long_name in Companies.LongNames]
+        companies = [Company(abrv_name=abrv_name.value) for abrv_name in Companies.Names]
         logger.debug('Getting all companies', companies=companies)
         result = self.company_repo.select(conn, companies)
         return result

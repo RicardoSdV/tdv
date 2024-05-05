@@ -21,15 +21,15 @@ class ExchangeService:
 
     def create_all_exchanges(self, conn: Connection) -> List[Exchange]:
         exchanges = [
-            Exchange(name=name.value, long_name=long_name.value)
-            for name, long_name in zip(Exchanges.ShortNames, Exchanges.LongNames)
+            Exchange(abrv_name=abrv_name.value, name=name.value )
+            for abrv_name, name in zip(Exchanges.AbrvNames, Exchanges.Names)
         ]
         logger.debug('Creating all exchanges', exchanges=exchanges)
         result = self.exchange_repo.insert(conn, exchanges)
         return result
 
     def get_all_exchanges(self, conn: Connection) -> List[Exchange]:
-        exchanges = [Exchange(name=name.value) for name in Exchanges.ShortNames]
+        exchanges = [Exchange(name=name.value) for name in Exchanges.AbrvNames]
         logger.debug('Getting all exchanges', exchanges=exchanges)
         result = self.exchange_repo.select(conn, exchanges)
         return result

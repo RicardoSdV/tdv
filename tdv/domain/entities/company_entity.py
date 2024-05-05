@@ -8,11 +8,11 @@ from tdv.domain.entities.base_entity import Entity
 @dataclass(slots=True)
 class Company(Entity):
     id: Optional[int] = None
-    long_name: Optional[str] = None
-    short_name: Optional[str] = None
+    abrv_name: Optional[str] = None
+    name: Optional[str] = None
 
     def __post_init__(self):
-        if self.long_name is not None:
-            Companies.LongNames.validate_value(self.long_name)
-        if self.short_name is not None:
-            Companies.ShortNames.validate_value(self.short_name)
+        if self.abrv_name is not None:
+            Companies.AbrvNames.validate_value(self.abrv_name)
+        if self.name is not None:
+            Companies.Names.validate_value(self.name)
