@@ -24,21 +24,14 @@ class ExpiryService:
         return result
 
     def get_else_create_expiry(self, expiry_date: datetime, ticker_id: int, conn: Connection) -> Expiry:
-        selected_expiries = self.__get_expiries_with_date_and_ticker_id(expiry_date, ticker_id, conn)
+        expiry = [Expiry(date=expiry_date, ticker_id=ticker_id)]
+
+        logger.debug('Getting expiry', expiry=expiry)
+        selected_expiries = self.expiry_repo.select(conn, expiry)
         if len(selected_expiries) > 0:
             return selected_expiries[0]
-        else:
-            created_expiries = self.__create_expiry(expiry_date, ticker_id, conn)
-            return created_expiries[0]
 
-    def __create_expiry(self, expiry_date: datetime, ticker_id: int, conn: Connection) -> List[Expiry]:
-        logger.debug('Creating expiry', expiry_date=expiry_date)
-        expiries = [Expiry(ticker_id=ticker_id, date=expiry_date)]
-        result = self.expiry_repo.insert(conn, expiries)
-        return result
+        logger.debug('Expiry not found, creating expiry', expiry=expiry)
+        created_expiries = self.expiry_repo.insert(conn, expiry)
 
-    def __get_expiries_with_date_and_ticker_id(self, date: datetime, ticker_id: int, conn: Connection) -> List[Expiry]:
-        logger.debug('Getting expiries', dates=date, ticker_id=ticker_id)
-        expiries = [Expiry(date=date, ticker_id=ticker_id)]
-        result = self.expiry_repo.select(conn, expiries)
-        return result
+        return created_expiries[0]
