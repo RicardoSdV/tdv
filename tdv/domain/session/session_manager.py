@@ -2,25 +2,24 @@ from typing import TYPE_CHECKING, Dict, Tuple
 
 from sqlalchemy import Connection
 
-from tdv.domain.entities.account_entity import Account
-from tdv.domain.entities.expiry_entity import Expiry
-from tdv.domain.entities.portfolio_entity import Portfolio
-from tdv.domain.entities.portfolio_option_entity import PortfolioOption
-from tdv.domain.entities.portfolio_share_entity import PortfolioShare
-from tdv.domain.entities.strike_entity import Strike
-
+from tdv.domain.entities.independent_entities.account_entity import Account
+from tdv.domain.entities.option_entities.expiry_entity import Expiry
+from tdv.domain.entities.option_entities.strike_entity import Strike
+from tdv.domain.entities.portfolio_entities.portfolio_entity import Portfolio
+from tdv.domain.entities.portfolio_entities.portfolio_option_entity import PortfolioOption
+from tdv.domain.entities.portfolio_entities.portfolio_share_entity import PortfolioShare
 from tdv.domain.session.session import Session
 from tdv.domain.types import IDs, TickerName, StrikeID, ExpiryID
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
-    from tdv.domain.internal.account_service import AccountService
-    from tdv.domain.internal.cache_service import CacheService
-    from tdv.domain.internal.expiry_service import ExpiryService
-    from tdv.domain.internal.portfolio_option_service import PortfolioOptionService
-    from tdv.domain.internal.portfolio_service import PortfolioService
-    from tdv.domain.internal.portfolio_share_service import PortfolioShareService
-    from tdv.domain.internal.strike_service import StrikeService
+    from tdv.domain.services_internal.cache_service import CacheService
+    from tdv.domain.services_internal.independent_services.account_service import AccountService
+    from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
+    from tdv.domain.services_internal.option_services.strike_service import StrikeService
+    from tdv.domain.services_internal.portfolio_services.portfolio_option_service import PortfolioOptionService
+    from tdv.domain.services_internal.portfolio_services.portfolio_service import PortfolioService
+    from tdv.domain.services_internal.portfolio_services.portfolio_share_service import PortfolioShareService
 
 
 PfolOptionsByTickerName = Dict[TickerName, PortfolioOption]

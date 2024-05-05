@@ -11,8 +11,6 @@ ExpiryID = int
 
 # Custom types
 IDs = List[int]
-
-Expiries = Tuple[str, ...]
 Options = List[List[Union[Dict, Any]]]
 OptionChainYF = Tuple[DataFrame, DataFrame, Dict]
 OptionChainsYF = List[OptionChainYF]

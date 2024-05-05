@@ -9,7 +9,7 @@ from typing import Sequence, Union
 
 from alembic import op
 
-from tdv.infra.database.tables import expiry_table
+from tdv.infra.database.tables.option_tables import expiry_table
 
 # revision identifiers, used by Alembic.
 revision: str = 'b6c8fc336ea3'
