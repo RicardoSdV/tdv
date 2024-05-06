@@ -10,7 +10,6 @@ from tdv.logger_setup import LoggerFactory
 from tdv.utils import datetime_from_dashed_YMD_str
 
 if TYPE_CHECKING:
-    from tdv.infra.database import DB
     from tdv.infra.repos.portfolio_repos.portfolio_option_repo import PortfolioOptionRepo
     from tdv.domain.services_internal.cache_service import CacheService
     from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
@@ -23,13 +22,11 @@ logger = LoggerFactory.make_logger(__name__)
 class PortfolioOptionService:
     def __init__(
         self,
-        db: 'DB',
         portfolio_option_repo: 'PortfolioOptionRepo',
         cache_service: 'CacheService',
         expiry_service: 'ExpiryService',
         strike_service: 'StrikeService',
     ) -> None:
-        self.__db = db
         self.__pfol_option_repo = portfolio_option_repo
         self.__cache_service = cache_service
         self.__expiry_service = expiry_service

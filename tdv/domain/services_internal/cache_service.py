@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 from tdv.domain.entities.independent_entities.company_entity import Company

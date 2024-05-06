@@ -6,7 +6,6 @@ from tdv.domain.entities.portfolio_entities.portfolio_share_entity import Portfo
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
-    from tdv.infra.database import DB
     from tdv.infra.repos.portfolio_repos.portfolio_share_repo import PortfolioShareRepo
     from tdv.domain.services_internal.cache_service import CacheService
 
@@ -14,8 +13,7 @@ logger = LoggerFactory.make_logger(__name__)
 
 
 class PortfolioShareService:
-    def __init__(self, db: 'DB', pfol_share_repo: 'PortfolioShareRepo', cache_service: 'CacheService') -> None:
-        self.__db = db
+    def __init__(self, pfol_share_repo: 'PortfolioShareRepo', cache_service: 'CacheService') -> None:
         self.__pfol_share_repo = pfol_share_repo
         self.__cache_service = cache_service
 

@@ -10,7 +10,6 @@ from tdv.domain.entities.portfolio_entities.portfolio_share_entity import Portfo
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
-    from tdv.infra.database import DB
     from tdv.infra.repos.portfolio_repos.portfolio_repo import PortfolioRepo
     from tdv.domain.services_internal.cache_service import CacheService
     from tdv.domain.services_internal.portfolio_services.portfolio_share_service import PortfolioShareService
@@ -24,13 +23,11 @@ PfolCombo = Tuple[List[Portfolio], List[PortfolioShare], List[PortfolioOption]]
 class PortfolioService:
     def __init__(
         self,
-        db: 'DB',
         portfolio_repo: 'PortfolioRepo',
         cache_service: 'CacheService',
         pfol_share_service: 'PortfolioShareService',
         pfol_option_service: 'PortfolioOptionService',
     ) -> None:
-        self.__db = db
         self.__portfolio_repo = portfolio_repo
         self.__cache_service = cache_service
         self.__pfol_share_service = pfol_share_service
@@ -39,7 +36,7 @@ class PortfolioService:
     def create_all_local_user_portfolios(self, account: Account, conn: Connection) -> PfolCombo:
         portfolios, pfol_shares, pfol_options = [], [], []
         for name, data in local_user_portfolio_data.items():
-            cash, shares_data, options_data = data['cash'], data['shares'], data['option_data']
+            cash, shares_data, options_data = data['cash'], data['shares'], data['options_data']
 
             portfolio_for_insert = Portfolio(account_id=account.id, name=name, cash=cash)
             inserted_portfolio = self.__portfolio_repo.insert(conn, [portfolio_for_insert])
@@ -54,15 +51,6 @@ class PortfolioService:
             pfol_options.extend(inserted_pfol_options)
 
         return portfolios, pfol_shares, pfol_options
-
-    def create_portfolio(self, account_id: int, portfolio_name: str) -> List[Portfolio]:
-        logger.debug('Creating portfolio', account_id=account_id, portfolio_name=portfolio_name)
-        portfolios = [Portfolio(account_id=account_id, name=portfolio_name)]
-
-        with self.__db.connect as conn:
-            result = self.__portfolio_repo.insert(conn, portfolios)
-            conn.commit()
-        return result
 
     def get_portfolios_with_account_id(self, account_id: int, conn: Connection) -> List[Portfolio]:
         logger.debug('Getting portfolios', account_id=account_id)

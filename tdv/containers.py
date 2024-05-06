@@ -78,13 +78,14 @@ class Service(DeclarativeContainer):
     option_hist = Singleton(OptionHistService, Repo.call_hist, Repo.put_hist)
     insert_time = Singleton(InsertTimeService, Repo.insert_time)
 
-    # Portfolio Cluster
-    portfolio = Singleton(PortfolioService, db, Repo.portfolio)
-    portfolio_option = Singleton(PortfolioOptionService, db, Repo.portfolio_option)
-    portfolio_share = Singleton(PortfolioShareService, db, Repo.portfolio_share)
-
-    # Higher level Custer
+    # TODO: Rethink weather the cache should have any dependencies and how it would work if not
     cache = Singleton(CacheService, db, company, exchange, ticker, contract_size)
+
+    # Portfolio Cluster
+    portfolio_option = Singleton(PortfolioOptionService, Repo.portfolio_option, cache, expiry, strike)
+    portfolio_share = Singleton(PortfolioShareService, Repo.portfolio_share, cache)
+    portfolio = Singleton(PortfolioService, Repo.portfolio, cache, portfolio_share, portfolio_option)
+
     yahoo_finance = Singleton(
         YahooFinanceService, db, cache, ticker, expiry, strike, insert_time, share_hist, option_hist
     )

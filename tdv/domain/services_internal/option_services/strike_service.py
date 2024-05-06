@@ -6,12 +6,10 @@ from sqlalchemy import Connection
 from tdv.domain.entities.independent_entities.contract_size_entity import ContractSize
 from tdv.domain.entities.option_entities.expiry_entity import Expiry
 from tdv.domain.entities.option_entities.strike_entity import Strike
-from tdv.domain.entities.ticker_entities.ticker_entity import Ticker
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
     from tdv.infra.repos.option_repos.strike_repo import StrikeRepo
-    from tdv.domain.services_internal.cache_service import CacheService
     from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
 
 logger = LoggerFactory.make_logger(__name__)
@@ -19,11 +17,9 @@ logger = LoggerFactory.make_logger(__name__)
 
 class StrikeService:
     def __init__(
-        self, strike_repo: 'StrikeRepo', cache_service: 'CacheService', expiry_service: 'ExpiryService'
+        self, strike_repo: 'StrikeRepo'
     ) -> None:
         self.__strike_repo = strike_repo
-        self.__cache_service = cache_service
-        self.__expiry_service = expiry_service
 
     def get_else_create_strikes(
         self, expiry: Expiry, strike_prices: List[float], contract_sizes: List[ContractSize], conn: Connection
