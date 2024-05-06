@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import TYPE_CHECKING, Iterable, List
 
 from tdv.domain.entities.independent_entities.contract_size_entity import ContractSize
@@ -9,7 +8,7 @@ from tdv.utils import datetime_from_dashed_YMD_str
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
-    from tdv.domain.services_internal.cache_service import CacheService
+    from tdv.domain.cache.cache_service import CacheService
     from tdv.domain.services_internal.independent_services.insert_time_service import InsertTimeService
     from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
     from tdv.domain.services_internal.option_services.strike_service import StrikeService

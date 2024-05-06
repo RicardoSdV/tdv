@@ -13,7 +13,7 @@ from tdv.domain.types import IDs, TickerName, StrikeID, ExpiryID
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
-    from tdv.domain.services_internal.cache_service import CacheService
+    from tdv.domain.cache.cache_service import CacheService
     from tdv.domain.services_internal.independent_services.account_service import AccountService
     from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
     from tdv.domain.services_internal.option_services.strike_service import StrikeService

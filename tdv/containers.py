@@ -1,22 +1,23 @@
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Singleton
 
-from tdv.domain.services_external.yahoo_finance_service_proxy import YahooFinanceServiceProxy
-from tdv.domain.services_internal.cache_service import CacheService
-from tdv.domain.services_internal.independent_services.account_service import AccountService
-from tdv.domain.services_internal.independent_services.company_service import CompanyService
-from tdv.domain.services_internal.independent_services.contract_size_service import ContractSizeService
-from tdv.domain.services_internal.independent_services.exchange_service import ExchangeService
-from tdv.domain.services_internal.independent_services.insert_time_service import InsertTimeService
-from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
-from tdv.domain.services_internal.option_services.option_hist_service import OptionHistService
-from tdv.domain.services_internal.option_services.strike_service import StrikeService
-from tdv.domain.services_internal.portfolio_services.portfolio_option_service import PortfolioOptionService
-from tdv.domain.services_internal.portfolio_services.portfolio_service import PortfolioService
-from tdv.domain.services_internal.portfolio_services.portfolio_share_service import PortfolioShareService
-from tdv.domain.services_internal.ticker_services.share_hist_service import ShareHistService
-from tdv.domain.services_internal.ticker_services.ticker_service import TickerService
-from tdv.domain.services_internal.yahoo_finance_service import YahooFinanceService
+from tdv.domain.cache.cache_manager import CacheManager
+from tdv.domain.cache.entity_cache import EntityCache
+from tdv.domain.services.external.yahoo_finance_service_proxy import YahooFinanceServiceProxy
+from tdv.domain.services.independent_services.account_service import AccountService
+from tdv.domain.services.independent_services.company_service import CompanyService
+from tdv.domain.services.independent_services.contract_size_service import ContractSizeService
+from tdv.domain.services.independent_services.exchange_service import ExchangeService
+from tdv.domain.services.independent_services.insert_time_service import InsertTimeService
+from tdv.domain.services.option_services.expiry_service import ExpiryService
+from tdv.domain.services.option_services.option_hist_service import OptionHistService
+from tdv.domain.services.option_services.strike_service import StrikeService
+from tdv.domain.services.portfolio_services.portfolio_option_service import PortfolioOptionService
+from tdv.domain.services.portfolio_services.portfolio_service import PortfolioService
+from tdv.domain.services.portfolio_services.portfolio_share_service import PortfolioShareService
+from tdv.domain.services.ticker_services.share_hist_service import ShareHistService
+from tdv.domain.services.ticker_services.ticker_service import TickerService
+from tdv.domain.services.yahoo_finance_service import YahooFinanceService
 from tdv.domain.session.session_manager import SessionManager
 from tdv.infra.database import db
 from tdv.infra.repos.independent_repos.account_repo import AccountRepo
@@ -33,6 +34,10 @@ from tdv.infra.repos.portfolio_repos.portfolio_repo import PortfolioRepo
 from tdv.infra.repos.portfolio_repos.portfolio_share_repo import PortfolioShareRepo
 from tdv.infra.repos.ticker_repos.share_hist_repo import ShareHistRepo
 from tdv.infra.repos.ticker_repos.ticker_repo import TickerRepo
+
+
+class Cache(DeclarativeContainer):
+    entity = Singleton(EntityCache)
 
 
 class Repo(DeclarativeContainer):
@@ -63,13 +68,13 @@ class Service(DeclarativeContainer):
     """All services live here Services"""
 
     # Base Cluster
-    exchange = Singleton(ExchangeService, db, Repo.exchange)
+    exchange = Singleton(ExchangeService, db, Cache.entity, Repo.exchange)
     account = Singleton(AccountService, db, Repo.account)
-    contract_size = Singleton(ContractSizeService, Repo.contract_size)
+    contract_size = Singleton(ContractSizeService, Cache.entity, Repo.contract_size)
 
     # Companies Cluster
-    company = Singleton(CompanyService, Repo.company)
-    ticker = Singleton(TickerService, db, Repo.ticker, exchange, company)
+    company = Singleton(CompanyService, Cache.entity, Repo.company)
+    ticker = Singleton(TickerService, Cache.entity, Repo.ticker, exchange, company)
     share_hist = Singleton(ShareHistService, Repo.share_hist)
 
     # Options Cluster
@@ -78,19 +83,18 @@ class Service(DeclarativeContainer):
     option_hist = Singleton(OptionHistService, Repo.call_hist, Repo.put_hist)
     insert_time = Singleton(InsertTimeService, Repo.insert_time)
 
-    # TODO: Rethink weather the cache should have any dependencies and how it would work if not
-    cache = Singleton(CacheService, db, company, exchange, ticker, contract_size)
-
     # Portfolio Cluster
-    portfolio_option = Singleton(PortfolioOptionService, Repo.portfolio_option, cache, expiry, strike)
-    portfolio_share = Singleton(PortfolioShareService, Repo.portfolio_share, cache)
-    portfolio = Singleton(PortfolioService, Repo.portfolio, cache, portfolio_share, portfolio_option)
+    portfolio_option = Singleton(PortfolioOptionService, Repo.portfolio_option, Cache.entity, expiry, strike)
+    portfolio_share = Singleton(PortfolioShareService, Cache.entity, Repo.portfolio_share)
+    portfolio = Singleton(PortfolioService, Repo.portfolio, Cache.entity, portfolio_share, portfolio_option)
 
     yahoo_finance = Singleton(
-        YahooFinanceService, db, cache, ticker, expiry, strike, insert_time, share_hist, option_hist
+        YahooFinanceService, db, Cache.entity, ticker, expiry, strike, insert_time, share_hist, option_hist
     )
     session_manager = Singleton(SessionManager, account)
 
+    cache_manager = Singleton(CacheManager, db, Cache.entity, exchange, ticker, company, contract_size)
 
-class ExternalServices(DeclarativeContainer):
-    yahoo_finance = Singleton(YahooFinanceServiceProxy, Service.yahoo_finance, Service.cache)
+
+class ExternalService(DeclarativeContainer):
+    yahoo_finance = Singleton(YahooFinanceServiceProxy, Service.yahoo_finance, Cache.entity)

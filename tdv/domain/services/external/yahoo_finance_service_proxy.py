@@ -14,8 +14,8 @@ from tdv.logger_setup import LoggerFactory
 logger = LoggerFactory.make_logger(__name__)
 
 if TYPE_CHECKING:
-    from tdv.domain.services_internal.cache_service import CacheService
-    from tdv.domain.services_internal.yahoo_finance_service import YahooFinanceService
+    from tdv.domain.cache.cache_service import CacheService
+    from tdv.domain.services.yahoo_finance_service import YahooFinanceService
 
 
 class YahooFinanceServiceProxy:
