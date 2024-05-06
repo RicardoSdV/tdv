@@ -5,7 +5,7 @@ from tdv.constants import Companies
 from tdv.domain.entities.base_entity import Entity
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, repr=False)
 class Company(Entity):
     id: Optional[int] = None
     long_name: Optional[str] = None

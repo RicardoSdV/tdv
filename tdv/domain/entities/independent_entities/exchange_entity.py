@@ -6,7 +6,7 @@ from tdv.constants import Exchanges, Currencies
 from tdv.domain.entities.base_entity import Entity
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, repr=False)
 class Exchange(Entity):
 
     id: Optional[int] = None

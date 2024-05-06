@@ -86,12 +86,12 @@ class Service(DeclarativeContainer):
     # Portfolio Cluster
     portfolio_option = Singleton(PortfolioOptionService, Cache.entity, Repo.portfolio_option, expiry, strike)
     portfolio_share = Singleton(PortfolioShareService, Cache.entity, Repo.portfolio_share)
-    portfolio = Singleton(PortfolioService, Cache.entity, Repo.portfolio, portfolio_share, portfolio_option)
+    portfolio = Singleton(PortfolioService, Repo.portfolio, portfolio_share, portfolio_option)
 
     yahoo_finance = Singleton(
         YahooFinanceService, db, Cache.entity, ticker, expiry, strike, insert_time, share_hist, option_hist
     )
-    session_manager = Singleton(SessionManager, account)
+    session_manager = Singleton(SessionManager, db, Cache.entity, account, portfolio, portfolio_share, portfolio_option, strike, expiry)
 
     cache_manager = Singleton(CacheManager, db, Cache.entity, exchange, ticker, company, contract_size)
 

@@ -5,7 +5,7 @@ from typing import Optional
 from tdv.domain.entities.base_entity import Entity
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, repr=False)
 class CallHist(Entity):
     id: Optional[int] = None
     strike_id: Optional[int] = None

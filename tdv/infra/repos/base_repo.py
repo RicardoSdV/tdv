@@ -56,7 +56,7 @@ class BaseSerializer:
     @staticmethod
     def _entities_to_params_dicts(entities: Iterable[EntityT]) -> List[Dict[str, Insertable]]:
         """Turns domain/entities into param dicts of not None params"""
-        return [entity.to_dict() for entity in entities]
+        return [entity.to_dict_of_not_none_slots() for entity in entities]
 
     @staticmethod
     def _entities_to_attrs_list(entities: Iterable[EntityT]) -> Insertabless:

@@ -41,7 +41,7 @@ class SessionManager:
         expiry_service: 'ExpiryService',
     ) -> None:
 
-        self.sessions: Dict[int, Session] = {}
+        self.sessions_by_id: Dict[int, Session] = {}
 
         self.__db = db
         self.__entity_cache = entity_cache
@@ -71,7 +71,7 @@ class SessionManager:
 
             pfols_by_name, pfol_ids = self.__get_pfols_by_name_and_pfol_ids(account.id, conn)
 
-            pfol_shares_by_ticker, pfol_share_ids = self.__get_pfol_shares_and_ids(pfol_ids, conn)
+            pfol_shares_by_ticker = self.__get_pfol_shares_by_ticker_name(pfol_ids, conn)
             pfol_option_essentials = self.__get_pfol_options_expiries_and_strikes(pfol_ids, conn)
             pfol_options_by_ticker, strikes_by_id, expiries_by_id = pfol_option_essentials
 
@@ -85,7 +85,7 @@ class SessionManager:
                 expiries_by_id=expiries_by_id,
             )
 
-        self.sessions[session.id] = session
+        self.sessions_by_id[session.id] = session
         return session
 
 
@@ -95,7 +95,7 @@ class SessionManager:
         pfol_ids = [pfol.id for pfol in portfolios if pfol.id is not None]
         return pfols_by_name, pfol_ids
 
-    def __get_pfol_shares_and_ids(self, pfol_ids: IDs, conn: Connection) -> Dict[str, PortfolioShare]:
+    def __get_pfol_shares_by_ticker_name(self, pfol_ids: IDs, conn: Connection) -> Dict[str, PortfolioShare]:
         portfolio_shares = self.__pfol_share_service.get_portfolio_shares(pfol_ids, conn)
 
         pfol_shares_by_ticker = {}

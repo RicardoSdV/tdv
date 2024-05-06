@@ -4,7 +4,7 @@ from typing import Optional
 from tdv.domain.entities.base_entity import Entity
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, repr=False)
 class ContractSize(Entity):
     # TODO: Validate sizes and names
     id: Optional[int] = None

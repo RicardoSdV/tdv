@@ -20,12 +20,13 @@ class StrikeService:
     def get_else_create_strikes(
         self, expiry: Expiry, strike_prices: List[float], contract_sizes: List[ContractSize], conn: Connection
     ) -> List[Strike]:
-        logger.debug('Getting strikes', strike_prices=strike_prices)
 
         strikes_for_selecting = [
             Strike(expiry_id=expiry.id, contract_size_id=size.id, price=price)
             for size, price in zip(contract_sizes, strike_prices)
         ]
+
+        logger.debug('Getting strikes', strikes_for_selecting=strikes_for_selecting)
         selected_strikes = self.__strike_repo.select(conn, strikes_for_selecting)
 
         if len(selected_strikes) == len(strike_prices):
@@ -49,7 +50,7 @@ class StrikeService:
         return selected_strikes + inserted_strikes
 
     def get_strikes_with_ids(self, strike_ids: Generator[int, None, None], conn: Connection) -> List[Strike]:
-        logger.debug('Getting strikes', strike_ids=strike_ids)
         strikes = [Strike(id=_id) for _id in strike_ids]
+        logger.debug('Getting strikes', strikes=strikes)
         result = self.__strike_repo.select(conn, strikes)
         return result

@@ -6,7 +6,7 @@ from tdv.constants import Tickers
 from tdv.domain.entities.base_entity import Entity
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, repr=False)
 class Ticker(Entity):
     id: Optional[int] = None
     exchange_id: Optional[int] = None

@@ -26,14 +26,14 @@ class Entity:
         pass
 
     def __repr__(self) -> str:
-        return f'{self.__class__.__name__}({self.to_dict()})'
+        return f'{self.__class__.__name__}({self.to_dict_of_not_none_slots()})'
 
     def __eq__(self: T, other: Any) -> bool:
         if isinstance(other, self.__class__):
             return self.id == other.id
         return False
 
-    def to_dict(self) -> Dict[str, Insertable]:
+    def to_dict_of_not_none_slots(self) -> Dict[str, Insertable]:
         return {name: value for name in self.__slots__ if (value := getattr(self, name)) is not None}
 
     def to_list(self) -> List[Insertable]:

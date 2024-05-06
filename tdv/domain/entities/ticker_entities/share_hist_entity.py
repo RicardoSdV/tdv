@@ -4,7 +4,7 @@ from typing import Optional
 from tdv.domain.entities.base_entity import Entity
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, repr=False)
 class ShareHist(Entity):
     id: Optional[int] = None
     ticker_id: Optional[int] = None
