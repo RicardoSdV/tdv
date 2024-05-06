@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List, TYPE_CHECKING, Generator
 
 from sqlalchemy import Connection
@@ -10,15 +9,12 @@ from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
     from tdv.infra.repos.option_repos.strike_repo import StrikeRepo
-    from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class StrikeService:
-    def __init__(
-        self, strike_repo: 'StrikeRepo'
-    ) -> None:
+    def __init__(self, strike_repo: 'StrikeRepo') -> None:
         self.__strike_repo = strike_repo
 
     def get_else_create_strikes(

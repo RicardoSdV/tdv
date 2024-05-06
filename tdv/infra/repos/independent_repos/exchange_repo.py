@@ -1,10 +1,10 @@
-from typing import ClassVar, Type
+from typing import ClassVar, Type, List
 
-from sqlalchemy import Table
+from sqlalchemy import Table, Connection
 
 from tdv.domain.entities.independent_entities.exchange_entity import Exchange
 from tdv.infra.database.tables.independent_tables import exchange_table
-from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo
+from tdv.infra.repos.base_repo import BaseSerializer, BaseQueryBuilder, BaseRepo, EntityT
 
 
 class ExchangeSerializer(BaseSerializer):

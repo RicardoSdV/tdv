@@ -1,4 +1,4 @@
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 
 from sqlalchemy import Connection
 
@@ -11,24 +11,24 @@ from tdv.logger_setup import LoggerFactory
 logger = LoggerFactory.make_logger(__name__)
 
 if TYPE_CHECKING:
-    from tdv.infra.database import DB
-    from tdv.domain.services_internal.independent_services.company_service import CompanyService
-    from tdv.domain.services_internal.independent_services.exchange_service import ExchangeService
+    from tdv.domain.cache.entity_cache import EntityCache
+    from tdv.domain.services.independent_services.company_service import CompanyService
+    from tdv.domain.services.independent_services.exchange_service import ExchangeService
     from tdv.infra.repos.ticker_repos.ticker_repo import TickerRepo
 
 
 class TickerService:
     def __init__(
         self,
-        db: 'DB',
+        entity_cache: 'EntityCache',
         ticker_repo: 'TickerRepo',
         exchange_service: 'ExchangeService',
         company_service: 'CompanyService',
     ) -> None:
-        self.db = db
-        self.ticker_repo = ticker_repo
-        self.exchange_service = exchange_service
-        self.company_service = company_service
+        self.__entity_cache = entity_cache
+        self.__ticker_repo = ticker_repo
+        self.__exchange_service = exchange_service
+        self.__company_service = company_service
 
     def create_all_tickers(self, exchanges: List[Exchange], companies: List[Company], conn: Connection) -> List[Ticker]:
         tickers = []
@@ -54,24 +54,12 @@ class TickerService:
                     tickers.append(Ticker(exchange_id=exchange_id, company_id=company_id, name=ticker_name.value))
 
         logger.debug('Creating all tickers', tickers=tickers)
-        result = self.ticker_repo.insert(conn, tickers)
+        result = self.__ticker_repo.insert(conn, tickers)
+        self.__entity_cache.cache_tickers(result)
         return result
 
     def get_all_tickers(self, conn: Connection) -> List[Ticker]:
         tickers = [Ticker(name=name.value) for name in Tickers]
         logger.debug('Getting all tickers', tickers=tickers)
-        result = self.ticker_repo.select(conn, tickers)
-        return result
-
-    def get_ticker_by_name(self, ticker_name: str, conn: Optional[Connection] = None) -> List[Ticker]:
-        logger.debug('Getting ticker by name', ticker_name=ticker_name)
-        tickers = [Ticker(name=ticker_name)]
-
-        if conn is None:
-            with self.db.connect as conn:
-                result = self.ticker_repo.select(conn, tickers)
-                conn.commit()
-        else:
-            result = self.ticker_repo.select(conn, tickers)
-
+        result = self.__ticker_repo.select(conn, tickers)
         return result

@@ -1,8 +1,6 @@
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict, List
 
 from sqlalchemy import Connection
-
-from typing import List
 
 from tdv.domain.entities.portfolio_entities.portfolio_entity import Portfolio
 from tdv.domain.entities.portfolio_entities.portfolio_option_entity import PortfolioOption
@@ -10,10 +8,10 @@ from tdv.logger_setup import LoggerFactory
 from tdv.utils import datetime_from_dashed_YMD_str
 
 if TYPE_CHECKING:
+    from tdv.domain.cache.entity_cache import EntityCache
     from tdv.infra.repos.portfolio_repos.portfolio_option_repo import PortfolioOptionRepo
-    from tdv.domain.services_internal.cache_service import CacheService
-    from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
-    from tdv.domain.services_internal.option_services.strike_service import StrikeService
+    from tdv.domain.services.option_services.expiry_service import ExpiryService
+    from tdv.domain.services.option_services.strike_service import StrikeService
 
 
 logger = LoggerFactory.make_logger(__name__)
@@ -22,13 +20,14 @@ logger = LoggerFactory.make_logger(__name__)
 class PortfolioOptionService:
     def __init__(
         self,
+            entity_cache: 'EntityCache',
         portfolio_option_repo: 'PortfolioOptionRepo',
-        cache_service: 'CacheService',
+
         expiry_service: 'ExpiryService',
         strike_service: 'StrikeService',
     ) -> None:
+        self.__entity_cache = entity_cache
         self.__pfol_option_repo = portfolio_option_repo
-        self.__cache_service = cache_service
         self.__expiry_service = expiry_service
         self.__strike_service = strike_service
 
@@ -51,9 +50,9 @@ class PortfolioOptionService:
                 option_data['count'],
                 to_datetime(option_data['expiry_date']),
                 option_data['strike'],
-                self.__cache_service.tickers_by_name[option_data['ticker']],
+                self.__entity_cache.tickers_by_name[option_data['ticker']],
                 option_data['is_call'],
-                self.__cache_service.contract_sizes_by_name[option_data['size_name']],
+                self.__entity_cache.contract_sizes_by_name[option_data['size_name']],
             )
 
             expiry = self.__expiry_service.get_else_create_expiry(expiry_date, ticker, conn)

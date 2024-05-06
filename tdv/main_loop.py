@@ -1,7 +1,7 @@
 from time import sleep
 
 from tdv.constants import MAIN_LOOP_SLEEP_TIME
-from tdv.containers import ExternalServices
+from tdv.containers import ExternalService
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
@@ -13,7 +13,7 @@ class MainLoop:
 
         sleep_time = MAIN_LOOP_SLEEP_TIME
 
-        yahoo_finance_service_proxy = ExternalServices.yahoo_finance()
+        yahoo_finance_service_proxy = ExternalService.yahoo_finance()
 
         while True:
             try:

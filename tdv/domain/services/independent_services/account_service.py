@@ -16,14 +16,14 @@ logger = LoggerFactory.make_logger(__name__)
 class AccountService:
     def __init__(self, db: 'DB', account_repo: 'AccountRepo') -> None:
         self.__db = db
-        self.account_repo = account_repo
+        self.__account_repo = account_repo
 
     def create_account(self, username: str, email: str, password: str) -> List[Account]:
         logger.debug('Creating account', username=username, email=email, password=password)
         users = [Account(name=username, email=email, password=password)]
 
         with self.__db.connect as conn:
-            users = self.account_repo.insert(conn, users)
+            users = self.__account_repo.insert(conn, users)
             conn.commit()
 
         return users
@@ -33,7 +33,7 @@ class AccountService:
             Account(name=LocalAccountInfo.username, email=LocalAccountInfo.email, password=LocalAccountInfo.password)
         ]
         logger.debug('Creating local account', account=accounts)
-        result = self.account_repo.insert(conn, accounts)
+        result = self.__account_repo.insert(conn, accounts)
         return result
 
     def delete_account_by_id(self, user_id: int) -> List[Account]:
@@ -41,7 +41,7 @@ class AccountService:
         users = [Account(id=user_id)]
 
         with self.__db.connect as conn:
-            users = self.account_repo.delete(conn, users)
+            users = self.__account_repo.delete(conn, users)
             conn.commit()
 
         return users
@@ -51,14 +51,14 @@ class AccountService:
         users = [Account(email=email, password=password)]
 
         with self.__db.connect as conn:
-            result = self.account_repo.select(conn, users)
+            result = self.__account_repo.select(conn, users)
             conn.commit()
 
         return result
 
     def get_or_raise_account_with_name(self, name: str, conn: Connection) -> Account:
         logger.debug('Getting Account', name=name)
-        accounts = self.account_repo.select(conn, [Account(name=name)])
+        accounts = self.__account_repo.select(conn, [Account(name=name)])
         assert len(accounts) == 1
         return accounts[0]
 
@@ -68,7 +68,7 @@ class AccountService:
         params = {'username': username}
 
         with self.__db.connect as conn:
-            result = self.account_repo.update(conn, users, params)
+            result = self.__account_repo.update(conn, users, params)
             conn.commit()
 
         return result

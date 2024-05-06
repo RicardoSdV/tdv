@@ -10,10 +10,10 @@ from tdv.domain.entities.portfolio_entities.portfolio_share_entity import Portfo
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
+    from tdv.domain.cache.entity_cache import EntityCache
     from tdv.infra.repos.portfolio_repos.portfolio_repo import PortfolioRepo
-    from tdv.domain.services_internal.cache_service import CacheService
-    from tdv.domain.services_internal.portfolio_services.portfolio_share_service import PortfolioShareService
-    from tdv.domain.services_internal.portfolio_services.portfolio_option_service import PortfolioOptionService
+    from tdv.domain.services.portfolio_services.portfolio_share_service import PortfolioShareService
+    from tdv.domain.services.portfolio_services.portfolio_option_service import PortfolioOptionService
 
 logger = LoggerFactory.make_logger(__name__)
 
@@ -24,12 +24,12 @@ class PortfolioService:
     def __init__(
         self,
         portfolio_repo: 'PortfolioRepo',
-        cache_service: 'CacheService',
+        entity_cache: 'EntityCache',
         pfol_share_service: 'PortfolioShareService',
         pfol_option_service: 'PortfolioOptionService',
     ) -> None:
         self.__portfolio_repo = portfolio_repo
-        self.__cache_service = cache_service
+        self.__entity_cache = entity_cache
         self.__pfol_share_service = pfol_share_service
         self.__pfol_option_service = pfol_option_service
 
@@ -40,15 +40,13 @@ class PortfolioService:
             cash, shares_data, options_data = data['cash'], data['shares'], data['options']
 
             portfolio_for_insert = Portfolio(account_id=account.id, name=name, cash=cash)
-            inserted_portfolio = self.__portfolio_repo.insert(conn, [portfolio_for_insert])
-            portfolios.extend(inserted_portfolio)
-
-            inserted_pfol_shares = self.__pfol_share_service.create_local_portfolio_shares(account, shares_data, conn)
-            exit()
+            inserted_portfolio = self.__portfolio_repo.insert(conn, [portfolio_for_insert])[0]
+            inserted_pfol_shares = self.__pfol_share_service.create_local_portfolio_shares(inserted_portfolio, shares_data, conn)
             inserted_pfol_options = self.__pfol_option_service.create_local_portfolio_options(
-                inserted_portfolio[0], options_data, conn
+                inserted_portfolio, options_data, conn
             )
 
+            portfolios.append(inserted_portfolio)
             pfol_shares.extend(inserted_pfol_shares)
             pfol_options.extend(inserted_pfol_options)
 

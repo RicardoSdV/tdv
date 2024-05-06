@@ -24,6 +24,7 @@ def many() -> None:
         companies = Service.company().create_all_companies(conn)
         tickers = Service.ticker().create_all_tickers(exchanges, companies, conn)
         contract_sizes = Service.contract_size().create_all_contract_sizes(conn)
+
         local_account = Service.account().create_local_account(conn)[0]
         pfol_combo = Service.portfolio().create_all_local_user_portfolios(local_account, conn)
         portfolios, portfolio_shares, portfolio_options = pfol_combo
