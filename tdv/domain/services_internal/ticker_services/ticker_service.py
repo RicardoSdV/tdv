@@ -32,19 +32,19 @@ class TickerService:
 
     def create_all_tickers(self, exchanges: List[Exchange], companies: List[Company], conn: Connection) -> List[Ticker]:
         tickers = []
-        for exchange_name, company_ticker_names in TICKERS_BY_COMPANY_EXCHANGE.items():
+        for abrv_exchange_name, company_ticker in TICKERS_BY_COMPANY_EXCHANGE.items():
             exchange_id = None
             for exchange in exchanges:
-                if exchange.name == exchange_name.value:
+                if exchange.abrv_name == abrv_exchange_name.value:
                     exchange_id = exchange.id
                     break
             if exchange_id is None:
                 continue
 
-            for company_name, ticker_names in company_ticker_names.items():
+            for company_name, ticker_names in company_ticker.items():
                 company_id = None
                 for company in companies:
-                    if company.long_name == company_name.value:
+                    if company.name == company_name.value:
                         company_id = company.id
                         break
                 if company_id is None:
@@ -53,7 +53,7 @@ class TickerService:
                 for ticker_name in ticker_names:
                     tickers.append(Ticker(exchange_id=exchange_id, company_id=company_id, name=ticker_name.value))
 
-        logger.debug('Inserting tickers', tickers=tickers)
+        logger.debug('Creating all tickers', tickers=tickers)
         result = self.ticker_repo.insert(conn, tickers)
         return result
 

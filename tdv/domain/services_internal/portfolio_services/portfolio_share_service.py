@@ -2,6 +2,7 @@ from typing import List, TYPE_CHECKING, Dict
 
 from sqlalchemy import Connection
 
+from tdv.domain.entities.independent_entities.account_entity import Account
 from tdv.domain.entities.portfolio_entities.portfolio_share_entity import PortfolioShare
 from tdv.logger_setup import LoggerFactory
 
@@ -17,11 +18,11 @@ class PortfolioShareService:
         self.__pfol_share_repo = pfol_share_repo
         self.__cache_service = cache_service
 
-    def create_local_portfolio_shares(self, shares_data: Dict[str, int], conn: Connection) -> List[PortfolioShare]:
+    def create_local_portfolio_shares(self, account: Account, shares_data: Dict[str, int], conn: Connection) -> List[PortfolioShare]:
         pfol_shares = []
         for ticker_name, count in shares_data.items():
             ticker = self.__cache_service.tickers_by_name[ticker_name]
-            pfol_shares.append(PortfolioShare(ticker_id=ticker.id, count=count))
+            pfol_shares.append(PortfolioShare(portfolio_id=account.id, ticker_id=ticker.id, count=count))
         logger.debug('Creating portfolio shares', pfol_shares=pfol_shares)
 
         result = self.__pfol_share_repo.insert(conn, pfol_shares)

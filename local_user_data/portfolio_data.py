@@ -2,7 +2,7 @@ local_user_portfolio_data = {
     'A': {
         "cash": -6270.33,
         "shares": {'TSLA': 110},
-        'options_data': [
+        'options': [
             {
                 "count": 1,
                 "expiry_date": "2024-06-21",

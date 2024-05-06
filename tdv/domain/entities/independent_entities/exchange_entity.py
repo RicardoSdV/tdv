@@ -10,8 +10,8 @@ from tdv.domain.entities.base_entity import Entity
 class Exchange(Entity):
 
     id: Optional[int] = None
+    abrv_name: Optional[str] = None
     name: Optional[str] = None
-    long_name: Optional[str] = None
     currency: Optional[str] = None
     live: Optional[bool] = None
     hist: Optional[bool] = None
@@ -19,9 +19,9 @@ class Exchange(Entity):
     updated_at: Optional[datetime] = None
 
     def __post_init__(self):
+        if self.abrv_name is not None:
+            Exchanges.AbrvNames.validate_value(self.abrv_name)
         if self.name is not None:
-            Exchanges.ShortNames.validate_value(self.name)
-        if self.long_name is not None:
-            Exchanges.LongNames.validate_value(self.long_name)
+            Exchanges.Names.validate_value(self.name)
         if self.currency is not None:
             Currencies.validate_value(self.currency)

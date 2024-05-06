@@ -34,15 +34,17 @@ class PortfolioService:
         self.__pfol_option_service = pfol_option_service
 
     def create_all_local_user_portfolios(self, account: Account, conn: Connection) -> PfolCombo:
+        logger.debug('Creating all local user portfolios', account=account)
         portfolios, pfol_shares, pfol_options = [], [], []
         for name, data in local_user_portfolio_data.items():
-            cash, shares_data, options_data = data['cash'], data['shares'], data['options_data']
+            cash, shares_data, options_data = data['cash'], data['shares'], data['options']
 
             portfolio_for_insert = Portfolio(account_id=account.id, name=name, cash=cash)
             inserted_portfolio = self.__portfolio_repo.insert(conn, [portfolio_for_insert])
             portfolios.extend(inserted_portfolio)
 
-            inserted_pfol_shares = self.__pfol_share_service.create_local_portfolio_shares(shares_data, conn)
+            inserted_pfol_shares = self.__pfol_share_service.create_local_portfolio_shares(account, shares_data, conn)
+            exit()
             inserted_pfol_options = self.__pfol_option_service.create_local_portfolio_options(
                 inserted_portfolio[0], options_data, conn
             )

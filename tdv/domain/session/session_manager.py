@@ -76,8 +76,8 @@ class SessionManager:
             pfol_options_by_ticker, strikes_by_id, expiries_by_id = pfol_option_essentials
 
             session = Session(
+                id=session_id,
                 account=account,
-                session_id=session_id,
                 pfols_by_name=pfols_by_name,
                 pfol_shares_by_ticker=pfol_shares_by_ticker,
                 pfol_options_by_ticker=pfol_options_by_ticker,

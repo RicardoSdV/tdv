@@ -9,8 +9,8 @@ from tdv.infra.database.tables import metadata
 exchange_table = Table(
     'exchange', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('name', String(20), nullable=False, unique=True),
-    Column('long_name', String(150), nullable=False, unique=True),
+    Column('abrv_name', String(20), nullable=False, unique=True),
+    Column('name', String(150), nullable=False, unique=True),
     Column('currency', String(20), server_default=Currencies.US_DOLLAR.value, nullable=False),
     Column('live', Boolean, server_default='false', nullable=False),
     Column('hist', Boolean, server_default='false', nullable=False),
@@ -21,8 +21,8 @@ exchange_table = Table(
 company_table = Table(
     'company', metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
-    Column('long_name', String(2000), nullable=False),
-    Column('short_name', String(2000), nullable=False),
+    Column('abrv_name', String(1000), nullable=False),
+    Column('name', String(2000), nullable=False),
 )
 
 account_table = Table(
