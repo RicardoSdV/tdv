@@ -84,7 +84,7 @@ class Service(DeclarativeContainer):
     insert_time = Singleton(InsertTimeService, Repo.insert_time)
 
     # Portfolio Cluster
-    portfolio_option = Singleton(PortfolioOptionService, Repo.portfolio_option, Cache.entity, expiry, strike)
+    portfolio_option = Singleton(PortfolioOptionService, Cache.entity, Repo.portfolio_option, expiry, strike)
     portfolio_share = Singleton(PortfolioShareService, Cache.entity, Repo.portfolio_share)
     portfolio = Singleton(PortfolioService, Repo.portfolio, Cache.entity, portfolio_share, portfolio_option)
 

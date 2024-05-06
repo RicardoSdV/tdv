@@ -10,8 +10,8 @@ from tdv.domain.entities.portfolio_entities.portfolio_share_entity import Portfo
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
+    from tdv.domain.cache.entity_cache import EntityCache
     from tdv.infra.repos.portfolio_repos.portfolio_repo import PortfolioRepo
-    from tdv.domain.cache.cache_service import CacheService
     from tdv.domain.services.portfolio_services.portfolio_share_service import PortfolioShareService
     from tdv.domain.services.portfolio_services.portfolio_option_service import PortfolioOptionService
 
@@ -24,12 +24,12 @@ class PortfolioService:
     def __init__(
         self,
         portfolio_repo: 'PortfolioRepo',
-        cache_service: 'CacheService',
+        entity_cache: 'EntityCache',
         pfol_share_service: 'PortfolioShareService',
         pfol_option_service: 'PortfolioOptionService',
     ) -> None:
         self.__portfolio_repo = portfolio_repo
-        self.__cache_service = cache_service
+        self.__entity_cache = entity_cache
         self.__pfol_share_service = pfol_share_service
         self.__pfol_option_service = pfol_option_service
 

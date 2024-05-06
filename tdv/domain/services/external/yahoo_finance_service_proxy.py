@@ -7,6 +7,7 @@ from schedule import Scheduler
 import yfinance as yf
 
 from tdv.constants import MarketEvents, UPDATE_OPTIONS_INTERVAL
+from tdv.domain.cache.entity_cache import EntityCache
 
 from tdv.domain.types import OptionChainsYF, Options
 from tdv.logger_setup import LoggerFactory
@@ -14,15 +15,14 @@ from tdv.logger_setup import LoggerFactory
 logger = LoggerFactory.make_logger(__name__)
 
 if TYPE_CHECKING:
-    from tdv.domain.cache.cache_service import CacheService
     from tdv.domain.services.yahoo_finance_service import YahooFinanceService
 
 
 class YahooFinanceServiceProxy:
     force_requests = True
 
-    def __init__(self, yahoo_finance_service: 'YahooFinanceService', cache_service: 'CacheService') -> None:
-        self.cache_service = cache_service
+    def __init__(self, yahoo_finance_service: 'YahooFinanceService', entity_cache: 'EntityCache') -> None:
+        self.cache_service = entity_cache
 
         self.yahoo_finance_service = yahoo_finance_service
 

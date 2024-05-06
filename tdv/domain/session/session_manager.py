@@ -13,13 +13,13 @@ from tdv.domain.types import IDs, TickerName, StrikeID, ExpiryID
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
-    from tdv.domain.cache.cache_service import CacheService
-    from tdv.domain.services_internal.independent_services.account_service import AccountService
-    from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
-    from tdv.domain.services_internal.option_services.strike_service import StrikeService
-    from tdv.domain.services_internal.portfolio_services.portfolio_option_service import PortfolioOptionService
-    from tdv.domain.services_internal.portfolio_services.portfolio_service import PortfolioService
-    from tdv.domain.services_internal.portfolio_services.portfolio_share_service import PortfolioShareService
+    from tdv.domain.cache.entity_cache import EntityCache
+    from tdv.domain.services.independent_services.account_service import AccountService
+    from tdv.domain.services.option_services.expiry_service import ExpiryService
+    from tdv.domain.services.option_services.strike_service import StrikeService
+    from tdv.domain.services.portfolio_services.portfolio_option_service import PortfolioOptionService
+    from tdv.domain.services.portfolio_services.portfolio_service import PortfolioService
+    from tdv.domain.services.portfolio_services.portfolio_share_service import PortfolioShareService
 
 
 PfolOptionsByTickerName = Dict[TickerName, PortfolioOption]
@@ -32,7 +32,7 @@ class SessionManager:
     def __init__(
         self,
         db: 'DB',
-        cache_service: 'CacheService',
+        entity_cache: 'EntityCache',
         account_service: 'AccountService',
         portfolio_service: 'PortfolioService',
         pfol_share_service: 'PortfolioShareService',
@@ -44,7 +44,7 @@ class SessionManager:
         self.sessions: Dict[int, Session] = {}
 
         self.__db = db
-        self.__cache_service = cache_service
+        self.__entity_cache = entity_cache
         self.__account_service = account_service
         self.__portfolio_service = portfolio_service
         self.__pfol_share_service = pfol_share_service
@@ -76,8 +76,8 @@ class SessionManager:
             pfol_options_by_ticker, strikes_by_id, expiries_by_id = pfol_option_essentials
 
             session = Session(
+                id=session_id,
                 account=account,
-                session_id=session_id,
                 pfols_by_name=pfols_by_name,
                 pfol_shares_by_ticker=pfol_shares_by_ticker,
                 pfol_options_by_ticker=pfol_options_by_ticker,
@@ -102,7 +102,7 @@ class SessionManager:
         pfol_shares_by_ticker = {}
         for pfol_share in portfolio_shares:
             ticker_id = pfol_share.ticker_id
-            ticker = self.__cache_service.tickers_by_id[ticker_id]
+            ticker = self.__entity_cache.tickers_by_id[ticker_id]
             pfol_shares_by_ticker[ticker.name] = pfol_share
 
         return pfol_shares_by_ticker
@@ -118,7 +118,7 @@ class SessionManager:
         pfol_options_by_ticker = {}
         for pfol_option, expiry in zip(portfolio_options, expiries):
             ticker_id = expiry.ticker_id
-            ticker = self.__cache_service.tickers_by_id[ticker_id]
+            ticker = self.__entity_cache.tickers_by_id[ticker_id]
             pfol_options_by_ticker[ticker.name] = pfol_option
 
         strikes_by_id = {strike.id: strike for strike in strikes}
