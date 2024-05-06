@@ -110,7 +110,7 @@ class SessionManager:
     def __get_pfol_options_expiries_and_strikes(self, pfol_ids: IDs, conn: Connection) -> PfolOptionEssentials:
         portfolio_options = self.__pfol_option_service.get_portfolio_options(pfol_ids, conn)
 
-        strikes = self.__strike_service.get_strikes((pfol_option.strike_id for pfol_option in portfolio_options), conn)
+        strikes = self.__strike_service.get_strikes_with_ids((pfol_option.strike_id for pfol_option in portfolio_options), conn)
         expiries = self.__expiry_service.get_expiries_with_id((strike.expiry_id for strike in strikes), conn)
 
         pfol_options_by_ticker = {}

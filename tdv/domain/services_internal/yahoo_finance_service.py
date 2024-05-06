@@ -5,6 +5,7 @@ from tdv.domain.entities.independent_entities.contract_size_entity import Contra
 from tdv.domain.entities.ticker_entities.ticker_entity import Ticker
 from tdv.domain.types import Options
 from tdv.logger_setup import LoggerFactory
+from tdv.utils import datetime_from_dashed_YMD_str
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
@@ -42,10 +43,6 @@ class YahooFinanceService:
         self.__share_hist_service = share_hist_service
         self.__option_hist_service = option_hist_service
 
-    @staticmethod
-    def __str_to_datetime(date_string: str) -> datetime:
-        return datetime.strptime(date_string, '%Y-%m-%d')
-
     def __get_contract_sizes_with_name(self, contract_size_names: Iterable[str]) -> List[ContractSize]:
         contract_sizes = []
         for contract_size_name in contract_size_names:
@@ -56,8 +53,8 @@ class YahooFinanceService:
         return contract_sizes
 
     def save_options(self, options: Options, expiry_date_strs: Iterable[str], ticker: Ticker) -> None:
-
-        expiry_dates = [self.__str_to_datetime(date_str) for date_str in expiry_date_strs]
+        to_datetime = datetime_from_dashed_YMD_str
+        expiry_dates = [to_datetime(date_str) for date_str in expiry_date_strs]
 
         with self.__db.connect as conn:
 
@@ -75,7 +72,9 @@ class YahooFinanceService:
                     ticker, insert_time, underlying['regularMarketPrice'], conn
                 )
 
-                call_hists, put_hists = self.__option_hist_service.create_option_hists(insert_time, strikes, calls, puts, conn)
+                call_hists, put_hists = self.__option_hist_service.create_option_hists(
+                    insert_time, strikes, calls, puts, conn
+                )
 
                 self.__cache_service.last_share_hists_by_ticker_id = {}
 

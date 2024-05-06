@@ -1,35 +1,57 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 
 from sqlalchemy import Connection
 
 from typing import List
 
-from tdv.domain.entities.option_entities.strike_entity import Strike
+from tdv.domain.entities.portfolio_entities.portfolio_entity import Portfolio
 from tdv.domain.entities.portfolio_entities.portfolio_option_entity import PortfolioOption
 from tdv.logger_setup import LoggerFactory
+from tdv.utils import datetime_from_dashed_YMD_str
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
     from tdv.infra.repos.portfolio_repos.portfolio_option_repo import PortfolioOptionRepo
+    from tdv.domain.services_internal.cache_service import CacheService
+    from tdv.domain.services_internal.option_services.strike_service import StrikeService
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class PortfolioOptionService:
-    def __init__(self, db: 'DB', portfolio_option_repo: 'PortfolioOptionRepo') -> None:
-        self.db = db
-        self.pfol_option_repo = portfolio_option_repo
+    def __init__(self, db: 'DB', portfolio_option_repo: 'PortfolioOptionRepo', cache_service: 'CacheService', strike_service: 'StrikeService') -> None:
+        self.__db = db
+        self.__pfol_option_repo = portfolio_option_repo
+        self.__cache_service = cache_service
+        self.__strike_service = strike_service
 
     def get_portfolio_options(self, portfolio_ids: List[int], conn: Connection) -> List[PortfolioOption]:
         logger.debug('Getting portfolio options', portfolio_ids=portfolio_ids)
 
         portfolio_options = [PortfolioOption(portfolio_id=pfol_id) for pfol_id in portfolio_ids]
-        result = self.pfol_option_repo.select(conn, portfolio_options)
+        result = self.__pfol_option_repo.select(conn, portfolio_options)
 
         return result
 
-    def create_many_portfolio_options(self, strike: Strike, conn) -> List[PortfolioOption]:
-        pass
+    def create_local_portfolio_options(self, portfolio: Portfolio, options_data: List[Dict], conn: Connection) -> List[PortfolioOption]:
+        to_datetime = datetime_from_dashed_YMD_str
+
+        pfol_options = []
+        for option_data in options_data:
+            count, expiry_date, strike_price, ticker, is_call, contract_size = (
+                option_data['count'],
+                to_datetime(option_data['expiry_date']),
+                option_data['strike'],
+                self.__cache_service.tickers_by_name[option_data['ticker']],
+                option_data['is_call'],
+                self.__cache_service.contract_sizes_by_name[option_data['size_name']],
+            )
+            strike = self.__strike_service.get_strike_with_portfolio_data(ticker, strike_price, expiry_date, contract_size, conn)
+
+            pfol_options.append(PortfolioOption(portfolio_id=portfolio.id, strike_id=strike.id, is_call=is_call, count=count))
+
+        result = self.__pfol_option_repo.insert(conn, pfol_options)
+        return result
 
     # def create_portfolio_options(
     #     self, portfolio_id: int, option_id: int, count: Optional[float]

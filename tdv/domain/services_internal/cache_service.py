@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 from tdv.domain.entities.independent_entities.company_entity import Company
 from tdv.domain.entities.independent_entities.contract_size_entity import ContractSize
@@ -36,9 +36,10 @@ class CacheService:
         self.__ticker_service = ticker_service
         self.__contract_size_service = contract_size_service
 
-        # Cached entities
+        # Cached Entities
         self.__exchanges_by_id: Optional[Dict[int, Exchange]] = None
         self.__tickers_by_id: Optional[Dict[int, Ticker]] = None
+        self.__tickers_by_name: Optional[Dict[str, Ticker]] = None
         self.__companies_by_id: Optional[Dict[int, Company]] = None
         self.__contract_sizes_by_name: Optional[Dict[str, ContractSize]] = None
 
@@ -62,6 +63,12 @@ class CacheService:
                 tickers = self.__ticker_service.get_all_tickers(conn)
                 self.__tickers_by_id = {ticker.id: ticker for ticker in tickers}
         return self.__tickers_by_id
+
+    @property
+    def tickers_by_name(self) -> Dict[str, Ticker]:
+        if self.__tickers_by_name is None:
+            self.__tickers_by_name = {ticker.name: ticker for ticker in self.tickers_by_id.values()}
+        return self.__tickers_by_name
 
     @property
     def companies_by_id(self) -> Dict[int, Company]:

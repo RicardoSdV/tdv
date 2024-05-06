@@ -29,7 +29,11 @@ class OptionHistService:
         res_put: List[PutHist] = []
 
         for option, Entity, repo, option_hists, res_option in zip(
-            (calls, puts), (CallHist, PutHist), (self.__call_hist_repo, self.__put_hist_repo), (call_hists, put_hists), (res_call, res_put)
+            (calls, puts),
+            (CallHist, PutHist),
+            (self.__call_hist_repo, self.__put_hist_repo),
+            (call_hists, put_hists),
+            (res_call, res_put),
         ):
 
             for strike, last_trade_date, last_price, bid, ask, change, volume, open_interest, implied_volatility in zip(

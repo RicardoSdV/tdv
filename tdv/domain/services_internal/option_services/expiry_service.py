@@ -14,23 +14,30 @@ logger = LoggerFactory.make_logger(__name__)
 
 class ExpiryService:
     def __init__(self, expiry_repo: 'ExpiryRepo') -> None:
-        self.expiry_repo = expiry_repo
-
-    def get_expiries_with_id(self, expiry_ids: Generator[int, None, None], conn: Connection) -> List[Expiry]:
-        logger.debug('Getting expiries', expiry_ids=expiry_ids)
-        expiries = [Expiry(id=_id) for _id in expiry_ids]
-        result = self.expiry_repo.select(conn, expiries)
-        return result
+        self.__expiry_repo = expiry_repo
 
     def get_else_create_expiry(self, expiry_date: datetime, ticker: Ticker, conn: Connection) -> Expiry:
         expiry = [Expiry(date=expiry_date, ticker_id=ticker.id)]
 
         logger.debug('Getting expiry', expiry=expiry)
-        selected_expiries = self.expiry_repo.select(conn, expiry)
+        selected_expiries = self.__expiry_repo.select(conn, expiry)
         if len(selected_expiries) > 0:
             return selected_expiries[0]
 
         logger.debug('Expiry not found, creating expiry', expiry=expiry)
-        created_expiries = self.expiry_repo.insert(conn, expiry)
+        created_expiries = self.__expiry_repo.insert(conn, expiry)
 
         return created_expiries[0]
+
+    def get_expiries_with_id(self, expiry_ids: Generator[int, None, None], conn: Connection) -> List[Expiry]:
+        logger.debug('Getting expiries', expiry_ids=expiry_ids)
+        expiries = [Expiry(id=_id) for _id in expiry_ids]
+        result = self.__expiry_repo.select(conn, expiries)
+        return result
+
+    def get_expiry_with_ticker_and_date(self, ticker: Ticker, expiry_date: datetime, conn: Connection) -> Expiry:
+        expiry = Expiry(ticker_id=ticker.id, date=expiry_date)
+        logger.debug('Getting Expiry', expiry=expiry)
+        result = self.__expiry_repo.select(conn, [expiry])
+        return result[0]
+

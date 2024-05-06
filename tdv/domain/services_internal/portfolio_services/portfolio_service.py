@@ -1,11 +1,12 @@
-from typing import List, TYPE_CHECKING
-
+from typing import List, TYPE_CHECKING, Tuple
 
 from sqlalchemy import Connection
 
 from local_user_data.portfolio_data import local_user_portfolio_data
 from tdv.domain.entities.independent_entities.account_entity import Account
 from tdv.domain.entities.portfolio_entities.portfolio_entity import Portfolio
+from tdv.domain.entities.portfolio_entities.portfolio_option_entity import PortfolioOption
+from tdv.domain.entities.portfolio_entities.portfolio_share_entity import PortfolioShare
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
@@ -17,73 +18,41 @@ if TYPE_CHECKING:
 
 logger = LoggerFactory.make_logger(__name__)
 
+PfolCombo = Tuple[List[Portfolio], List[PortfolioShare], List[PortfolioOption]]
+
 
 class PortfolioService:
-    def __init__(self, db: 'DB', portfolio_repo: 'PortfolioRepo', cache_service: 'CacheService', pfol_share_service: 'PortfolioShareService', pfol_option_service: 'PortfolioOptionService') -> None:
+    def __init__(
+        self,
+        db: 'DB',
+        portfolio_repo: 'PortfolioRepo',
+        cache_service: 'CacheService',
+        pfol_share_service: 'PortfolioShareService',
+        pfol_option_service: 'PortfolioOptionService',
+    ) -> None:
         self.__db = db
         self.__portfolio_repo = portfolio_repo
         self.__cache_service = cache_service
         self.__pfol_share_service = pfol_share_service
         self.__pfol_option_service = pfol_option_service
 
-
-    def create_all_local_user_portfolios(self, account: Account, conn: Connection) -> List[Portfolio]:
+    def create_all_local_user_portfolios(self, account: Account, conn: Connection) -> PfolCombo:
+        portfolios, pfol_shares, pfol_options = [], [], []
         for name, data in local_user_portfolio_data.items():
             cash, shares_data, options_data = data['cash'], data['shares'], data['option_data']
 
-            portfolio = Portfolio(account_id=account.id, name=name, cash=cash)
+            portfolio_for_insert = Portfolio(account_id=account.id, name=name, cash=cash)
+            inserted_portfolio = self.__portfolio_repo.insert(conn, [portfolio_for_insert])
+            portfolios.extend(inserted_portfolio)
 
-            with self.__db.connect as conn:
+            inserted_pfol_shares = self.__pfol_share_service.create_local_portfolio_shares(shares_data, conn)
+            inserted_pfol_options = self.__pfol_option_service.create_local_portfolio_options(inserted_portfolio[0], options_data, conn)
 
-                portfolio = self.__portfolio_repo.insert(conn, [portfolio])[0]
+            pfol_shares.extend(inserted_pfol_shares)
+            pfol_options.extend(inserted_pfol_options)
 
-                for ticker_name, count in shares_data.items():
-                    tickers_by_id = self.__cache_service.tickers_by_id
+        return portfolios, pfol_shares, pfol_options
 
-                    for t in tickers_by_id.values():
-                        if t.name == ticker_name:
-                            ticker = t
-                            break
-                    else:
-                        ticker = None
-
-                    pfol_share = self.__pfol_share_service.create_portfolio_share(ticker, count, conn)
-
-                    self.__pfol_option_service.create_portfolio_options(conn)
-
-                    # buscar en el DB un ticker
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            for option_data in options_data:
-                count, expiry_date, strike_price, ticker_name = option_data['count'], option_data['expiry_date'], option_data['strike'], option_data['ticker']
-
-
-
-
-        portfolios = Service.portfolio().create_many_portfolios(account_id, names, cashes, conn)
-
-        # portfolio shares
-        portfolio_ids = [portfolio.id for portfolio in portfolios]
-        Service.portfolio_share().create_many_portfolio_shares(portfolio_ids, ticker_id, counts, conn)
-
-        # portfolio options
-        Service.portfolio_option().create_many_portfolio_options(portfolio_ids, options, conn)
-
-        conn.commit()
 
     def create_portfolio(self, account_id: int, portfolio_name: str) -> List[Portfolio]:
         logger.debug('Creating portfolio', account_id=account_id, portfolio_name=portfolio_name)

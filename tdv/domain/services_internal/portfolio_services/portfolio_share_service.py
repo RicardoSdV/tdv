@@ -1,4 +1,4 @@
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Dict
 
 from sqlalchemy import Connection
 
@@ -9,25 +9,31 @@ from tdv.logger_setup import LoggerFactory
 if TYPE_CHECKING:
     from tdv.infra.database import DB
     from tdv.infra.repos.portfolio_repos.portfolio_share_repo import PortfolioShareRepo
+    from tdv.domain.services_internal.cache_service import CacheService
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class PortfolioShareService:
-    def __init__(self, db: 'DB', pfol_share_repo: 'PortfolioShareRepo') -> None:
-        self.db = db
-        self.pfol_share_repo = pfol_share_repo
+    def __init__(self, db: 'DB', pfol_share_repo: 'PortfolioShareRepo', cache_service: 'CacheService') -> None:
+        self.__db = db
+        self.__pfol_share_repo = pfol_share_repo
+        self.__cache_service = cache_service
 
-    def create_portfolio_share(self, ticker: Ticker, count: int, conn: Connection) -> PortfolioShare:
-        pfol_share = PortfolioShare(ticker_id=ticker.id, count=count)
-        result = self.pfol_share_repo.insert(pfol_share, conn)
-        return result[0]
+    def create_local_portfolio_shares(self, shares_data: Dict[str, int], conn: Connection) -> List[PortfolioShare]:
+        pfol_shares = []
+        for ticker_name, count in shares_data.items():
+            ticker = self.__cache_service.tickers_by_name[ticker_name]
+            pfol_shares.append(PortfolioShare(ticker_id=ticker.id, count=count))
+        logger.debug('Creating portfolio shares', pfol_shares=pfol_shares)
 
+        result = self.__pfol_share_repo.insert(conn, pfol_shares)
+        return result
 
     def get_portfolio_shares(self, pfol_ids: List[int], conn: Connection) -> List[PortfolioShare]:
         logger.debug('Getting portfolio shares', portfolio_ids=pfol_ids)
         pfol_shares = [PortfolioShare(portfolio_id=pfol_id) for pfol_id in pfol_ids]
-        result = self.pfol_share_repo.select(conn, pfol_shares)
+        result = self.__pfol_share_repo.select(conn, pfol_shares)
         return result
 
     def create_many_portfolio_shares(
@@ -38,7 +44,7 @@ class PortfolioShareService:
             PortfolioShare(portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
             for portfolio_id, count in zip(portfolio_id, count)
         ]
-        result = self.pfol_share_repo.insert(conn, shares)
+        result = self.__pfol_share_repo.insert(conn, shares)
         return result
 
 
