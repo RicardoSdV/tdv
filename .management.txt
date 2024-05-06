@@ -8,59 +8,57 @@ How to use:
 
 
 =======================================================================================================================
-Is Doing:
-    - Description: Tasks under active development i.e. someone else working on this task will be redundant, add your
-    name to know who is doing what. The trend would be for tasks in this section to be more atomic.
-
-    - Tasks:
-=======================================================================================================================
-
-=======================================================================================================================
-Will do:
-    - Description: Tasks that will be done relatively shortly. Keep number small, focused, prioritized.
-
-    - Tasks:
-        - Account:
-            - Session: log in once, work with that rather than passing username or something for every operation
-
-        - Portfolio:
-            - Create a portfolio
-            - Add shares to a portfolio
-            - Add options to a portfolio
-            - Get all portfolio data & pretty print
-            - Do analysis
-
-        - Ticker:
-            - Live / Historical support hybrid: Download options every certain interval & use the last DB insertion
-            as the "live" data to perform analysis.
-=======================================================================================================================
-
-=======================================================================================================================
-Could do:
-    - Description: More than less generic functionality which might or might not be done any time soon.
-
-    - Tasks:
-        - Account:
-            - Make account secure, passwords etc (use google? way better than handling accounts)
-
-        - YF service proxy:
-            - Rethink where Exchanges with Ticker dictionary is stored (one place in sync with DB)
-
-        -Ticker:
-            - Historical support: Have a comprehensive set of options downloaded & perform analysis based on timestamps
-            - Live support: Download options and perform analysis without having the options pass through the DB
-
-        - Portfolio:
-            - Update portfolio shares
-            - Update portfolio options
-            - Delete a portfolio
+Is Doing, Tasks that are/will be shortly under active development:
 
 =======================================================================================================================
 
 =======================================================================================================================
-Was done:
+Will do, Tasks that will be done relatively shortly. Keep number small, focused, prioritized:
+
+    - Remote user (Operations though http requests and the API):
+        - Create/Modify/Delete account as remote user
+        - Somehow get an event loop going for sessions and caches to persist
+        - Login as remote user
+        - Be able to do simple session requiring operations:
+            - Portfolio operations within session for remote user:
+                - Create a portfolio
+                - Add/remove/modify portfolio shares
+                - Add/remove/modify portfolio options
+                - Get all portfolio data & print
+                - Do analysis
+
+
+    - Local user:
+        - Log in as the local user.
+        - Make a CLI interface for the local user session.
+            - Portfolio operations within session for local user:
+                - Create a portfolio
+                - Add/remove/modify portfolio shares
+                - Add/remove/modify portfolio options
+                - Get all portfolio data & pretty print
+                - Do analysis
+
+    - Code integrity:
+        - Refactor code to pass mypy (This is a constant task)
+        - Use decimal instead of float for all? floats
+        - Use appropriate sizes of data in tables
+
+
+    - Ticker:
+        - Live / Historical support hybrid: Download options every certain interval & use the last DB insertion
+        as the "live" data to perform analysis.
+
+
+=======================================================================================================================
+
+=======================================================================================================================
+Could do: More than less generic functionality which might or might not be done any time soon.
+
     - Account:
-        - Create an account
-        - Update username
-        - Delete an account
+        - Make account secure, passwords etc (use google? way better than handling accounts)
+
+    -Ticker:
+        - Historical support: Have a comprehensive set of options downloaded & perform analysis based on timestamps
+
+
 =======================================================================================================================

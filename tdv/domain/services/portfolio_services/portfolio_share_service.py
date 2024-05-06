@@ -18,7 +18,10 @@ class PortfolioShareService:
         self.__cache_service = cache_service
         self.__pfol_share_repo = pfol_share_repo
 
-    def create_local_portfolio_shares(self, portfolio: Portfolio, shares_data: Dict[str, int], conn: Connection) -> List[PortfolioShare]:
+    def create_local_portfolio_shares(
+        self, portfolio: Portfolio, shares_data: Dict[str, int], conn: Connection
+    ) -> List[PortfolioShare]:
+
         pfol_shares = []
         for ticker_name, count in shares_data.items():
             ticker = self.__cache_service.tickers_by_name[ticker_name]

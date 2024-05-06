@@ -17,6 +17,6 @@ class Ticker(Entity):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.name is not None:
             Tickers.validate_value(self.name)

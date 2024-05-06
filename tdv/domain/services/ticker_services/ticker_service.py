@@ -53,7 +53,7 @@ class TickerService:
                 for ticker_name in ticker_names:
                     tickers.append(Ticker(exchange_id=exchange_id, company_id=company_id, name=ticker_name.value))
 
-        logger.debug('Inserting tickers', tickers=tickers)
+        logger.debug('Creating all tickers', tickers=tickers)
         result = self.__ticker_repo.insert(conn, tickers)
         self.__entity_cache.cache_tickers(result)
         return result

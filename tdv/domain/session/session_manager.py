@@ -129,6 +129,3 @@ class SessionManager:
     @staticmethod
     def __generate_session_id(account: Account) -> int:
         return hash(account.id)
-
-    def get_session_by_session_id(self, session_id: int) -> Account:
-        pass

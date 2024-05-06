@@ -34,6 +34,8 @@ Flags:
     - (WIP): Work in progress, i.e. the goal which the title of the commit claims to achieve is fundamentally incomplete
     and there is no hope it can work in the current state.
 
+    - (PSEUDOSTABLE): Everything kinda works as expected, has been tested
+
 
 
 Commit message syntax:

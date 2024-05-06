@@ -10,14 +10,14 @@ def local_user_group() -> None:
 def login() -> None:
     """Login and do all things that the local user may do"""
 
-    from tdv.containers import Service
-
-    session_manager = Service.session_manager()
-    session = session_manager.login()
-
-    while True:
-        print(session)  # TODO: Pretty print the session
-
-        command = input('Enter command: ')  # TODO: Make some commands and print them
-
-        # TODO: React to the command
+    # from tdv.containers import Service
+    #
+    # session_manager = Service.session_manager()
+    # session = session_manager.login()
+    #
+    # while True:
+    #     print(session)  # TODO: Pretty print the session
+    #
+    #     command = input('Enter command: ')  # TODO: Make some commands and print them
+    #
+    #     # TODO: React to the command

@@ -20,9 +20,8 @@ logger = LoggerFactory.make_logger(__name__)
 class PortfolioOptionService:
     def __init__(
         self,
-            entity_cache: 'EntityCache',
+        entity_cache: 'EntityCache',
         portfolio_option_repo: 'PortfolioOptionRepo',
-
         expiry_service: 'ExpiryService',
         strike_service: 'StrikeService',
     ) -> None:

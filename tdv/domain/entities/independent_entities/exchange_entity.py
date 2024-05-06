@@ -18,7 +18,7 @@ class Exchange(Entity):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.name is not None:
             Exchanges.ShortNames.validate_value(self.name)
         if self.long_name is not None:

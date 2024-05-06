@@ -68,10 +68,10 @@ class EntityEnum(Enum):
 @dataclass
 class Companies:
     class ShortNames(EntityEnum):
-        TESLA = 'Tesla'
+        TSLA = 'Tesla'
 
     class LongNames(EntityEnum):
-        TESLA = 'Tesla Inc.'
+        TSLA = 'Tesla Inc.'
 
 
 class ContractSizes(EntityEnum):
