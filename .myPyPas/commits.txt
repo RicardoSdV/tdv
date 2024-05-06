@@ -11,10 +11,12 @@ Categories:
     - Refac: Refactoring, when the code is changed but the logic remains the same, e.g. splitting one method in two,
     using list comprehension instead of a normal for loop, etc.
 
-    - Renaming(Rename): When variables/files/folders/table columns are renamed this is a renaming commit. Also, moving
+    - Debug: For fixing small issues, typos etc. Like a micro logic commit
+
+    - Rename: When variables/files/folders/table columns are renamed this is a renaming commit. Also, moving
     a file from one folder to another, creating new folders to split files etc.
 
-    - Documentation(Doc): Adding doc strings, updating DB diagram, changing the readme, management.txt, .myPyPas etc.
+    - Doc: Adding doc strings, updating DB diagram, changing the readme, management.txt, .myPyPas etc.
 
 Note: No need to be a radical about this, no problem if a logic commit involves some refactoring related to the logic
 changes, or a small amount of renaming or a docstring in one of the new logic methods. But the point is to not clutter
