@@ -9,7 +9,6 @@ How to use:
 
 =======================================================================================================================
 Is Doing, Tasks that are/will be shortly under active development:
-    - On startup populate cache
 
 =======================================================================================================================
 
@@ -30,14 +29,18 @@ Will do, Tasks that will be done relatively shortly. Keep number small, focused,
 
 
     - Local user:
-        - Log in as the local user.
-        - Make a CLI interface for the local user session.
+        - Portfolio operations within session for local user:
+
             - Portfolio operations within session for local user:
-                - Create a portfolio
-                - Add/remove/modify portfolio shares
-                - Add/remove/modify portfolio options
-                - Get all portfolio data & pretty print
-                - Do analysis
+            - Create a portfolio
+            - Add/remove/modify portfolio shares
+            - Add/remove/modify portfolio options
+            - Get all portfolio data & pretty print
+            - Do analysis
+
+        - Make a CLI interface for the local user session:
+            - Pretty print data
+            - Readable commands etc
 
     - Code integrity:
         - Refactor code to pass mypy (This is a constant task)
@@ -45,11 +48,16 @@ Will do, Tasks that will be done relatively shortly. Keep number small, focused,
         - Use appropriate sizes of data in tables
         - Double check all timestamps to be UTC use server defaults when possible
         - InsertTimeTable insert by default
+        - Add an appropriate amount of logging
+
 
 
     - Ticker:
         - Live / Historical support hybrid: Download options every certain interval & use the last DB insertion
         as the "live" data to perform analysis.
+
+    DB diagram:
+        - Update, contract size belongs to strike now, maybe more
 
 
 =======================================================================================================================

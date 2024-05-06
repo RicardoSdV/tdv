@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from tdv.domain.services.option_services.expiry_service import ExpiryService
     from tdv.domain.services.option_services.strike_service import StrikeService
 
-
 logger = LoggerFactory.make_logger(__name__)
 
 

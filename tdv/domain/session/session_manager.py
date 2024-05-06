@@ -10,6 +10,7 @@ from tdv.domain.entities.portfolio_entities.portfolio_option_entity import Portf
 from tdv.domain.entities.portfolio_entities.portfolio_share_entity import PortfolioShare
 from tdv.domain.session.session import Session
 from tdv.domain.types import IDs, TickerName, StrikeID, ExpiryID
+from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
     from tdv.infra.database import DB
@@ -21,11 +22,17 @@ if TYPE_CHECKING:
     from tdv.domain.services.portfolio_services.portfolio_service import PortfolioService
     from tdv.domain.services.portfolio_services.portfolio_share_service import PortfolioShareService
 
+logger = LoggerFactory.make_logger(__name__)
+
+PfolsByName = Dict[str, Portfolio]
+PfolSharesByTickerName = Dict[str, PortfolioShare]
 
 PfolOptionsByTickerName = Dict[TickerName, PortfolioOption]
 StrikeByID = Dict[StrikeID, Strike]
 ExpiryByID = Dict[ExpiryID, Expiry]
 PfolOptionEssentials = Tuple[PfolOptionsByTickerName, StrikeByID, ExpiryByID]
+
+AccountAndData = Tuple[Account, PfolsByName, PfolSharesByTickerName, PfolOptionEssentials]
 
 
 class SessionManager:
@@ -52,42 +59,76 @@ class SessionManager:
         self.__strike_service = strike_service
         self.__expiry_service = expiry_service
 
-    def login(self, name: str, password: str) -> Session:
+    def login(self, account_name: str, password: str) -> Session:
         """
-        - Get Account from DB
-        - Generate session_id for this account
-        - Get all account related data from DB
-        - Instantiate session with all the above
+        - Get Session & Generate session_id for this account
         - Update self.sessions with the new session
         """
-
-        # TODO: Check that the account is not already logged in
-        # TODO: Validate password
+        logger.debug('Login', account_name=account_name, password=password)
+        # TODO: Check that the account is not already logged in & Validate password
 
         with self.__db.connect as conn:
-            account = self.__account_service.get_or_raise_account_with_name(name, conn)
+            session = self.__get_session(account_name, conn)
 
-            session_id = self.__generate_session_id(account)
-
-            pfols_by_name, pfol_ids = self.__get_pfols_by_name_and_pfol_ids(account.id, conn)
-
-            pfol_shares_by_ticker = self.__get_pfol_shares_by_ticker_name(pfol_ids, conn)
-            pfol_option_essentials = self.__get_pfol_options_expiries_and_strikes(pfol_ids, conn)
-            pfol_options_by_ticker, strikes_by_id, expiries_by_id = pfol_option_essentials
-
-            session = Session(
-                id=session_id,
-                account=account,
-                pfols_by_name=pfols_by_name,
-                pfol_shares_by_ticker=pfol_shares_by_ticker,
-                pfol_options_by_ticker=pfol_options_by_ticker,
-                strikes_by_id=strikes_by_id,
-                expiries_by_id=expiries_by_id,
-            )
-
+        session.id = self.__generate_session_id(session.account)
         self.sessions_by_id[session.id] = session
+
         return session
 
+    def logout(self, session_id: int) -> None:
+        """
+        - Get Session with the new data from self.sessions_by_id
+        - Get Session with the old data from DB
+        - Compare old & new session data
+        - Insert/Update/Delete from be DB based on the comparison
+        """
+        logger.debug('Logout', session_id=session_id)
+        new_session = self.sessions_by_id[session_id]
+
+        with self.__db.connect as conn:
+            old_session = self.__get_session(new_session.account.name, conn)
+
+            self.__compare_accounts_db_diff(old_session.account, new_session.account, conn)
+            self.__compare_portfolios_db_diff(old_session.portfolios_by_name, new_session.portfolios_by_name, conn)
+
+    def __compare_accounts_db_diff(self, old_account: Account, new_account: Account, conn: Connection) -> None:
+        pass
+
+    def __compare_portfolios_db_diff(self, old_portfolio: PfolsByName, new_portfolio: PfolsByName, conn: Connection) -> None:
+        pass
+
+    def __get_session(self, account_name: str, conn: Connection) -> Session:
+        """
+        - Get Account from DB
+        - Get all account related data from DB
+        - Return session with all the above
+        """
+        account = self.__account_service.get_or_raise_account_with_name(account_name, conn)
+
+        pfols_by_name, pfol_ids = self.__get_pfols_by_name_and_pfol_ids(account.id, conn)
+        pfol_shares_by_ticker = self.__get_pfol_shares_by_ticker_name(pfol_ids, conn)
+        pfol_option_essentials = self.__get_pfol_options_expiries_and_strikes(pfol_ids, conn)
+
+        pfol_options_by_ticker, strikes_by_id, expiries_by_id = pfol_option_essentials
+
+        return Session(
+            id=-1,
+            account=account,
+            portfolios_by_name=pfols_by_name,
+            portfolios_shares_by_ticker=pfol_shares_by_ticker,
+            portfolios_options_by_ticker=pfol_options_by_ticker,
+            strikes_by_id=strikes_by_id,
+            expiries_by_id=expiries_by_id,
+        )
+
+    def __get_account_and_related_data(self, account_name: str, conn: Connection) -> AccountAndData:
+        account = self.__account_service.get_or_raise_account_with_name(account_name, conn)
+
+        pfols_by_name, pfol_ids = self.__get_pfols_by_name_and_pfol_ids(account.id, conn)
+        pfol_shares_by_ticker = self.__get_pfol_shares_by_ticker_name(pfol_ids, conn)
+        pfol_option_essentials = self.__get_pfol_options_expiries_and_strikes(pfol_ids, conn)
+
+        return account, pfols_by_name, pfol_shares_by_ticker, pfol_option_essentials
 
     def __get_pfols_by_name_and_pfol_ids(self, account_id: int, conn: Connection) -> Tuple[Dict[str, Portfolio], IDs]:
         portfolios = self.__portfolio_service.get_portfolios_with_account_id(account_id, conn)

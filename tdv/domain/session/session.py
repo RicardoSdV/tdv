@@ -13,8 +13,8 @@ from tdv.domain.entities.portfolio_entities.portfolio_share_entity import Portfo
 class Session:
     id: int
     account: Account
-    pfols_by_name: Dict[str, Portfolio]
-    pfol_shares_by_ticker: Dict[str, PortfolioShare]
-    pfol_options_by_ticker: Dict[str, PortfolioOption]
+    portfolios_by_name: Dict[str, Portfolio]
+    portfolios_shares_by_ticker: Dict[str, PortfolioShare]
+    portfolios_options_by_ticker: Dict[str, PortfolioOption]
     strikes_by_id: Dict[int, Strike]
     expiries_by_id: Dict[int, Expiry]
