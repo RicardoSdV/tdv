@@ -98,6 +98,6 @@ class Tickers(EntityEnum):
 # Defines the relationship between exchanges, tickers & companies for fast insertion
 TICKERS_BY_COMPANY_EXCHANGE: Dict[Exchanges.ShortNames, Dict[Companies.LongNames, Tuple[Tickers, ...]]] = {
     Exchanges.ShortNames.NEW_YORK: {
-        Companies.LongNames.TESLA: (Tickers.TSLA,),
+        Companies.LongNames.TSLA: (Tickers.TSLA,),
     }
 }

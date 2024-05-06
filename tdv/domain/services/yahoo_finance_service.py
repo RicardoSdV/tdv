@@ -64,7 +64,7 @@ class YahooFinanceService:
 
                 contract_sizes = self.__get_contract_sizes_with_name(calls['contractSize'].values())
                 strike_prices: List[float] = list(calls['strike'].values())
-                strikes = self.__strike_service.get_else_create_strikes(expiry.id, strike_prices, contract_sizes, conn)
+                strikes = self.__strike_service.get_else_create_strikes(expiry, strike_prices, contract_sizes, conn)
 
                 insert_time = self.__insert_time_service.create_insert_time__utcnow(conn)
                 share_hists = self.__share_hist_service.create_share_hist(

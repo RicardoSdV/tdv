@@ -88,7 +88,6 @@ class SessionManager:
         self.sessions[session.id] = session
         return session
 
-    """ Getting session Entities """
 
     def __get_pfols_by_name_and_pfol_ids(self, account_id: int, conn: Connection) -> Tuple[Dict[str, Portfolio], IDs]:
         portfolios = self.__portfolio_service.get_portfolios_with_account_id(account_id, conn)

@@ -9,6 +9,7 @@ How to use:
 
 =======================================================================================================================
 Is Doing, Tasks that are/will be shortly under active development:
+    - On startup populate cache
 
 =======================================================================================================================
 
@@ -42,6 +43,8 @@ Will do, Tasks that will be done relatively shortly. Keep number small, focused,
         - Refactor code to pass mypy (This is a constant task)
         - Use decimal instead of float for all? floats
         - Use appropriate sizes of data in tables
+        - Double check all timestamps to be UTC use server defaults when possible
+        - InsertTimeTable insert by default
 
 
     - Ticker:

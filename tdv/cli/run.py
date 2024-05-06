@@ -22,9 +22,11 @@ def yf() -> None:
 
     import sys
 
+    from tdv.containers import Service
     from tdv.constants import ROOT_DIR_PATH
     from tdv.run import run
 
+    Service.cache_manager().init_entity_cache()
     sys.path.append(str(ROOT_DIR_PATH))
     run()
 

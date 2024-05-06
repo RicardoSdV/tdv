@@ -1,4 +1,4 @@
-from click import group, option
+from click import group
 
 
 from tdv.logger_setup import LoggerFactory

@@ -47,14 +47,15 @@ class OptionHistService:
                 option['openInterest'].values(),
                 option['impliedVolatility'].values(),
             ):
-                print('last_trade_date', type(last_trade_date), last_trade_date)
-                print('last_price', type(last_price), last_price)
-                print('bid', type(bid), bid)
-                print('ask', type(ask), ask)
-                print('change', type(change), change)
-                print('volume', type(volume), volume)
-                print('open_interest', type(open_interest), open_interest)
-                print('implied_volatility', type(implied_volatility), implied_volatility)
+
+                # print('last_trade_date', type(last_trade_date), last_trade_date)
+                # print('last_price', type(last_price), last_price)
+                # print('bid', type(bid), bid)
+                # print('ask', type(ask), ask)
+                # print('change', type(change), change)
+                # print('volume', type(volume), volume)
+                # print('open_interest', type(open_interest), open_interest)
+                # print('implied_volatility', type(implied_volatility), implied_volatility)
 
                 option_hist = Entity(
                     strike_id=strike.id,
