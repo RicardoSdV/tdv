@@ -34,10 +34,3 @@ class ExpiryService:
         expiries = [Expiry(id=_id) for _id in expiry_ids]
         result = self.__expiry_repo.select(conn, expiries)
         return result
-
-    def get_expiry_with_ticker_and_date(self, ticker: Ticker, expiry_date: datetime, conn: Connection) -> Expiry:
-        expiry = Expiry(ticker_id=ticker.id, date=expiry_date)
-        logger.debug('Getting Expiry', expiry=expiry)
-        result = self.__expiry_repo.select(conn, [expiry])
-        return result[0]
-

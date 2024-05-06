@@ -13,16 +13,26 @@ if TYPE_CHECKING:
     from tdv.infra.database import DB
     from tdv.infra.repos.portfolio_repos.portfolio_option_repo import PortfolioOptionRepo
     from tdv.domain.services_internal.cache_service import CacheService
+    from tdv.domain.services_internal.option_services.expiry_service import ExpiryService
     from tdv.domain.services_internal.option_services.strike_service import StrikeService
+
 
 logger = LoggerFactory.make_logger(__name__)
 
 
 class PortfolioOptionService:
-    def __init__(self, db: 'DB', portfolio_option_repo: 'PortfolioOptionRepo', cache_service: 'CacheService', strike_service: 'StrikeService') -> None:
+    def __init__(
+        self,
+        db: 'DB',
+        portfolio_option_repo: 'PortfolioOptionRepo',
+        cache_service: 'CacheService',
+        expiry_service: 'ExpiryService',
+        strike_service: 'StrikeService',
+    ) -> None:
         self.__db = db
         self.__pfol_option_repo = portfolio_option_repo
         self.__cache_service = cache_service
+        self.__expiry_service = expiry_service
         self.__strike_service = strike_service
 
     def get_portfolio_options(self, portfolio_ids: List[int], conn: Connection) -> List[PortfolioOption]:
@@ -33,7 +43,9 @@ class PortfolioOptionService:
 
         return result
 
-    def create_local_portfolio_options(self, portfolio: Portfolio, options_data: List[Dict], conn: Connection) -> List[PortfolioOption]:
+    def create_local_portfolio_options(
+        self, portfolio: Portfolio, options_data: List[Dict], conn: Connection
+    ) -> List[PortfolioOption]:
         to_datetime = datetime_from_dashed_YMD_str
 
         pfol_options = []
@@ -46,9 +58,13 @@ class PortfolioOptionService:
                 option_data['is_call'],
                 self.__cache_service.contract_sizes_by_name[option_data['size_name']],
             )
-            strike = self.__strike_service.get_strike_with_portfolio_data(ticker, strike_price, expiry_date, contract_size, conn)
 
-            pfol_options.append(PortfolioOption(portfolio_id=portfolio.id, strike_id=strike.id, is_call=is_call, count=count))
+            expiry = self.__expiry_service.get_else_create_expiry(expiry_date, ticker, conn)
+            strike = self.__strike_service.get_else_create_strikes(expiry, [strike_price], [contract_size], conn)[0]
+
+            pfol_options.append(
+                PortfolioOption(portfolio_id=portfolio.id, strike_id=strike.id, is_call=is_call, count=count)
+            )
 
         result = self.__pfol_option_repo.insert(conn, pfol_options)
         return result

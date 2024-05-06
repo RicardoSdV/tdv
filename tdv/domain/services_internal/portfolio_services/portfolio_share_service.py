@@ -3,7 +3,6 @@ from typing import List, TYPE_CHECKING, Dict
 from sqlalchemy import Connection
 
 from tdv.domain.entities.portfolio_entities.portfolio_share_entity import PortfolioShare
-from tdv.domain.entities.ticker_entities.ticker_entity import Ticker
 from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:

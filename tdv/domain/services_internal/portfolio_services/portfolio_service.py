@@ -46,13 +46,14 @@ class PortfolioService:
             portfolios.extend(inserted_portfolio)
 
             inserted_pfol_shares = self.__pfol_share_service.create_local_portfolio_shares(shares_data, conn)
-            inserted_pfol_options = self.__pfol_option_service.create_local_portfolio_options(inserted_portfolio[0], options_data, conn)
+            inserted_pfol_options = self.__pfol_option_service.create_local_portfolio_options(
+                inserted_portfolio[0], options_data, conn
+            )
 
             pfol_shares.extend(inserted_pfol_shares)
             pfol_options.extend(inserted_pfol_options)
 
         return portfolios, pfol_shares, pfol_options
-
 
     def create_portfolio(self, account_id: int, portfolio_name: str) -> List[Portfolio]:
         logger.debug('Creating portfolio', account_id=account_id, portfolio_name=portfolio_name)
