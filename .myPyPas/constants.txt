@@ -1,0 +1,48 @@
+Standalone Constant:
+    Description - A constant that is a one-off, it belongs to no semantic nor logical namespaces, it never needs to be
+    looped through in combination with other constants.
+
+    Best practice - Variable, all caps in constants.py outside any class.
+
+    Example:
+
+    MAIN_LOOP_SLEEP_TIME: Final[Second] = 2
+
+=======================================================================================================================
+
+Namespaced Constants:
+    Description - A constant that "belongs" with other constants.
+
+    Best Practice - Name in all caps held within a class, with class name in all caps & singular.
+
+    Example:
+
+    class LOCAL_USER:
+        NAME: Final[str] = 'local_user'
+        PASSWORD: Final[str] = 'password'
+
+=======================================================================================================================
+
+Enum Constant:
+    Description - A constant that is referenced & passed around in the code such that the Enum functionality makes
+    sense, i.e. if you're using both ENUM_NAME.ATTR_NAME and ENUM_NAME.ATTR_NAME.value then you may need an Enum.
+    Also, a subset of a Namespaced Constant.
+
+    Best Practice - Name in all caps held within an enum or enum descendant class, with class name in all caps
+    and singular.
+
+    Example - https://peps.python.org/pep-0435/
+
+=======================================================================================================================
+
+Relations Between Constants:
+    Description - Some constants may have relations between each-other, which themselves are used as constants.
+
+    Best Practice - Name of the relationship in all caps, contains a dict of which some values may be tuples were all
+    keys are other constants and all values are either other constants or tuples of constants.
+
+    Example:
+
+    EUROPE = {COUNTRY.FRANCE: (CITY.PARIS, CITY.ORLEANS)}
+
+=======================================================================================================================
