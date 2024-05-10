@@ -1,46 +1,28 @@
+=======================================================================================================================
 Why: Project management is good to improve coordination, efficiency & focusing efforts towards business goals.
+=======================================================================================================================
 
+
+=======================================================================================================================
 How to use:
-    - Move tasks to "Is Doing" from "Will Do" & commit to main to make everyone aware
-    - Move or add tasks that should be done ASAP to "Will do" after expert consulting & commit to main
-    - Add any ideas to "Could do", no need to commit to main
-    - Move tasks from "Is Doing" to "Was Done" when task is finished
+    - If a pull request is submitted with an appropriate solution to a task in "Will do" it may be accepted.
+    - If a pull request is submitted with an appropriate solution to a task in "Could do" it may be accepted with less
+    probability than will do.
+    - If a pull request is submitted with an appropriate solution to some other task it may be accepted with even less
+    probability.
+=======================================================================================================================
 
 
 =======================================================================================================================
-Is Doing, Tasks that are/will be shortly under active development:
-
-=======================================================================================================================
-
-=======================================================================================================================
-Will do, Tasks that will be done relatively shortly. Keep number small, focused, prioritized:
-
-    - Remote user (Operations though http requests and the API):
-        - Create/Modify/Delete account as remote user
-        - Somehow get an event loop going for sessions and caches to persist
-        - Login as remote user
-        - Be able to do simple session requiring operations:
-            - Portfolio operations within session for remote user:
-                - Create a portfolio
-                - Add/remove/modify portfolio shares
-                - Add/remove/modify portfolio options
-                - Get all portfolio data & print
-                - Do analysis
-
+Will do, ordered by priority:
 
     - Local user:
-        - Portfolio operations within session for local user:
+        - Be able to do simple session requiring operations through CLI:
+            - Add/remove/modify portfolio, portfolio shares, portfolio options, account & do analysis
 
-            - Portfolio operations within session for local user:
-            - Create a portfolio
-            - Add/remove/modify portfolio shares
-            - Add/remove/modify portfolio options
-            - Get all portfolio data & pretty print
-            - Do analysis
-
-        - Make a CLI interface for the local user session:
-            - Pretty print data
-            - Readable commands etc
+    - Remote user (Operations though http requests and the API):
+        - Add/remove/modify portfolio, portfolio shares, portfolio options, account & do analysis: Involves getting
+        the API working and making HTTP requests locally with no UI.
 
     - Code integrity:
         - Refactor code to pass mypy (This is a constant task)
@@ -49,27 +31,21 @@ Will do, Tasks that will be done relatively shortly. Keep number small, focused,
         - Double check all timestamps to be UTC use server defaults when possible
         - InsertTimeTable insert by default
         - Add an appropriate amount of logging
-
-
-
-    - Ticker:
-        - Live / Historical support hybrid: Download options every certain interval & use the last DB insertion
-        as the "live" data to perform analysis.
+        - Add an appropriate amount of docstrings
 
     DB diagram:
-        - Update, contract size belongs to strike now, maybe more
+        - Update, contract size belongs to strike now, maybe more.
+
+=======================================================================================================================
 
 
 =======================================================================================================================
-
-=======================================================================================================================
-Could do: More than less generic functionality which might or might not be done any time soon.
+Could do:
 
     - Account:
         - Make account secure, passwords etc (use google? way better than handling accounts)
 
     -Ticker:
         - Historical support: Have a comprehensive set of options downloaded & perform analysis based on timestamps
-
 
 =======================================================================================================================
