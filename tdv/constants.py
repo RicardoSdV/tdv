@@ -1,40 +1,47 @@
 import os
-from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Dict, Tuple, Any, List
+from typing import Dict, Tuple, Any, List, Final
 
-# Paths (all absolute)
-SOURCE_DIR_PATH = Path(__file__).resolve().parent
-ROOT_DIR_PATH = SOURCE_DIR_PATH.parent
-LOGS_DIR_PATH = ROOT_DIR_PATH / 'bin'
-INFRA_DIR_PATH = SOURCE_DIR_PATH / 'infra'
-DATABASE_DIR_PATH = INFRA_DIR_PATH / 'database'
-ALEMBIC_DIR_PATH = DATABASE_DIR_PATH / 'alembic'
-ALEMBIC_INI_PATH = ALEMBIC_DIR_PATH / 'alembic.ini'
-
-# Naming
-PROJECT_NAME = 'tdv'
-SOURCE_CODE_DIR_NAME = PROJECT_NAME
-BUILD_NAME = PROJECT_NAME
-BUILD_VERSION = '0.1'
-CLI_ROOT_COMMAND = PROJECT_NAME
-CLI_ROOT_MODULE = f'{PROJECT_NAME}.cli'
-CLI_ROOT_FUNC_NAME = 'cli_root'
-
-MAIN_LOOP_SLEEP_TIME = 1
-UPDATE_OPTIONS_INTERVAL = 5
+MAIN_LOOP_SLEEP_TIME: Final[int] = 1
+UPDATE_OPTIONS_INTERVAL: Final[int] = 5
 
 
-@dataclass
-class LocalAccountInfo:
-    username = 'local_user'
-    email = 'local@local.local'
-    password = 'password'
-    session_id = 'local_session_id'
+class PROJECT:
+    NAME: Final[str] = 'tdv'
+    SOURCE_DIR_NAME: Final[str] = NAME
 
 
-class DbInfo(Enum):
+class BUILD:
+    NAME: Final[str] = PROJECT.NAME
+    VERSION: Final[str] = '0.1'
+
+
+class PATH:
+    class DIR:
+        SOURCE: Final[Path] = Path(__file__).resolve().parent
+        ROOT: Final[Path] = SOURCE.parent
+        LOGS: Final[Path] = ROOT / 'bin'
+        INFRA: Final[Path] = SOURCE / 'infra'
+        DATABASE: Final[Path] = INFRA / 'database'
+        ALEMBIC: Final[Path] = DATABASE / 'alembic'
+
+
+class CLI:
+    ROOT_COMMAND: Final[str] = PROJECT.NAME
+    DIR_NAME: Final[str] = 'cli'
+    ROOT_FUNC_NAME: Final[str] = 'cli_root'
+    ROOT_FUNC_DOT_PATH: Final[str] = f'{PROJECT.SOURCE_DIR_NAME}.{DIR_NAME}:{ROOT_FUNC_NAME}'
+    CONSOLE_ENTRY: Final[str] = f'{ROOT_COMMAND} = {ROOT_FUNC_DOT_PATH}'
+
+
+class LOCAL_USER:
+    NAME = 'local_user'
+    EMAIL = 'local@local.local'
+    PASSWORD = 'password'
+
+
+class DB_INFO:
     USER = os.environ.get('USER')
     NAME = 'tdvdb'
     PASSWORD = 'password'
@@ -42,15 +49,7 @@ class DbInfo(Enum):
     PORT = '5432'
     RDBMS = 'postgresql'
     DBAPI = 'psycopg2'
-
-    @classmethod
-    def make_sqlalchemy_url(cls) -> str:
-        return f'{cls.RDBMS.value}://{cls.USER.value}:{cls.PASSWORD.value}@{cls.HOST.value}/{cls.NAME.value}'
-
-
-class MarketEvents(Enum):
-    OPEN = 'market_open'
-    CLOSE = 'market_close'
+    URL = f'{RDBMS}://{USER}:{PASSWORD}@{HOST}/{NAME}'
 
 
 class EntityEnum(Enum):
@@ -65,39 +64,40 @@ class EntityEnum(Enum):
         return [member.value for member in cls]
 
 
-@dataclass
-class Companies:
-    class ShortNames(EntityEnum):
+class COMPANY:
+    class NAME(EntityEnum):
         TSLA = 'Tesla'
 
-    class LongNames(EntityEnum):
+    class LONG_NAME(EntityEnum):
         TSLA = 'Tesla Inc.'
 
 
-class ContractSizes(EntityEnum):
+class CONTRACT_SIZE(EntityEnum):
     REGULAR = 100
 
 
-@dataclass
-class Exchanges:
-    class ShortNames(EntityEnum):
+class EXCHANGE:
+    class NAME(EntityEnum):
         NEW_YORK = 'NYSE'
 
-    class LongNames(EntityEnum):
+    class LONG_NAME(EntityEnum):
         NEW_YORK = 'New York Stock Exchange'
 
 
-class Currencies(EntityEnum):
+class CURRENCY(EntityEnum):
     US_DOLLAR = 'USD'
 
 
-class Tickers(EntityEnum):
+class TICKER(EntityEnum):
     TSLA = 'TSLA'
 
 
 # Defines the relationship between exchanges, tickers & companies for fast insertion
-TICKERS_BY_COMPANY_EXCHANGE: Dict[Exchanges.ShortNames, Dict[Companies.LongNames, Tuple[Tickers, ...]]] = {
-    Exchanges.ShortNames.NEW_YORK: {
-        Companies.LongNames.TSLA: (Tickers.TSLA,),
+TICKERS_BY_COMPANY_EXCHANGE: Dict[EXCHANGE.NAME, Dict[COMPANY.LONG_NAME, Tuple[TICKER, ...]]] = {
+    EXCHANGE.NAME.NEW_YORK: {
+        COMPANY.LONG_NAME.TSLA: (
+            TICKER.TSLA,
+        ),
     }
 }
+

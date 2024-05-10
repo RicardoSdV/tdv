@@ -19,7 +19,7 @@ def login() -> None:
 
     from tdv.domain.entities.portfolio_entities.portfolio_entity import Portfolio
 
-    from tdv.constants import LocalAccountInfo
+    from tdv.constants import LOCAL_USER
     from tdv.containers import Cache, Service
 
     session_manager = Service.session_manager()
@@ -28,7 +28,7 @@ def login() -> None:
     pfol_service = Service.portfolio()
 
     cache_manager.init_entity_cache()
-    session = session_manager.login(name=LocalAccountInfo.username, password=None)
+    session = session_manager.login(name=LOCAL_USER.NAME, password=None)
     account = session.account
 
     while True:

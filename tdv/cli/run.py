@@ -1,5 +1,6 @@
 from click import group
 
+from tdv.api.web_app import WebApp
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
@@ -23,28 +24,33 @@ def yf() -> None:
     import sys
 
     from tdv.containers import Service
-    from tdv.constants import ROOT_DIR_PATH
+    from tdv.constants import PATH
     from tdv.run import run
 
     Service.cache_manager().init_entity_cache()
-    sys.path.append(str(ROOT_DIR_PATH))
+    sys.path.append(str(PATH.DIR.ROOT))
     run()
 
 
-@run_group.command()
-def ping() -> None:
-    """Runs the ping API on a gunicorn worker"""
-    import subprocess
-
-    # WSL -> Windows port: ip addr show eth0
-    command = [
-        'gunicorn',
-        '--bind',
-        '0.0.0.0:8000',
-        '--workers',
-        '1',
-        '--worker-class',
-        'sync',
-        'tdv.api.ping:create_app()',
-    ]
-    subprocess.run(command)
+# @run_group.command()
+# def ping() -> None:
+#     """Runs the ping API on a gunicorn worker"""
+#
+#
+#     web_app = WebApp.web_app
+#
+#     # Add routes to the web app
+#     web_app.add_routes()
+#     web_app.set_options()
+#
+#     # Construct the command to run Gunicorn
+#     command = [
+#         'gunicorn',
+#         f"--bind={web_app.default_host}",
+#         f"--workers={web_app.de}",
+#         f"--worker-class={custom_options['worker_class']}",
+#         'tdv.api.ping:create_app()',
+#     ]
+#
+#     # Run Gunicorn using subprocess
+#     subprocess.run(command)

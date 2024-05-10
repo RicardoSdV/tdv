@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from tdv.constants import Companies
+from tdv.constants import COMPANY
 from tdv.domain.entities.base_entity import Entity
 
 
@@ -13,6 +13,6 @@ class Company(Entity):
 
     def __post_init__(self) -> None:
         if self.long_name is not None:
-            Companies.LongNames.validate_value(self.long_name)
+            COMPANY.LONG_NAME.validate_value(self.long_name)
         if self.short_name is not None:
-            Companies.ShortNames.validate_value(self.short_name)
+            COMPANY.NAME.validate_value(self.short_name)

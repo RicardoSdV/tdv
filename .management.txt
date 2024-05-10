@@ -33,9 +33,9 @@ Will do, ordered by priority:
         - Add an appropriate amount of logging
         - Add an appropriate amount of docstrings
 
-    DB diagram:
-        - Update, contract size belongs to strike now, maybe more.
+    - DB diagram, update, contract size belongs to strike now, maybe more.
 
+    - Separate Settings from constants, somehow, I think we just use .py for settings, no need to bring .yaml
 =======================================================================================================================
 
 

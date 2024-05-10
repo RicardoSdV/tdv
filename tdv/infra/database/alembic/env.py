@@ -5,10 +5,10 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from tdv.constants import DbInfo
+from tdv.constants import DB_INFO
 from tdv.infra.database.tables import metadata
 
-db_url = DbInfo.make_sqlalchemy_url()
+db_url = DB_INFO.URL
 
 config = context.config
 config.set_main_option('script_location', 'alembic')

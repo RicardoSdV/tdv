@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from tdv.constants import Tickers
+from tdv.constants import TICKER
 from tdv.domain.entities.base_entity import Entity
 
 
@@ -19,4 +19,4 @@ class Ticker(Entity):
 
     def __post_init__(self) -> None:
         if self.name is not None:
-            Tickers.validate_value(self.name)
+            TICKER.validate_value(self.name)

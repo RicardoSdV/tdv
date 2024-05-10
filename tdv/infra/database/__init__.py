@@ -1,6 +1,6 @@
 from sqlalchemy import Connection, Engine, create_engine
 
-from tdv.constants import DbInfo
+from tdv.constants import DB_INFO
 
 
 class DB:
@@ -15,7 +15,7 @@ class DB:
 
     @classmethod
     def __create_engine(cls) -> Engine:
-        return create_engine(DbInfo.make_sqlalchemy_url(), echo=cls.print_db_logs)
+        return create_engine(DB_INFO.URL, echo=cls.print_db_logs)
 
 
 db = DB()

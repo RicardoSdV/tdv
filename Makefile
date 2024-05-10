@@ -6,7 +6,7 @@ DB_USER = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.USE
 DB_NAME = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.NAME.value)')
 DB_PASSWORD = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.PASSWORD.value)')
 DB_HOST = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.HOST.value)')
-ALEMBIC_PATH = $(shell python3 -c 'from tdv.constants import ALEMBIC_DIR_PATH; print(ALEMBIC_DIR_PATH)')
+ALEMBIC_PATH = $(shell python3 -c 'from tdv.constants import PATH; print(PATH.DIR.ALEMBIC)')
 VENV_ACTIVATE = venv/bin/activate
 
 

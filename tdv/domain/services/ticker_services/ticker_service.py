@@ -2,7 +2,7 @@ from typing import List, TYPE_CHECKING
 
 from sqlalchemy import Connection
 
-from tdv.constants import TICKERS_BY_COMPANY_EXCHANGE, Tickers
+from tdv.constants import TICKERS_BY_COMPANY_EXCHANGE, TICKER
 from tdv.domain.entities.independent_entities.company_entity import Company
 from tdv.domain.entities.independent_entities.exchange_entity import Exchange
 from tdv.domain.entities.ticker_entities.ticker_entity import Ticker
@@ -59,7 +59,7 @@ class TickerService:
         return result
 
     def get_all_tickers(self, conn: Connection) -> List[Ticker]:
-        tickers = [Ticker(name=name.value) for name in Tickers]
+        tickers = [Ticker(name=name.value) for name in TICKER]
         logger.debug('Getting all tickers', tickers=tickers)
         result = self.__ticker_repo.select(conn, tickers)
         return result

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from enum import Enum
 from typing import Callable, TYPE_CHECKING, Tuple
 
 from pandas import DataFrame
@@ -6,7 +7,7 @@ from pandas_market_calendars import get_calendar
 from schedule import Scheduler
 import yfinance as yf
 
-from tdv.constants import MarketEvents, UPDATE_OPTIONS_INTERVAL
+from tdv.constants import UPDATE_OPTIONS_INTERVAL
 from tdv.domain.cache.entity_cache import EntityCache
 
 from tdv.domain.types import OptionChainsYF, Options
@@ -16,6 +17,11 @@ logger = LoggerFactory.make_logger(__name__)
 
 if TYPE_CHECKING:
     from tdv.domain.services.yahoo_finance_service import YahooFinanceService
+
+
+class MARKET_EVENT(Enum):
+    OPEN = 'market_open'
+    CLOSE = 'market_close'
 
 
 class YahooFinanceServiceProxy:
@@ -49,8 +55,8 @@ class YahooFinanceServiceProxy:
                 self.__schedule_periodic_requests(scheduler, self.__update_options, exchange)
                 return
 
-            next_open = self.__get_next_market_time(exchange, MarketEvents.OPEN)
-            next_close = self.__get_next_market_time(exchange, MarketEvents.CLOSE)
+            next_open = self.__get_next_market_time(exchange, MARKET_EVENT.OPEN)
+            next_close = self.__get_next_market_time(exchange, MARKET_EVENT.CLOSE)
             if next_open > next_close:
                 logger.debug(
                     'Market open right now',
@@ -90,7 +96,7 @@ class YahooFinanceServiceProxy:
         self.__schedulers_by_exchange_name[exchange] = new_scheduler
         self.__schedule_market_events(new_scheduler, next_open, self.__on_market_open, exchange)
 
-    def __get_next_market_time(self, exchange: str, market_event: MarketEvents) -> datetime:
+    def __get_next_market_time(self, exchange: str, market_event: MARKET_EVENT) -> datetime:
         now = datetime.utcnow()
         calendar = self.__calendars_by_exchange_name[exchange]
         schedule = calendar.schedule(start_date=now, end_date=now + timedelta(days=10))

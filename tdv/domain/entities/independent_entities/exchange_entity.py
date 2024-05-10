@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from tdv.constants import Exchanges, Currencies
+from tdv.constants import EXCHANGE, CURRENCY
 from tdv.domain.entities.base_entity import Entity
 
 
@@ -20,8 +20,8 @@ class Exchange(Entity):
 
     def __post_init__(self) -> None:
         if self.name is not None:
-            Exchanges.ShortNames.validate_value(self.name)
+            EXCHANGE.NAME.validate_value(self.name)
         if self.long_name is not None:
-            Exchanges.LongNames.validate_value(self.long_name)
+            EXCHANGE.LONG_NAME.validate_value(self.long_name)
         if self.currency is not None:
-            Currencies.validate_value(self.currency)
+            CURRENCY.validate_value(self.currency)

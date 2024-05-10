@@ -2,7 +2,7 @@ import structlog
 from structlog._config import BoundLoggerLazyProxy
 
 from tdv.utils import dashed_str_YMDHMS_utcnow
-from tdv.constants import LOGS_DIR_PATH
+from tdv.constants import PATH
 
 
 class LoggerFactory:
@@ -10,7 +10,7 @@ class LoggerFactory:
     if __save_to_file:
         structlog.configure(
             logger_factory=structlog.WriteLoggerFactory(
-                file=(LOGS_DIR_PATH / dashed_str_YMDHMS_utcnow()).with_suffix('.log').open('w')
+                file=(PATH.DIR.LOGS / dashed_str_YMDHMS_utcnow()).with_suffix('.log').open('w')
             ),
         )
 
