@@ -34,15 +34,6 @@ def yf() -> None:
 
 
 @run_group.command()
-def res() -> None:
-    """Runs a gunicorn worker with a falcon app with all the resources added to it"""
-
-    from tdv.containers import API
-
-    API.app().run()
-
-
-@run_group.command()
 def web() -> None:
     from tdv.containers import API
 
