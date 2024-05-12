@@ -29,9 +29,7 @@ class AccountService:
         return users
 
     def create_local_account(self, conn: Connection) -> List[Account]:
-        accounts = [
-            Account(name=LOCAL_USER.NAME, email=LOCAL_USER.EMAIL, password=LOCAL_USER.PASSWORD)
-        ]
+        accounts = [Account(name=LOCAL_USER.NAME, email=LOCAL_USER.EMAIL, password=LOCAL_USER.PASSWORD)]
         logger.debug('Creating local account', account=accounts)
         result = self.__account_repo.insert(conn, accounts)
         return result

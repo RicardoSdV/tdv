@@ -1,8 +1,6 @@
 from click import group
 
 
-
-
 @group('local')
 def local_user_group() -> None:
     """Interface for the local user"""
@@ -50,5 +48,3 @@ def login() -> None:
 
         elif command == '2':
             session_manager.logout(account.name)
-
-

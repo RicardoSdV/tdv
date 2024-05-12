@@ -1,6 +1,7 @@
 from click import group
+from gevent import subprocess
 
-from tdv.api.web_app import WebApp
+
 from tdv.logger_setup import LoggerFactory
 
 logger = LoggerFactory.make_logger(__name__)
@@ -32,25 +33,20 @@ def yf() -> None:
     run()
 
 
-# @run_group.command()
-# def ping() -> None:
-#     """Runs the ping API on a gunicorn worker"""
-#
-#
-#     web_app = WebApp.web_app
-#
-#     # Add routes to the web app
-#     web_app.add_routes()
-#     web_app.set_options()
-#
-#     # Construct the command to run Gunicorn
-#     command = [
-#         'gunicorn',
-#         f"--bind={web_app.default_host}",
-#         f"--workers={web_app.de}",
-#         f"--worker-class={custom_options['worker_class']}",
-#         'tdv.api.ping:create_app()',
-#     ]
-#
-#     # Run Gunicorn using subprocess
-#     subprocess.run(command)
+@run_group.command()
+def res() -> None:
+    """Runs a gunicorn worker with a falcon app with all the resources added to it"""
+
+    from tdv.containers import API
+
+    API.app().run()
+
+
+@run_group.command()
+def web() -> None:
+    from tdv.containers import API
+
+    win_host = subprocess.check_output(['hostname', '-I']).decode('utf-8').strip()
+    logger.info('If using WSL visit', url=f'http://{win_host}:8000')
+
+    API.gunicorn_server().run()

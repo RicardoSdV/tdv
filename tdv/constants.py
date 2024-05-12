@@ -1,38 +1,38 @@
 import os
 from enum import Enum
 from pathlib import Path
-from typing import Dict, Tuple, Any, List, Final
+from typing import Dict, Tuple, Any, List
 
-MAIN_LOOP_SLEEP_TIME: Final[int] = 1
-UPDATE_OPTIONS_INTERVAL: Final[int] = 5
+MAIN_LOOP_SLEEP_TIME: int = 1
+UPDATE_OPTIONS_INTERVAL: int = 5
 
 
 class PROJECT:
-    NAME: Final[str] = 'tdv'
-    SOURCE_DIR_NAME: Final[str] = NAME
+    NAME: str = 'tdv'
+    SOURCE_DIR_NAME: str = NAME
 
 
 class BUILD:
-    NAME: Final[str] = PROJECT.NAME
-    VERSION: Final[str] = '0.1'
+    NAME: str = PROJECT.NAME
+    VERSION: str = '0.1'
 
 
 class PATH:
     class DIR:
-        SOURCE: Final[Path] = Path(__file__).resolve().parent
-        ROOT: Final[Path] = SOURCE.parent
-        LOGS: Final[Path] = ROOT / 'bin'
-        INFRA: Final[Path] = SOURCE / 'infra'
-        DATABASE: Final[Path] = INFRA / 'database'
-        ALEMBIC: Final[Path] = DATABASE / 'alembic'
+        SOURCE: Path = Path(__file__).resolve().parent
+        ROOT: Path = SOURCE.parent
+        LOGS: Path = ROOT / 'bin'
+        INFRA: Path = SOURCE / 'infra'
+        DATABASE: Path = INFRA / 'database'
+        ALEMBIC: Path = DATABASE / 'alembic'
 
 
 class CLI:
-    ROOT_COMMAND: Final[str] = PROJECT.NAME
-    DIR_NAME: Final[str] = 'cli'
-    ROOT_FUNC_NAME: Final[str] = 'cli_root'
-    ROOT_FUNC_DOT_PATH: Final[str] = f'{PROJECT.SOURCE_DIR_NAME}.{DIR_NAME}:{ROOT_FUNC_NAME}'
-    CONSOLE_ENTRY: Final[str] = f'{ROOT_COMMAND} = {ROOT_FUNC_DOT_PATH}'
+    ROOT_COMMAND: str = PROJECT.NAME
+    DIR_NAME: str = 'cli'
+    ROOT_FUNC_NAME: str = 'cli_root'
+    ROOT_FUNC_DOT_PATH: str = f'{PROJECT.SOURCE_DIR_NAME}.{DIR_NAME}:{ROOT_FUNC_NAME}'
+    CONSOLE_ENTRY: str = f'{ROOT_COMMAND} = {ROOT_FUNC_DOT_PATH}'
 
 
 class LOCAL_USER:
@@ -95,9 +95,6 @@ class TICKER(EntityEnum):
 # Defines the relationship between exchanges, tickers & companies for fast insertion
 TICKERS_BY_COMPANY_EXCHANGE: Dict[EXCHANGE.NAME, Dict[COMPANY.LONG_NAME, Tuple[TICKER, ...]]] = {
     EXCHANGE.NAME.NEW_YORK: {
-        COMPANY.LONG_NAME.TSLA: (
-            TICKER.TSLA,
-        ),
+        COMPANY.LONG_NAME.TSLA: (TICKER.TSLA,),
     }
 }
-

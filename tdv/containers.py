@@ -1,6 +1,15 @@
+# Monkey-patch gunicorn before anything
+import gevent.monkey
+
+gevent.monkey.patch_all()
+
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Singleton
 
+from tdv.api.gunicorn_http_server import GunicornHTTPServer
+from tdv.api.resources.ping_resource import PingResource
+from tdv.api.falcon_app import FalconApp
+from tdv.api.resources.test_render import TestRender
 from tdv.domain.cache.cache_manager import CacheManager
 from tdv.domain.cache.entity_cache import EntityCache
 from tdv.domain.services.external.yahoo_finance_service_proxy import YahooFinanceServiceProxy
@@ -91,10 +100,20 @@ class Service(DeclarativeContainer):
     yahoo_finance = Singleton(
         YahooFinanceService, db, Cache.entity, ticker, expiry, strike, insert_time, share_hist, option_hist
     )
-    session_manager = Singleton(SessionManager, db, Cache.entity, account, portfolio, portfolio_share, portfolio_option, strike, expiry)
+    session_manager = Singleton(
+        SessionManager, db, Cache.entity, account, portfolio, portfolio_share, portfolio_option, strike, expiry
+    )
 
     cache_manager = Singleton(CacheManager, db, Cache.entity, exchange, ticker, company, contract_size)
 
 
 class ExternalService(DeclarativeContainer):
     yahoo_finance = Singleton(YahooFinanceServiceProxy, Service.yahoo_finance, Cache.entity)
+
+
+class API(DeclarativeContainer):
+    ping = Singleton(PingResource)
+    test_render = Singleton(TestRender)
+
+    falcon_app = Singleton(FalconApp, (ping(), test_render()))
+    gunicorn_server = Singleton(GunicornHTTPServer, falcon_app)

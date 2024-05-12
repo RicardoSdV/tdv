@@ -1,10 +1,9 @@
 from falcon import Request, Response
 
-from tdv.api.base_resource import BaseResource
 from tdv.domain.services.independent_services.exchange_service import ExchangeService
 
 
-class ExchangesBaseResource(BaseResource):
+class ExchangesBaseResource:
     def __init__(self, exchange_service: ExchangeService) -> None:
         self.__exchanges_service = exchange_service
 

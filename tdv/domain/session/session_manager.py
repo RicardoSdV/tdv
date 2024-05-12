@@ -94,7 +94,9 @@ class SessionManager:
     def __compare_accounts_db_diff(self, old_account: Account, new_account: Account, conn: Connection) -> None:
         pass
 
-    def __compare_portfolios_db_diff(self, old_portfolio: PfolsByName, new_portfolio: PfolsByName, conn: Connection) -> None:
+    def __compare_portfolios_db_diff(
+        self, old_portfolio: PfolsByName, new_portfolio: PfolsByName, conn: Connection
+    ) -> None:
         pass
 
     def __get_session(self, account_name: str, conn: Connection) -> Session:
