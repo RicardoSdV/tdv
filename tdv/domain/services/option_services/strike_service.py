@@ -26,7 +26,7 @@ class StrikeService:
             for size, price in zip(contract_sizes, strike_prices)
         ]
 
-        logger.debug('Getting strikes', strikes_for_selecting=strikes_for_selecting)
+        logger.debug('Getting strikes')
         selected_strikes = self.__strike_repo.select(conn, strikes_for_selecting)
 
         if len(selected_strikes) == len(strike_prices):

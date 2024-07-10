@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from enum import Enum
 from typing import Callable, TYPE_CHECKING, Tuple
 
+import pytz
 from pandas import DataFrame
 from pandas_market_calendars import get_calendar
 from schedule import Scheduler
@@ -25,7 +26,7 @@ class MARKET_EVENT(Enum):
 
 
 class YahooFinanceServiceProxy:
-    force_requests = True
+    force_requests = False
 
     def __init__(self, yahoo_finance_service: 'YahooFinanceService', entity_cache: 'EntityCache') -> None:
         self.cache_service = entity_cache
@@ -57,7 +58,8 @@ class YahooFinanceServiceProxy:
 
             next_open = self.__get_next_market_time(exchange, MARKET_EVENT.OPEN)
             next_close = self.__get_next_market_time(exchange, MARKET_EVENT.CLOSE)
-            if next_open > next_close:
+
+            if next_open < next_close:
                 logger.debug(
                     'Market open right now',
                     exchange=exchange,
@@ -99,8 +101,9 @@ class YahooFinanceServiceProxy:
     def __get_next_market_time(self, exchange: str, market_event: MARKET_EVENT) -> datetime:
         now = datetime.utcnow()
         calendar = self.__calendars_by_exchange_name[exchange]
-        schedule = calendar.schedule(start_date=now, end_date=now + timedelta(days=10))
+        schedule = calendar.schedule(start_date=now, end_date=now + timedelta(days=10), tz='UTC')
         next_time = getattr(schedule, market_event.value)[0].to_pydatetime()
+
         logger.debug(
             'Next market time gotten',
             exchange=exchange,

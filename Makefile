@@ -2,10 +2,10 @@
 export PYTHONPATH := $(CURDIR)
 PRINT_SPACE := @echo ""
 
-DB_USER = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.USER.value)')
-DB_NAME = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.NAME.value)')
-DB_PASSWORD = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.PASSWORD.value)')
-DB_HOST = $(shell python3 -c 'from tdv.constants import DbInfo; print(DbInfo.HOST.value)')
+DB_USER = $(shell python3 -c 'from tdv.constants import DB_INFO; print(DB_INFO.USER)')
+DB_NAME = $(shell python3 -c 'from tdv.constants import DB_INFO; print(DB_INFO.NAME)')
+DB_PASSWORD = $(shell python3 -c 'from tdv.constants import DB_INFO; print(DB_INFO.PASSWORD)')
+DB_HOST = $(shell python3 -c 'from tdv.constants import DB_INFO; print(DB_INFO.HOST)')
 ALEMBIC_PATH = $(shell python3 -c 'from tdv.constants import PATH; print(PATH.DIR.ALEMBIC)')
 VENV_ACTIVATE = venv/bin/activate
 
