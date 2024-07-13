@@ -1,3 +1,5 @@
+import re
+
 import structlog
 from structlog._config import BoundLoggerLazyProxy
 
@@ -5,8 +7,32 @@ from tdv.utils import dashed_str_YMDHMS_utcnow
 from tdv.constants import PATH
 
 
+# Function to strip ANSI codes
+def strip_ansi_codes(_, __, event_dict):
+    ansi_escape = re.compile(r'\x1B[@-_][0-?]*[ -/]*[@-~]')
+    if isinstance(event_dict, str):
+        return ansi_escape.sub('', event_dict)
+    for key, value in event_dict.items():
+        if isinstance(value, str):
+            event_dict[key] = ansi_escape.sub('', value)
+    return event_dict
+
+
+# Configure structlog
+structlog.configure(
+    processors=[
+        structlog.processors.TimeStamper(fmt="iso"),  # Add a timestamp
+        structlog.processors.KeyValueRenderer(key_order=["timestamp", "level", "event"]),
+        strip_ansi_codes,  # Add the strip_ansi_codes processor
+    ],
+    logger_factory=structlog.WriteLoggerFactory(
+        file=(PATH.DIR.LOGS / dashed_str_YMDHMS_utcnow()).with_suffix('.log').open('w')
+    ),
+)
+
+
 class LoggerFactory:
-    __save_to_file = False
+    __save_to_file = True
     if __save_to_file:
         structlog.configure(
             logger_factory=structlog.WriteLoggerFactory(

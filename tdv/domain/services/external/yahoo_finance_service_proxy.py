@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from enum import Enum
 from typing import Callable, TYPE_CHECKING, Tuple
 
@@ -52,14 +52,14 @@ class YahooFinanceServiceProxy:
         for exchange, scheduler in self.__schedulers_by_exchange_name.items():
 
             if self.force_requests:
-                logger.debug('Force scheduling indefinitely', exchange=exchange)
+                logger.debug('Forced scheduling indefinitely', exchange=exchange)
                 self.__schedule_periodic_requests(scheduler, self.__update_options, exchange)
                 return
 
             next_open = self.__get_next_market_time(exchange, MARKET_EVENT.OPEN)
             next_close = self.__get_next_market_time(exchange, MARKET_EVENT.CLOSE)
 
-            if next_open < next_close:
+            if next_open < next_close and next_open < datetime.now(next_open.tzinfo):
                 logger.debug(
                     'Market open right now',
                     exchange=exchange,
@@ -102,6 +102,7 @@ class YahooFinanceServiceProxy:
         now = datetime.utcnow()
         calendar = self.__calendars_by_exchange_name[exchange]
         schedule = calendar.schedule(start_date=now, end_date=now + timedelta(days=10), tz='UTC')
+        print(schedule)
         next_time = getattr(schedule, market_event.value)[0].to_pydatetime()
 
         logger.debug(
