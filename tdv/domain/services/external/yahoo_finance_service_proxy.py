@@ -52,26 +52,16 @@ class YahooFinanceServiceProxy:
         for exchange, scheduler in self.__schedulers_by_exchange_name.items():
 
             if self.force_requests:
-<<<<<<< Updated upstream
-                logger.debug('Force scheduling indefinitely', exchange=exchange)
-=======
-                self.__logger.debug('Forced scheduling indefinitely', exchange=exchange)
->>>>>>> Stashed changes
+                self.__logger.debug('Force scheduling indefinitely', exchange=exchange)
                 self.__schedule_periodic_requests(scheduler, self.__update_options, exchange)
                 return
 
             next_open = self.__get_next_market_time(exchange, MARKET_EVENT.OPEN)
             next_close = self.__get_next_market_time(exchange, MARKET_EVENT.CLOSE)
 
-<<<<<<< Updated upstream
             if next_open < next_close:
-                logger.debug(
-                    'Market open right now',
-=======
-            if next_open < next_close and next_open < datetime.now(next_open.tzinfo):
                 self.__logger.debug(
-                    'Market open right now_stamp_maker',
->>>>>>> Stashed changes
+                    'Market open right now',
                     exchange=exchange,
                     next_open=next_open,
                     next_close=next_close,
