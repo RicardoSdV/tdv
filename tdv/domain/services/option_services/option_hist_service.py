@@ -1,32 +1,34 @@
 from math import isnan
-from typing import TYPE_CHECKING, List, Dict, Tuple
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Connection
-
-from tdv.domain.entities.independent_entities.insert_time_entity import InsertTime
 from tdv.domain.entities.option_entities.call_hist_entity import CallHist
 from tdv.domain.entities.option_entities.put_hist_entity import PutHist
-from tdv.domain.entities.option_entities.strike_entity import Strike
 
 if TYPE_CHECKING:
+    from typing import *
+    from sqlalchemy import Connection
+    from tdv.domain.entities.independent_entities.insert_time_entity import InsertTime
+    from tdv.domain.entities.option_entities.strike_entity import Strike
     from tdv.infra.repos.option_repos.call_hist_repo import CallHistRepo
     from tdv.infra.repos.option_repos.put_hist_repo import PutHistRepo
+    from tdv.libs.log import Logger
 
 
 class OptionHistService:
-    def __init__(self, call_hist_repo: 'CallHistRepo', put_hist_repo: 'PutHistRepo') -> None:
+    def __init__(self, call_hist_repo: 'CallHistRepo', put_hist_repo: 'PutHistRepo', logger: 'Logger') -> None:
         self.__call_hist_repo = call_hist_repo
         self.__put_hist_repo = put_hist_repo
+        self.__logger = logger
 
     def create_option_hists(
-        self, insert_time: InsertTime, strikes: List[Strike], calls: Dict, puts: Dict, conn: Connection
-    ) -> Tuple[List[CallHist], List[PutHist]]:
+        self, insert_time: 'InsertTime', strikes: 'List[Strike]', calls: 'Dict', puts: 'Dict', conn: 'Connection'
+    ) -> 'Tuple[List[CallHist], List[PutHist]]':
 
-        call_hists: List[CallHist] = []
-        put_hists: List[PutHist] = []
+        call_hists: 'List[CallHist]' = []
+        put_hists : 'List[PutHist]'  = []
 
-        res_call: List[CallHist] = []
-        res_put: List[PutHist] = []
+        res_call: 'List[CallHist]' = []
+        res_put : 'List[PutHist]'  = []
 
         for option, Entity, repo, option_hists, res_option in zip(
             (calls, puts),

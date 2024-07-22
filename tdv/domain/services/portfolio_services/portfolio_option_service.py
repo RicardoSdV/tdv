@@ -1,19 +1,17 @@
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Connection
-
-from tdv.domain.entities.portfolio_entities.portfolio_entity import Portfolio
 from tdv.domain.entities.portfolio_entities.portfolio_option_entity import PortfolioOption
-from tdv.logger_setup import LoggerFactory
 from tdv.utils import datetime_from_dashed_YMD_str
 
 if TYPE_CHECKING:
+    from typing import *
+    from sqlalchemy import Connection
     from tdv.domain.cache.entity_cache import EntityCache
-    from tdv.infra.repos.portfolio_repos.portfolio_option_repo import PortfolioOptionRepo
+    from tdv.domain.entities.portfolio_entities.portfolio_entity import Portfolio
     from tdv.domain.services.option_services.expiry_service import ExpiryService
     from tdv.domain.services.option_services.strike_service import StrikeService
-
-logger = LoggerFactory.make_logger(__name__)
+    from tdv.infra.repos.portfolio_repos.portfolio_option_repo import PortfolioOptionRepo
+    from tdv.libs.log import Logger
 
 
 class PortfolioOptionService:
@@ -23,26 +21,26 @@ class PortfolioOptionService:
         portfolio_option_repo: 'PortfolioOptionRepo',
         expiry_service: 'ExpiryService',
         strike_service: 'StrikeService',
+        logger: 'Logger',
     ) -> None:
         self.__entity_cache = entity_cache
         self.__pfol_option_repo = portfolio_option_repo
         self.__expiry_service = expiry_service
         self.__strike_service = strike_service
+        self.__logger = logger
 
-    def get_portfolio_options(self, portfolio_ids: List[int], conn: Connection) -> List[PortfolioOption]:
-        logger.debug('Getting portfolio options', portfolio_ids=portfolio_ids)
-
-        portfolio_options = [PortfolioOption(portfolio_id=pfol_id) for pfol_id in portfolio_ids]
-        result = self.__pfol_option_repo.select(conn, portfolio_options)
-
-        return result
+    def get_portfolio_options(self, portfolio_ids: 'List[int]', conn: 'Connection') -> 'List[PortfolioOption]':
+        self.__logger.debug('Getting portfolio options', portfolio_ids=portfolio_ids)
+        return self.__pfol_option_repo.select(
+            conn, entities=[PortfolioOption(portfolio_id=pfol_id) for pfol_id in portfolio_ids]
+        )
 
     def create_local_portfolio_options(
-        self, portfolio: Portfolio, options_data: List[Dict], conn: Connection
-    ) -> List[PortfolioOption]:
-        to_datetime = datetime_from_dashed_YMD_str
+        self, portfolio: 'Portfolio', options_data: 'List[Dict]', conn: 'Connection'
+    ) -> 'List[PortfolioOption]':
 
         pfol_options = []
+        to_datetime = datetime_from_dashed_YMD_str
         for option_data in options_data:
             count, expiry_date, strike_price, ticker, is_call, contract_size = (
                 option_data['count'],
@@ -60,8 +58,7 @@ class PortfolioOptionService:
                 PortfolioOption(portfolio_id=portfolio.id, strike_id=strike.id, is_call=is_call, count=count)
             )
 
-        result = self.__pfol_option_repo.insert(conn, pfol_options)
-        return result
+        return self.__pfol_option_repo.insert(conn, pfol_options)
 
     # def create_portfolio_options(
     #     self, portfolio_id: int, option_id: int, count: Optional[float]

@@ -1,11 +1,9 @@
 from click import group
 from gevent import subprocess
 
+from tdv.containers import logger_factory
 
-from tdv.logger_setup import LoggerFactory
-
-logger = LoggerFactory.make_logger(__name__)
-
+logger = logger_factory.make_logger('cli')
 
 @group('run')
 def run_group() -> None:

@@ -70,7 +70,7 @@ configs:  # Runs the parser found in tdv.common_utils to set the alembic.ini DB 
 	- $(shell python3 -c 'from tdv.common_utils import config_parser; config_parser()')
 
 fmt:  # Run black with appropriate char limit & keeping single quotes
-	- sudo black --line-length 120 --skip-string-normalization .
+	@echo 'Standardized formatting is the tyranny of small minds & it should be avoided'
 
 clean:  # Remove compiled Python files, cached directories & build artifacts
 	- find . -name \*.pyc -delete

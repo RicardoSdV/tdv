@@ -20,15 +20,17 @@ class CacheManager:
         contract_size_service: 'ContractSizeService',
     ) -> None:
         self.__db = db
+
         self.__entity_cache = entity_cache
-        self.__exchange_service = exchange_service
-        self.__ticker_service = ticker_service
-        self.__company_service = company_service
+
+        self.__exchange_service      = exchange_service
+        self.__ticker_service        = ticker_service
+        self.__company_service       = company_service
         self.__contract_size_service = contract_size_service
 
     def init_entity_cache(self) -> None:
         with self.__db.connect as conn:
-            self.__entity_cache.cache_exchanges(self.__exchange_service.get_all_exchanges(conn))
-            self.__entity_cache.cache_tickers(self.__ticker_service.get_all_tickers(conn))
-            self.__entity_cache.cache_companies(self.__company_service.get_all_companies(conn))
+            self.__entity_cache.cache_exchanges(     self.__exchange_service.get_all_exchanges(conn))
+            self.__entity_cache.cache_tickers(       self.__ticker_service.get_all_tickers(conn))
+            self.__entity_cache.cache_companies(     self.__company_service.get_all_companies(conn))
             self.__entity_cache.cache_contract_sizes(self.__contract_size_service.get_all_contract_sizes(conn))

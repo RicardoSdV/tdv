@@ -1,13 +1,13 @@
+from datetime import datetime
 from time import sleep
 
 from tdv.constants import MAIN_LOOP_SLEEP_TIME
-from tdv.containers import ExternalService
-from tdv.logger_setup import LoggerFactory
+from tdv.containers import ExternalService, logger_factory
 
-logger = LoggerFactory.make_logger(__name__)
-
+logger = logger_factory.make_logger('main_loop', override_save_main=False)
 
 class MainLoop:
+
     @staticmethod
     def run() -> None:
 
@@ -17,9 +17,14 @@ class MainLoop:
 
         while True:
             try:
-                print('yes')
+                logger.info(
+                    'Loop of the main loop',
+                    utctime=datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S'),
+                    localtime=datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+                )
                 yahoo_finance_service_proxy.run_pending()
+                logger_factory.run_pending()
 
                 sleep(sleep_time)
             except Exception as e:
-                logger.exception('Main loop', exc=e)
+                logger.error('Main loop', exc=e)

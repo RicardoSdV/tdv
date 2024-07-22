@@ -1,53 +1,55 @@
-from typing import List, TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Connection
-
-from tdv.domain.entities.portfolio_entities.portfolio_entity import Portfolio
 from tdv.domain.entities.portfolio_entities.portfolio_share_entity import PortfolioShare
-from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
+    from typing import *
+    from tdv.libs.log import Logger
+    from sqlalchemy import Connection
     from tdv.domain.cache.entity_cache import EntityCache
+    from tdv.domain.entities.portfolio_entities.portfolio_entity import Portfolio
     from tdv.infra.repos.portfolio_repos.portfolio_share_repo import PortfolioShareRepo
-
-logger = LoggerFactory.make_logger(__name__)
 
 
 class PortfolioShareService:
-    def __init__(self, cache_service: 'EntityCache', pfol_share_repo: 'PortfolioShareRepo') -> None:
+    def __init__(self, cache_service: 'EntityCache', pfol_share_repo: 'PortfolioShareRepo', logger: 'Logger') -> None:
         self.__cache_service = cache_service
         self.__pfol_share_repo = pfol_share_repo
+        self.__logger = logger
 
     def create_local_portfolio_shares(
-        self, portfolio: Portfolio, shares_data: Dict[str, int], conn: Connection
-    ) -> List[PortfolioShare]:
+        self, portfolio: 'Portfolio', shares_data: 'Dict[str, int]', conn: 'Connection'
+    ) -> 'List[PortfolioShare]':
 
         pfol_shares = []
         for ticker_name, count in shares_data.items():
             ticker = self.__cache_service.tickers_by_name[ticker_name]
             pfol_shares.append(PortfolioShare(portfolio_id=portfolio.id, ticker_id=ticker.id, count=count))
-        logger.debug('Creating portfolio shares', pfol_shares=pfol_shares)
+        self.__logger.debug('Creating portfolio shares', pfol_shares=pfol_shares)
 
-        result = self.__pfol_share_repo.insert(conn, pfol_shares)
-        return result
+        return self.__pfol_share_repo.insert(conn, pfol_shares)
 
-    def get_portfolio_shares(self, pfol_ids: List[int], conn: Connection) -> List[PortfolioShare]:
-        logger.debug('Getting portfolio shares', portfolio_ids=pfol_ids)
-        pfol_shares = [PortfolioShare(portfolio_id=pfol_id) for pfol_id in pfol_ids]
-        result = self.__pfol_share_repo.select(conn, pfol_shares)
-        return result
+    def get_portfolio_shares(self, pfol_ids: 'List[int]', conn: 'Connection') -> 'List[PortfolioShare]':
+        self.__logger.debug('Getting portfolio shares', portfolio_ids=pfol_ids)
+        return self.__pfol_share_repo.select(
+            conn,
+            entities=[
+                PortfolioShare(portfolio_id=pfol_id)
+                for pfol_id in pfol_ids
+            ]
+        )
 
     def create_many_portfolio_shares(
-        self, portfolio_id: List[int], ticker_id: int, count: List[float], conn: Connection
-    ) -> List[PortfolioShare]:
-        logger.debug('Creating test portfolio shares', portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
-        shares = [
-            PortfolioShare(portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
-            for portfolio_id, count in zip(portfolio_id, count)
-        ]
-        result = self.__pfol_share_repo.insert(conn, shares)
-        return result
-
+        self, portfolio_id: 'List[int]', ticker_id: int, count: 'List[float]', conn: 'Connection'
+    ) -> 'List[PortfolioShare]':
+        self.__logger.debug('Creating test portfolio shares', portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
+        return self.__pfol_share_repo.insert(
+            conn,
+            entities=[
+                PortfolioShare(portfolio_id=portfolio_id, ticker_id=ticker_id, count=count)
+                for portfolio_id, count in zip(portfolio_id, count)
+            ]
+        )
 
 #     def create(
 #         self,

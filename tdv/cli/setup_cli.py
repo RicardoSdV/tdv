@@ -1,10 +1,8 @@
 from click import group
 
-from local_user_data.portfolio_data import local_user_portfolio_data
-from tdv.logger_setup import LoggerFactory
+from tdv.containers import logger_factory
 
-logger = LoggerFactory.make_logger(__name__)
-
+logger = logger_factory.make_logger('cli')
 
 @group('setup')
 def setup_group() -> None:

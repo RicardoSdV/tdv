@@ -4,7 +4,6 @@ from sqlalchemy import Table, Column, String, Integer, Boolean, DateTime, func, 
 from tdv.constants import CURRENCY
 from tdv.infra.database.tables import metadata
 
-# fmt: off
 
 exchange_table = Table(
     'exchange', metadata,
@@ -14,8 +13,8 @@ exchange_table = Table(
     Column('currency', String(20), server_default=CURRENCY.US_DOLLAR.value, nullable=False),
     Column('live', Boolean, server_default='false', nullable=False),
     Column('hist', Boolean, server_default='false', nullable=False),
-    Column('created_at', DateTime, server_default=func.now(), nullable=False),
-    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+    Column('created_at', DateTime, server_default=func.now_stamp_maker(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now_stamp_maker(), nullable=False),
 )
 
 company_table = Table(
@@ -31,8 +30,8 @@ account_table = Table(
     Column('name', String(200), nullable=False, unique=True),
     Column('email', String(200), nullable=False, unique=True),
     Column('password', String(200), nullable=False),
-    Column('created_at', DateTime, server_default=func.now(), nullable=False),
-    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+    Column('created_at', DateTime, server_default=func.now_stamp_maker(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now_stamp_maker(), nullable=False),
 )
 
 insert_time_table = Table(

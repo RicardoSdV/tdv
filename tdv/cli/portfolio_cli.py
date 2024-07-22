@@ -1,11 +1,6 @@
 from click import group
 
 
-from tdv.logger_setup import LoggerFactory
-
-logger = LoggerFactory.make_logger(__name__)
-
-
 @group('pfol')
 def portfolio_group() -> None:
     """Portfolio related operations."""

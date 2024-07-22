@@ -69,7 +69,7 @@
 #     #         next_open = self.__get_next_market_time(exchange, MarketEvents.OPEN)
 #     #         next_close = self.__get_next_market_time(exchange, MarketEvents.CLOSE)
 #     #         if next_open > next_close:
-#     #             logger.debug('Market open right now', exchange=exchange, next_open=next_open, next_close=next_close)
+#     #             logger.debug('Market open right now_stamp_maker', exchange=exchange, next_open=next_open, next_close=next_close)
 #     #             self.__schedule_periodic_requests(scheduler, self.__update_options, exchange)
 #     #             self.__schedule_market_events(scheduler, next_close, self.__on_market_close, exchange)
 #     #         else:
@@ -98,9 +98,9 @@
 #     #     self.__schedule_market_events(new_scheduler, next_open, self.__on_market_open, exchange)
 #     #
 #     # def __get_next_market_time(self, exchange: str, market_event: MarketEvents) -> datetime:
-#     #     now = datetime.utcnow()
+#     #     now_stamp_maker = datetime.utcnow()
 #     #     calendar = self.__calendars[exchange]
-#     #     schedule = calendar.schedule(start_date=now, end_date=now + timedelta(days=10))
+#     #     schedule = calendar.schedule(start_date=now_stamp_maker, end_date=now_stamp_maker + timedelta(days=10))
 #     #     next_time = getattr(schedule, market_event.value)[0].to_pydatetime()
 #     #     logger.debug('Next market time gotten', exchange=exchange, next_time=next_time, market_event=market_event)
 #     #     return next_time

@@ -13,8 +13,8 @@ ticker_table = Table(
     Column('name', String(50), nullable=False, unique=True),
     Column('live', Boolean, server_default='false', nullable=False),
     Column('hist', Boolean, server_default='false', nullable=False),
-    Column('created_at', DateTime, server_default=func.now(), nullable=False),
-    Column('updated_at', DateTime, server_default=func.now(), nullable=False),
+    Column('created_at', DateTime, server_default=func.now_stamp_maker(), nullable=False),
+    Column('updated_at', DateTime, server_default=func.now_stamp_maker(), nullable=False),
 )
 
 share_hist_table = Table(

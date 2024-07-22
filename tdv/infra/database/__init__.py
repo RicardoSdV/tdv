@@ -1,6 +1,10 @@
-from sqlalchemy import Connection, Engine, create_engine
+from typing import TYPE_CHECKING
+from sqlalchemy import create_engine
 
 from tdv.constants import DB_INFO
+
+if TYPE_CHECKING:
+    from sqlalchemy import *
 
 
 class DB:
@@ -10,11 +14,11 @@ class DB:
         self.__engine = self.__create_engine()
 
     @property
-    def connect(self) -> Connection:
+    def connect(self) -> 'Connection':
         return self.__engine.connect()
 
     @classmethod
-    def __create_engine(cls) -> Engine:
+    def __create_engine(cls) -> 'Engine':
         return create_engine(DB_INFO.URL, echo=cls.print_db_logs)
 
 

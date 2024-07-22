@@ -3,12 +3,13 @@ from typing import TYPE_CHECKING
 
 from gunicorn.app.base import BaseApplication
 
-from tdv.logger_setup import LoggerFactory
 
 if TYPE_CHECKING:
+    from typing import *
     import falcon
 
-logger = LoggerFactory.make_logger(__name__)
+    from tdv.libs.log import Logger
+
 
 
 class GunicornHTTPServer(BaseApplication):
@@ -23,9 +24,11 @@ class GunicornHTTPServer(BaseApplication):
         'daemon': False,
     }
 
-    def __init__(self, falcon_app: 'falcon.App') -> None:
+    def __init__(self, falcon_app: 'falcon.App', logger: 'Logger') -> None:
 
         self.falcon_app = falcon_app
+
+        self.__logger = logger
 
         super().__init__()
 
@@ -36,7 +39,7 @@ class GunicornHTTPServer(BaseApplication):
             if name in self.cfg.settings and setting is not None:
                 config[name] = setting
             else:
-                logger.error('Bad setting for gunicorn', name=name, setting=setting)
+                self.__logger.error('Bad setting for gunicorn', name=name, setting=setting)
 
         for name, setting in config.items():
             self.cfg.set(name.lower(), setting)

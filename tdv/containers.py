@@ -10,6 +10,7 @@ from tdv.api.gunicorn_http_server import GunicornHTTPServer
 from tdv.api.resources.ping_resource import PingResource
 from tdv.api.falcon_app import FalconApp
 from tdv.api.resources.test_render import TestRender
+from tdv.constants import PATH
 from tdv.domain.cache.cache_manager import CacheManager
 from tdv.domain.cache.entity_cache import EntityCache
 from tdv.domain.services.external.yahoo_finance_service_proxy import YahooFinanceServiceProxy
@@ -43,6 +44,10 @@ from tdv.infra.repos.portfolio_repos.portfolio_repo import PortfolioRepo
 from tdv.infra.repos.portfolio_repos.portfolio_share_repo import PortfolioShareRepo
 from tdv.infra.repos.ticker_repos.share_hist_repo import ShareHistRepo
 from tdv.infra.repos.ticker_repos.ticker_repo import TickerRepo
+from tdv.libs.log import LoggerFactory
+
+
+logger_factory = LoggerFactory(logs_dir_path=PATH.DIR.LOGS)
 
 
 class Cache(DeclarativeContainer):
@@ -50,70 +55,81 @@ class Cache(DeclarativeContainer):
 
 
 class Repo(DeclarativeContainer):
+
+    data_gather_logger = logger_factory.make_logger('data_gather_repos')
+
     # Base Cluster
-    exchange = Singleton(ExchangeRepo)
-    account = Singleton(AccountRepo)
-    insert_time = Singleton(InsertTimeRepo)
-    contract_size = Singleton(ContractSizeRepo)
+    exchange      = Singleton(ExchangeRepo,     data_gather_logger)
+    account       = Singleton(AccountRepo,      data_gather_logger)
+    insert_time   = Singleton(InsertTimeRepo,   data_gather_logger)
+    contract_size = Singleton(ContractSizeRepo, data_gather_logger)
 
     # Companies Cluster
-    company = Singleton(CompanyRepo)
-    ticker = Singleton(TickerRepo)
-    share_hist = Singleton(ShareHistRepo)
+    company = Singleton(CompanyRepo,      data_gather_logger)
+    ticker = Singleton(TickerRepo,        data_gather_logger)
+    share_hist = Singleton(ShareHistRepo, data_gather_logger)
 
     # Options Cluster
-    expiry = Singleton(ExpiryRepo)
-    strike = Singleton(StrikeRepo)
-    call_hist = Singleton(CallHistRepo)
-    put_hist = Singleton(PutHistRepo)
+    expiry = Singleton(ExpiryRepo,      data_gather_logger)
+    strike = Singleton(StrikeRepo,      data_gather_logger)
+    call_hist = Singleton(CallHistRepo, data_gather_logger)
+    put_hist = Singleton(PutHistRepo,   data_gather_logger)
 
     # Portfolio Cluster
-    portfolio = Singleton(PortfolioRepo)
-    portfolio_option = Singleton(PortfolioOptionRepo)
-    portfolio_share = Singleton(PortfolioShareRepo)
+    user_data_logger = logger_factory.make_logger('user_data_repos')
+    portfolio        = Singleton(PortfolioRepo,       user_data_logger)
+    portfolio_option = Singleton(PortfolioOptionRepo, user_data_logger)
+    portfolio_share  = Singleton(PortfolioShareRepo,  user_data_logger)
 
 
 class Service(DeclarativeContainer):
-    """All services live here Services"""
+    data_gather_logger = logger_factory.make_logger('data_gather_services')
 
     # Base Cluster
-    exchange = Singleton(ExchangeService, db, Cache.entity, Repo.exchange)
-    account = Singleton(AccountService, db, Repo.account)
-    contract_size = Singleton(ContractSizeService, Cache.entity, Repo.contract_size)
+    exchange      = Singleton(ExchangeService, db, Cache.entity, Repo.exchange, data_gather_logger)
+    account       = Singleton(AccountService,  db, Repo.account, data_gather_logger)
+    contract_size = Singleton(ContractSizeService, Cache.entity, Repo.contract_size, data_gather_logger)
 
     # Companies Cluster
-    company = Singleton(CompanyService, Cache.entity, Repo.company)
-    ticker = Singleton(TickerService, Cache.entity, Repo.ticker, exchange, company)
-    share_hist = Singleton(ShareHistService, Repo.share_hist)
+    company    = Singleton(CompanyService, Cache.entity, Repo.company, data_gather_logger)
+    ticker     = Singleton(TickerService, Cache.entity, Repo.ticker, exchange, company, data_gather_logger)
+    share_hist = Singleton(ShareHistService, Repo.share_hist, data_gather_logger)
 
     # Options Cluster
-    expiry = Singleton(ExpiryService, Repo.expiry)
-    strike = Singleton(StrikeService, Repo.strike)
-    option_hist = Singleton(OptionHistService, Repo.call_hist, Repo.put_hist)
-    insert_time = Singleton(InsertTimeService, Repo.insert_time)
-
-    # Portfolio Cluster
-    portfolio_option = Singleton(PortfolioOptionService, Cache.entity, Repo.portfolio_option, expiry, strike)
-    portfolio_share = Singleton(PortfolioShareService, Cache.entity, Repo.portfolio_share)
-    portfolio = Singleton(PortfolioService, Repo.portfolio, portfolio_share, portfolio_option)
+    expiry = Singleton(ExpiryService, Repo.expiry, data_gather_logger)
+    strike = Singleton(StrikeService, Repo.strike, data_gather_logger)
+    option_hist = Singleton(OptionHistService, Repo.call_hist, Repo.put_hist, data_gather_logger)
+    insert_time = Singleton(InsertTimeService, Repo.insert_time, data_gather_logger)
 
     yahoo_finance = Singleton(
-        YahooFinanceService, db, Cache.entity, ticker, expiry, strike, insert_time, share_hist, option_hist
+        YahooFinanceService, db, Cache.entity, ticker, expiry, strike, insert_time, share_hist, option_hist, data_gather_logger
     )
+
+    # Portfolio Cluster
+    user_data_logger = logger_factory.make_logger('user_data_services')
+    portfolio_option = Singleton(PortfolioOptionService, Cache.entity, Repo.portfolio_option, expiry, strike, user_data_logger)
+    portfolio_share = Singleton(PortfolioShareService, Cache.entity, Repo.portfolio_share, user_data_logger)
+    portfolio = Singleton(PortfolioService, Repo.portfolio, portfolio_share, portfolio_option, user_data_logger)
+
     session_manager = Singleton(
-        SessionManager, db, Cache.entity, account, portfolio, portfolio_share, portfolio_option, strike, expiry
+        SessionManager, db, Cache.entity, account, portfolio, portfolio_share, portfolio_option, strike, expiry,
+        logger_factory.make_logger('session_manager')
     )
 
     cache_manager = Singleton(CacheManager, db, Cache.entity, exchange, ticker, company, contract_size)
 
 
 class ExternalService(DeclarativeContainer):
-    yahoo_finance = Singleton(YahooFinanceServiceProxy, Service.yahoo_finance, Cache.entity)
+    yahoo_finance = Singleton(
+        YahooFinanceServiceProxy, Service.yahoo_finance, Cache.entity, logger_factory.make_logger('yf_service_proxy')
+    )
 
 
 class API(DeclarativeContainer):
+    logger = logger_factory.make_logger('api')
+
     ping = Singleton(PingResource)
     test_render = Singleton(TestRender)
 
-    falcon_app = Singleton(FalconApp, (ping(), test_render()))
-    gunicorn_server = Singleton(GunicornHTTPServer, falcon_app)
+    falcon_app = Singleton(FalconApp, (ping(), test_render()), logger=logger)
+    gunicorn_server = Singleton(GunicornHTTPServer, falcon_app, logger)

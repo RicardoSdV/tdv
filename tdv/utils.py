@@ -1,19 +1,17 @@
 from datetime import datetime
 from json import dumps
-from typing import Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import *
+
+    DashedStrStampYMDHMS = str
+    DashedStrStampYMD = str
 
 
-def dashed_str_YMDHMS_utcnow() -> str:
-    return datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S')
+def datetime_from_dashed_YMD_str(_str: 'DashedStrStampYMD') -> datetime:
+    return datetime.strptime(_str, '%Y-%m-%d')
 
 
-def datetime_from_dashed_YMD_str(dashed_YMD_str: str) -> datetime:
-    return datetime.strptime(dashed_YMD_str, '%Y-%m-%d')
-
-
-def turn_to_str(_any: str) -> str:
-    return str(_any)
-
-
-def pretty_print(data: Any) -> None:
-    print(dumps(data, default=turn_to_str, indent=4))
+def pretty_print(data: 'Any') -> None:
+    print(dumps(data, default=lambda x: str(x), indent=4))
