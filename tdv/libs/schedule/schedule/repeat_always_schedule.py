@@ -3,12 +3,16 @@ from collections import deque
 from datetime import datetime
 from typing import TYPE_CHECKING
 
+from schedule import Scheduler
+
+Scheduler()
+
 if TYPE_CHECKING:
     from typing import *
     from datetime import timedelta
 
-    from .jobs import Job, Jobs
-    from .tasks import Task
+    from tdv.libs.schedule.jobs import Job, Jobs
+    from tdv.libs.schedule.tasks import Task
 
     Offset     = Optional[timedelta]  # To run jobs before their time to compensate for run time, or other reasons
     Threshold  = Optional[timedelta]  # To delete old jobs that couldn't be run bc jobs piling up or other reasons
@@ -16,10 +20,14 @@ if TYPE_CHECKING:
     JobName    = str
     JobNum     = int
 
-class Schedule:
+class RepeatAlwaysSchedule:
     """
-    Holds a list of Job, can be run based on their run_at attr, optionally applying an run_at_offset.
-    Can discard events that are further in the past than the delete_threshold.
+    Holds a list of Job, can be run based on their run_at attr, optionally applying a __run_at_offset.
+    Can discard events that are further in the past than the __delete_threshold.
+
+    RepeatAlwaysSchedule is specifically designed to hold RepeatAlwaysJob(s) more efficiently, since
+    it does not need to check weather or not the job needs to be rescheduled, however, it does not
+
     """
 
     __slots__ = ('jobs', 'run_at_offset', 'delete_threshold', 'now_stamp_maker')
