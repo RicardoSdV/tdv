@@ -1,0 +1,6 @@
+In-house scheduling system.
+
+Its implementation is library-like, but it does not aim to be a library, only to cover
+the requirements I need at that time.
+
+It aims to be as fast & memory efficient as possible to get in python.

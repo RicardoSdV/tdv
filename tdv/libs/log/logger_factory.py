@@ -28,7 +28,7 @@ class LoggerFactory:
 
             main_log_name:  str   = '.main',
             logs_dir_path: 'Path' = Path('logs'),
-            max_log_dirs :  int   = 20,
+            max_log_dirs :  int   = 6,
             save_period: 'timedelta' = timedelta(seconds=5),
 
             log_dir_namer  : 'LogDirNamer'   = lambda: datetime.utcnow().strftime(  '%Y-%m-%d-%H-%M-%S'),

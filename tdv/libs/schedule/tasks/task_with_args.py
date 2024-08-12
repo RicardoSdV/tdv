@@ -1,13 +1,12 @@
-from inspect import ismethod
 from typing import TYPE_CHECKING
+
+from .. import Task
 
 if TYPE_CHECKING:
     from typing import *
 
-    from . import Handler
 
-
-class TaskWithArgs:
+class TaskWithArgs(Task):
     """ Holds Callable (Handler) & optionally its args & kwargs for calling later.
     A logger_name can be given to the task, else it will default to the Handlers' logger_name
 
@@ -16,19 +15,18 @@ class TaskWithArgs:
     & such structures are mutated during the call of the Handler this mutation will remain in the
     next call of this handler. This is the intended operation, deep copy too expensive. """
 
-    __slots__ = ('handler', 'name', 'args', 'kwargs')
+    __slots__ = ('args', 'kwargs')
 
     def __init__(
             self,
-            handler:  'Handler',
+            handler:  'Callable',
             name:     'Optional[str]' = None,
             *args:    'Any',
             **kwargs: 'Any'
     ) -> None:
-        self.name    = handler.__name__ if name is None else name
-        self.handler = handler
-        self.args    = args
-        self.kwargs  = kwargs
+        super().__init__(handler, name)
+        self.args   = args
+        self.kwargs = kwargs
 
     def __call__(self) -> None:
         self.handler(*(self.args or ()), **(self.kwargs or {}))

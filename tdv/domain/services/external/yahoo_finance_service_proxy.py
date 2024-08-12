@@ -3,10 +3,10 @@ from enum import Enum
 from typing import TYPE_CHECKING
 from pandas import DataFrame
 from pandas_market_calendars import get_calendar
-from schedule import Scheduler
 import yfinance as yf
 
 from tdv.constants import UPDATE_OPTIONS_INTERVAL
+from tdv.libs.schedule import Schedule
 
 if TYPE_CHECKING:
     from typing import *
@@ -24,21 +24,17 @@ class MARKET_EVENT(Enum):
 class YahooFinanceServiceProxy:
     force_requests = False
 
-    def __init__(self, yahoo_finance_service: 'YahooFinanceService', entity_cache: 'EntityCache', logger: 'Logger') -> None:
-        self.__logger = logger
+    def __init__(self, yf_serv: 'YahooFinanceService', cache: 'EntityCache', logger: 'Logger') -> None:
+        self.__yf_serv = yf_serv
+        self.__cache   = cache
+        self.__logger  = logger
 
-        self.cache_service = entity_cache
+        self.__request_schedule = Schedule()
+        self.__market_open_close_schedule = Schedule()
 
-        self.yahoo_finance_service = yahoo_finance_service
-
-        self.__schedulers_by_exchange_name = {
-            exchange.name: Scheduler()
-            for exchange in self.cache_service.exchanges_by_id.values()
-        }
-
-        self.__calendars_by_exchange_name = {
-            exchange.name: get_calendar(exchange.name)
-            for exchange in self.cache_service.exchanges_by_id.values()
+        self.__calendars_by_exchange = {
+            exchange: get_calendar(exchange.name)
+            for exchange in self.__cache.exchanges
         }
 
         self.__init_scheduling()
@@ -48,7 +44,34 @@ class YahooFinanceServiceProxy:
             scheduler.run_pending()
 
     def __init_scheduling(self) -> None:
+        """
+
+        Scheduling loop:
+
+            On market open:
+                - Add to self.__schedule.__jobs the request job for the exchange that is opening
+                with the name in the form {exchange_name}_request. This will be a RepeatUntilJob
+                where RepeatUntilJob.finish is the next market close.
+
+                -
+
+
+
+        """
+
+
+
+
         self.__logger.debug('Initializing scheduling')
+
+
+        for exchange_name, calendar in self.calendars
+
+
+
+
+
+
         for exchange, scheduler in self.__schedulers_by_exchange_name.items():
 
             if self.force_requests:
@@ -99,7 +122,7 @@ class YahooFinanceServiceProxy:
 
     def __get_next_market_time(self, exchange: str, market_event: MARKET_EVENT) -> 'datetime':
         now = datetime.utcnow()
-        calendar = self.__calendars_by_exchange_name[exchange]
+        calendar = self.__calendars_by_exchange[exchange]
         schedule = calendar.schedule(start_date=now, end_date=now + timedelta(days=10), tz='UTC')
         next_time = getattr(schedule, market_event.value)[0].to_pydatetime()
 
@@ -115,12 +138,12 @@ class YahooFinanceServiceProxy:
         self.__logger.debug('Updating options', exchange=exchange_name)
 
         exchange_id = None
-        for exchange in self.cache_service.exchanges_by_id.values():
+        for exchange in self.__cache.exchanges_by_id.values():
             if exchange.name == exchange_name:
                 exchange_id = exchange.id
 
         if exchange_id is not None:
-            for ticker in self.cache_service.tickers_by_id.values():
+            for ticker in self.__cache.tickers_by_id.values():
                 if ticker.exchange_id == exchange_id:
 
                     expiration_date_strs: 'Tuple[str, ...]' = self.__request_expirations(ticker.name)
@@ -130,7 +153,7 @@ class YahooFinanceServiceProxy:
 
                     serialized_option_chains = self.serialize_yf_option_chains(tesla_option_chains)
 
-                    self.yahoo_finance_service.save_options(serialized_option_chains, expiration_date_strs, ticker)
+                    self.__yf_serv.save_options(serialized_option_chains, expiration_date_strs, ticker)
 
                     return
 

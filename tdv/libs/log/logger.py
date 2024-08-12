@@ -1,15 +1,10 @@
 from datetime import datetime
-from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import *
 
-    LogFlag      = str
-    Message   = str
-    LogLine      = str  # Joined log which ends in \n
-    Log          = List[LogLine]
     EntryHandler = Callable[..., None]
     # EntryHandler = Callable[[LogFlag, Message, **LoggingParam], None] <- Correct type, mypy no like
 
@@ -20,9 +15,11 @@ error   = 'ERROR  '
 date    = 'DATE   '
 
 
+# TODO: Check weather or not it is possible to alter types on type checking to make the type held in the IPL._list be str
+
 class Logger:
 
-    main_log: 'Log' = []  # Holds combined log entries
+    main_log = []  # Holds combined log entries
     main_current_ymdh = (-1, -1, -1, -1)
 
     # This is the default, if logger should get overridden by LoggerFactory
@@ -87,7 +84,6 @@ class Logger:
         print(entry, end='')
         self.__log.append(entry)
         Logger.main_log.append(entry)
-
 
     def __sublog     (self, flag: str, message: str, **kwargs: 'Any') -> None:
         now = datetime.utcnow()
@@ -240,7 +236,7 @@ class Logger:
         print('cls.main_log_path', cls.main_log_path)
         with open(cls.main_log_path, 'a') as f:
             f.writelines(cls.main_log)
-        cls.main_log[:] = []
+        cls.main_log = []
 
     @property
     def is_saving_to_main(self) -> bool:
@@ -249,5 +245,5 @@ class Logger:
             '__all',
             '__save',
             '__main',
-            '__main_n_prnt'
+            '__main_n_prnt',
         )
